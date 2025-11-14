@@ -40,7 +40,7 @@ fun WelcomeContainer(modifier: Modifier = Modifier) {
         Text(
             text = "Memora",
             style = MaterialTheme.typography.titleLarge.copy(fontSize = 36.sp, fontWeight = FontWeight.Bold),
-            color = if (isSystemInDarkTheme()) Color.White else Color.Black
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Spacer(modifier = modifier.size(13.dp))
@@ -58,7 +58,7 @@ fun WelcomeContainer(modifier: Modifier = Modifier) {
         Text(
             text = "Registre seus momentos mais preciosos.",
             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center),
-            color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = modifier
                 .width(270.dp)
                 .height(56.dp)

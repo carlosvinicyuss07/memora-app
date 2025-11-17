@@ -1,9 +1,9 @@
 package com.example.memoraapp.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,13 +11,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -28,19 +29,21 @@ import com.example.memoraapp.R
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
-fun WelcomeContainer(modifier: Modifier = Modifier) {
+fun WelcomeMemoraMessageComponent(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
-            .height(434.dp)
-            .width(342.dp)
-            .padding(20.dp),
+            .height(464.dp)
+            .width(390.dp)
+            .padding(20.dp)
+            .border(width = 0.4.dp, color = MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(12.dp)),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
         Text(
             text = "Memora",
             style = MaterialTheme.typography.titleLarge.copy(fontSize = 36.sp, fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = modifier.padding(top = 16.dp)
         )
 
         Spacer(modifier = modifier.size(13.dp))
@@ -86,12 +89,12 @@ fun WelcomeContainer(modifier: Modifier = Modifier) {
     name = "Dark Mode"
 )
 @Composable
-private fun WelcomeContainerView() {
+private fun WelcomeMemoraMessageComponentView() {
     MemoraAppTheme {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            WelcomeContainer()
+            WelcomeMemoraMessageComponent()
         }
     }
 }

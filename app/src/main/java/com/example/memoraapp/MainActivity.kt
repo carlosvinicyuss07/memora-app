@@ -8,8 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.ui.Alignment
-import com.example.memoraapp.ui.components.ToolbarWithIconComponent
-import com.example.memoraapp.ui.components.WelcomeContainer
+import com.example.memoraapp.ui.components.ActionButtonForMyMemories
+import com.example.memoraapp.ui.components.WelcomeMemoraMessageComponent
+import com.example.memoraapp.ui.screens.MemoraScaffold
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,8 +22,7 @@ class MainActivity : ComponentActivity() {
                 Column (
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    ToolbarWithIconComponent(icon = Icons.Filled.Home, screenName = "Bem-vindo")
-                    WelcomeContainer()
+                    MemoraScaffold(title = "Bem-vindo", icon = Icons.Filled.Home, floatingActionButton = { ActionButtonForMyMemories() }, content = { WelcomeMemoraMessageComponent() })
                 }
             }
         }

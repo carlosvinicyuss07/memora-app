@@ -1,10 +1,13 @@
 package com.example.memoraapp.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -17,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,21 +27,27 @@ import androidx.compose.ui.unit.sp
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
-fun ToolbarWithIconComponent(modifier: Modifier = Modifier, icon: ImageVector, screenName: String) {
+fun ToolbarWithIconComponent(modifier: Modifier = Modifier, icon: ImageVector?, screenName: String) {
     Row(
         modifier = modifier
             .height(68.dp)
-            .width(390.dp),
+            .fillMaxWidth()
+            .border(width = 0.6.dp, color = MaterialTheme.colorScheme.outline),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
 
-        Icon(
-            imageVector = icon,
-            contentDescription = "IconToolbar",
-            tint = MaterialTheme.colorScheme.onBackground,
-            modifier = modifier.size(24.dp)
-        )
+        if (icon != null) {
+            Icon(
+                imageVector = icon,
+                contentDescription = "IconToolbar",
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = modifier
+                    .width(48.dp)
+                    .height(24.dp)
+                    .padding(start = 24.dp)
+            )
+        }
 
         Spacer(modifier = modifier.size(8.dp))
 

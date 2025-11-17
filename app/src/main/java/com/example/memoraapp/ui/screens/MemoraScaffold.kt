@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -22,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.memoraapp.ui.components.ActionButtonForMyMemories
 import com.example.memoraapp.ui.components.ToolbarWithIconComponent
 import com.example.memoraapp.ui.components.WelcomeMemoraMessageComponent
@@ -47,6 +51,9 @@ fun MemoraScaffold(
         },
         bottomBar = {
             BottomAppBar(
+                modifier = Modifier
+                    .padding(top = 70.dp)
+                    .height(10.dp),
                 containerColor = MaterialTheme.colorScheme.background
             ) {}
         },
@@ -60,9 +67,9 @@ fun MemoraScaffold(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            HorizontalDivider(thickness = 1.dp, modifier = Modifier.padding(bottom = 133.dp))
             content(paddingValues)
         }
     }

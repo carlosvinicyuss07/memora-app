@@ -31,8 +31,7 @@ fun ToolbarWithIconComponent(modifier: Modifier = Modifier, icon: ImageVector?, 
     Row(
         modifier = modifier
             .height(68.dp)
-            .fillMaxWidth()
-            .border(width = 0.6.dp, color = MaterialTheme.colorScheme.outline),
+            .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {

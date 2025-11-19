@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
-fun ExtendedFloatingActionButtonComponent(modifier: Modifier = Modifier) {
+fun CircleShapeExtendedFAB(modifier: Modifier = Modifier) {
     ExtendedFloatingActionButton(
         onClick = {},
         icon = { Icon(Icons.Filled.Add, "FAB Nova Memória", modifier.size(24.dp)) },
@@ -39,12 +39,12 @@ fun ExtendedFloatingActionButtonComponent(modifier: Modifier = Modifier) {
     name = "Dark Mode"
 )
 @Composable
-private fun ExtendedFloatingActionButtonComponentView() {
+private fun CircleShapeExtendedFABView() {
     MemoraAppTheme {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            ExtendedFloatingActionButtonComponent()
+            CircleShapeExtendedFAB()
         }
     }
 }

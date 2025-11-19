@@ -1,6 +1,8 @@
 package com.example.memoraapp.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -12,6 +14,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,13 +27,13 @@ import androidx.compose.ui.unit.sp
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
-fun LabelFormComponent(modifier: Modifier = Modifier, title: String) {
+fun LabelFormComponent(modifier: Modifier = Modifier, title: String, memoryText: String) {
     var textInput by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
             .width(342.dp)
-            .height(76.dp)
+            .height(73.dp)
     ) {
         Text(
             text = title,
@@ -42,25 +45,31 @@ fun LabelFormComponent(modifier: Modifier = Modifier, title: String) {
         TextField(
             value = textInput,
             onValueChange = { textInput = it },
-            shape = RoundedCornerShape(16.dp),
-            label = { Text("Pôr do Sol Inesquecível") }
+            label = { Text(memoryText) },
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = MaterialTheme.colorScheme.background
+            ),
+            maxLines = Int.MAX_VALUE,
+            modifier = modifier
+                .width(342.dp)
+                .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(16.dp))
         )
     }
 }
 
-@Preview(name = "Light Mode")
+@Preview(name = "Titulo da Memoria Light Mode")
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true,
-    name = "Dark Mode"
+    name = "Titulo da Memoria Dark Mode"
 )
 @Composable
-private fun LabelFormComponentView() {
+private fun LabelFormComponentTitleMemoryView() {
     MemoraAppTheme {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            LabelFormComponent(title = "Título da Memória")
+            LabelFormComponent(title = "Título da Memória", memoryText = "Pôr do Sol Inesquecível")
         }
     }
 }

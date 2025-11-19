@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -43,11 +44,12 @@ fun MemoryCardComponent(
     ) {
         Column {
             Image(
-                painter = painterResource(R.drawable.image_memorycard),
+                painter = painterResource(R.drawable.quadro_example_memorycard),
                 contentDescription = "Photo Memory Card",
                 modifier = modifier
                     .fillMaxWidth()
-                    .height(90.dp)
+                    .height(90.dp),
+                contentScale = ContentScale.FillWidth
             )
 
             Column(

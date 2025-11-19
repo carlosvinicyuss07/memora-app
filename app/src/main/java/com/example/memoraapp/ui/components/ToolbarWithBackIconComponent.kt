@@ -32,7 +32,7 @@ fun ToolbarWithBackIconComponent(modifier: Modifier = Modifier, screenName: Stri
             .height(68.dp)
             .width(390.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.spacedBy(7.dp)
     ) {
 
         Icon(
@@ -40,11 +40,9 @@ fun ToolbarWithBackIconComponent(modifier: Modifier = Modifier, screenName: Stri
             contentDescription = "IconToolbar",
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = modifier
-                .size(36.dp)
-                .padding(start = 20.dp)
+                .padding(16.dp)
+                .size(20.dp)
         )
-
-        Spacer(modifier = modifier.size(7.dp))
 
         if (screenName != null) {
             Text(

@@ -1,7 +1,7 @@
 package com.example.memoraapp.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,8 +26,9 @@ import androidx.compose.ui.unit.sp
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
-fun LabelFormComponent(
+fun LabelWithIconFormComponent(
     modifier: Modifier = Modifier,
+    icon: Icon,
     title: String,
     memoryText: String
 ) {
@@ -61,19 +61,19 @@ fun LabelFormComponent(
     }
 }
 
-@Preview(name = "Titulo da Memoria Light Mode")
+@Preview(name = "Categoria Light Mode")
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true,
-    name = "Titulo da Memoria Dark Mode"
+    name = "Categoria Dark Mode"
 )
 @Composable
-private fun LabelFormComponentTitleMemoryView() {
+private fun LabelWithIconFormComponentView() {
     MemoraAppTheme {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            LabelFormComponent(title = "Título da Memória", memoryText = "Pôr do Sol Inesquecível")
+            LabelFormComponent(title = "Categoria", memoryText = "Viagem")
         }
     }
 }

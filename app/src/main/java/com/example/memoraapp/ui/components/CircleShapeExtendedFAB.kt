@@ -12,6 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -19,11 +20,16 @@ import androidx.compose.ui.unit.sp
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
-fun CircleShapeExtendedFAB(modifier: Modifier = Modifier) {
+fun CircleShapeExtendedFAB(
+        modifier: Modifier = Modifier,
+        icon: ImageVector,
+        contentDescription: String,
+        text: String
+) {
     ExtendedFloatingActionButton(
         onClick = {},
-        icon = { Icon(Icons.Filled.Add, "FAB Nova Memória", modifier.size(24.dp)) },
-        text = { Text(text = "Nova Memória", fontSize = 14.sp, fontWeight = FontWeight.SemiBold) },
+        icon = { Icon(icon, contentDescription, modifier.size(24.dp)) },
+        text = { Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.SemiBold) },
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
         shape = CircleShape,
@@ -44,7 +50,7 @@ private fun CircleShapeExtendedFABView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            CircleShapeExtendedFAB()
+            CircleShapeExtendedFAB(icon = Icons.Filled.Add, contentDescription = "FAB Nova Memória", text = "Nova Memória")
         }
     }
 }

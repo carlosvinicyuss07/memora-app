@@ -8,6 +8,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +22,8 @@ import com.example.memoraapp.ui.theme.MemoraAppTheme
 fun FilledButtonComponent(modifier: Modifier = Modifier, text: String) {
     Button(
         onClick = {},
-        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.outline, contentColor = MaterialTheme.colorScheme.onBackground),
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant, contentColor = MaterialTheme.colorScheme.onBackground),
+        shape = ShapeDefaults.Large,
         modifier = modifier
             .width(310.dp)
             .height(48.dp)

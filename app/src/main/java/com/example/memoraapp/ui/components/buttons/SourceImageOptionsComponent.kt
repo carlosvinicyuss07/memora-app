@@ -1,4 +1,4 @@
-package com.example.memoraapp.ui.components
+package com.example.memoraapp.ui.components.buttons
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement

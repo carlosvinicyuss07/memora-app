@@ -1,4 +1,4 @@
-package com.example.memoraapp.ui.components
+package com.example.memoraapp.ui.components.cards
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image

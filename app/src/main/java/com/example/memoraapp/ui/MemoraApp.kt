@@ -13,11 +13,7 @@ fun MemoraApp() {
     val navController = rememberNavController()
 
     MemoraAppTheme {
-        NavHost(
-            navController = navController,
-            startDestination = "welcome"
-        ) {
-
+        NavHost(navController = navController, startDestination = "welcome") {
             composable("welcome") {
                 WelcomeScreen(
                     onStartClick = { navController.navigate("memories") }

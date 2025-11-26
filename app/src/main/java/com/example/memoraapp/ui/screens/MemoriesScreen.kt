@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -18,9 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.memoraapp.ui.components.MemoryCardComponent
-import com.example.memoraapp.ui.components.ToolbarWithBackIconComponent
-import com.example.memoraapp.ui.components.ToolbarWithIconComponent
+import com.example.memoraapp.ui.components.cards.MemoryCardComponent
+import com.example.memoraapp.ui.components.topbar.ToolbarWithBackIconComponent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -39,7 +36,8 @@ fun MemoriesScreen(
         Column(
             modifier = Modifier
                 .padding(paddingValues)
-                .fillMaxSize()
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HorizontalDivider(
                 thickness = 1.dp,

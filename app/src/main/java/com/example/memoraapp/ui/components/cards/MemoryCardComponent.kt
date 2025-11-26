@@ -32,9 +32,6 @@ fun MemoryCardComponent(
     date: String
 ) {
     ElevatedCard(
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp
-        ),
         modifier = modifier.size(width = 163.dp, height = 180.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceVariant)
     ) {

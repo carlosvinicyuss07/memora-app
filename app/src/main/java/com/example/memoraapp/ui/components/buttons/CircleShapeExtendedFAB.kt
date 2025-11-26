@@ -24,10 +24,11 @@ fun CircleShapeExtendedFAB(
         modifier: Modifier = Modifier,
         icon: ImageVector,
         contentDescription: String,
-        text: String
+        text: String,
+        onClick: () -> Unit
 ) {
-    ExtendedFloatingActionButton(
-        onClick = {},
+          ExtendedFloatingActionButton(
+        onClick = onClick,
         icon = { Icon(icon, contentDescription, modifier.size(24.dp)) },
         text = { Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.SemiBold) },
         containerColor = MaterialTheme.colorScheme.primary,
@@ -50,7 +51,7 @@ private fun CircleShapeExtendedFABView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            CircleShapeExtendedFAB(icon = Icons.Filled.Add, contentDescription = "FAB Nova Memória", text = "Nova Memória")
+            CircleShapeExtendedFAB(icon = Icons.Filled.Add, contentDescription = "FAB Nova Memória", text = "Nova Memória", onClick = {})
         }
     }
 }

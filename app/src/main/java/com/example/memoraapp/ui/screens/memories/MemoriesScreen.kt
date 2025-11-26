@@ -1,21 +1,33 @@
-package com.example.memoraapp.ui.screens
+package com.example.memoraapp.ui.screens.memories
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.memoraapp.ui.components.buttons.CircleShapeExtendedFAB
 import com.example.memoraapp.ui.components.cards.MemoryCardComponent
 import com.example.memoraapp.ui.components.topbar.ToolbarWithBackIconComponent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
@@ -23,29 +35,51 @@ import com.example.memoraapp.ui.theme.MemoraAppTheme
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MemoriesScreen(
+    viewModel: MemoriesViewModel,
     onNewMemoryClick: () -> Unit
 ) {
+    val memories by viewModel.memories.collectAsState()
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         topBar = {
             ToolbarWithBackIconComponent(screenName = "Minhas Memórias")
-        }
+        },
+        floatingActionButton = {
+            CircleShapeExtendedFAB(
+                icon = Icons.Filled.Add,
+                contentDescription = "FAB Nova Memória",
+                text = "Nova Memória",
+                onClick = onNewMemoryClick
+            )
+        },
+        floatingActionButtonPosition = FabPosition.End
     ) { paddingValues ->
         Column(
             modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(
+                    top = paddingValues.calculateTopPadding()
+                )
+                .fillMaxSize()
         ) {
             HorizontalDivider(
                 thickness = 1.dp,
                 modifier = Modifier
-                    .padding(bottom = 133.dp)
                     .fillMaxWidth()
             )
-            MemoryCardComponent(title = "Exemplo", date = "24 de Novembro, 2025")
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(memories) { memory ->
+                    MemoryCardComponent(title = memory.title, date = memory.date)
+                }
+            }
         }
     }
 }
@@ -62,7 +96,7 @@ private fun MemoriesScreenView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            MemoriesScreen(onNewMemoryClick = {})
+            MemoriesScreen(viewModel { MemoriesViewModel() }, onNewMemoryClick = {})
         }
     }
 }

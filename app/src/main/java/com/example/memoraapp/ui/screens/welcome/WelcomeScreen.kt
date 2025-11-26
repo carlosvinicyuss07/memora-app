@@ -1,4 +1,4 @@
-package com.example.memoraapp.ui.screens
+package com.example.memoraapp.ui.screens.welcome
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration

@@ -1,11 +1,13 @@
 package com.example.memoraapp.ui
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.memoraapp.ui.screens.MemoriesScreen
-import com.example.memoraapp.ui.screens.WelcomeScreen
+import com.example.memoraapp.ui.screens.memories.MemoriesScreen
+import com.example.memoraapp.ui.screens.memories.MemoriesViewModel
+import com.example.memoraapp.ui.screens.welcome.WelcomeScreen
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
@@ -22,7 +24,8 @@ fun MemoraApp() {
 
             composable("memories") {
                 MemoriesScreen(
-                    onNewMemoryClick = { navController.navigate("memoryForm") }
+                    viewModel = viewModel { MemoriesViewModel() },
+                    onNewMemoryClick = { navController.navigate("welcome") }
                 )
             }
 

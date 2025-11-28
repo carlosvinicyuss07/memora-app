@@ -20,12 +20,13 @@ class MemoriesViewModel : ViewModel() {
     private fun loadInitialData() {
         viewModelScope.launch {
             _memories.value = listOf(
-                Memory(1, "Pôr do Sol na Praia", "5 de Abril, 2023", R.drawable.quadro_example_memorycard),
-                Memory(2, "Luzes da Cidade", "22 de Março, 2023", R.drawable.quadro_example_memorycard),
+                Memory(1, "Pôr do Sol na Praia", "5 de Abril, 2023", R.drawable.photo_example_memorycard),
+                Memory(2, "Luzes da Cidade", "22 de Março, 2023", R.drawable.photo_example_memorycard),
                 Memory(3, "Montanhas de Outono", "10 de Outubro, 2023", R.drawable.quadro_example_memorycard),
                 Memory(4, "Café da Manhã Caseiro", "12 de Fevereiro, 2024", R.drawable.quadro_example_memorycard),
                 Memory(5, "Caminhada no Parque", "1 de Junho, 2023", R.drawable.quadro_example_memorycard),
-                Memory(6, "Noite de Cinema", "20 de Janeiro, 2024", R.drawable.quadro_example_memorycard)
+                Memory(6, "Noite de Cinema", "20 de Janeiro, 2024", R.drawable.quadro_example_memorycard),
+                Memory(7, "Arte Futurística", "28 de Novembro, 2025", R.drawable.image_memorycard)
             )
         }
     }

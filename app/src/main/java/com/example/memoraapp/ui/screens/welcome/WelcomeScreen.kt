@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.memoraapp.ui.components.buttons.ActionButtonForMyMemories
-import com.example.memoraapp.ui.components.topbar.ToolbarWithIconComponent
+import com.example.memoraapp.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.ui.components.cards.WelcomeMemoraMessageComponent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
@@ -33,7 +33,7 @@ fun WelcomeScreen(onStartClick: () -> Unit) {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
             topBar = {
-                ToolbarWithIconComponent(icon = Icons.Filled.Home, screenName = "Bem-vindo")
+                TopbarComponent(icon = Icons.Filled.Home, screenName = "Bem-vindo")
             },
             containerColor = MaterialTheme.colorScheme.background
         ) { paddingValues ->

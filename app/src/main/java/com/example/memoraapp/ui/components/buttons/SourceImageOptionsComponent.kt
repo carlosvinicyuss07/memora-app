@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -40,7 +41,7 @@ fun SourceImageOptionsComponent(
     Button(
         onClick = onClick,
         modifier = modifier
-            .fillMaxWidth()
+            .width(342.dp)
             .height(56.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
@@ -75,7 +76,8 @@ private fun LabelFormComponentView() {
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 SourceImageOptionsComponent(
                     text = "Tirar Foto",

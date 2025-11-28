@@ -27,36 +27,34 @@ import com.example.memoraapp.ui.theme.MemoraAppTheme
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WelcomeScreen(onStartClick: () -> Unit) {
-    MemoraAppTheme {
-        Scaffold(
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+        topBar = {
+            TopbarComponent(icon = Icons.Filled.Home, screenName = "Bem-vindo")
+        },
+        containerColor = MaterialTheme.colorScheme.background
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
-            topBar = {
-                TopbarComponent(icon = Icons.Filled.Home, screenName = "Bem-vindo")
-            },
-            containerColor = MaterialTheme.colorScheme.background
-        ) { paddingValues ->
-            Column(
+                .padding(paddingValues)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            HorizontalDivider(
+                thickness = 1.dp,
                 modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                HorizontalDivider(
-                    thickness = 1.dp,
-                    modifier = Modifier
-                        .padding(bottom = 133.dp)
-                        .fillMaxWidth()
-                )
-                WelcomeMemoraMessageComponent()
-                ActionButtonForMyMemories(
-                    onClick = onStartClick,
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .offset(x = (-25).dp, y = 20.dp)
-                )
-            }
+                    .padding(bottom = 133.dp)
+                    .fillMaxWidth()
+            )
+            WelcomeMemoraMessageComponent()
+            ActionButtonForMyMemories(
+                onClick = onStartClick,
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .offset(x = (-25).dp, y = 20.dp)
+            )
         }
     }
 }
@@ -69,9 +67,11 @@ fun WelcomeScreen(onStartClick: () -> Unit) {
 )
 @Composable
 private fun WelcomeScreenView() {
-    Surface(
-        color = MaterialTheme.colorScheme.background
-    ) {
-        WelcomeScreen(onStartClick = {})
+    MemoraAppTheme {
+        Surface(
+            color = MaterialTheme.colorScheme.background
+        ) {
+            WelcomeScreen(onStartClick = {})
+        }
     }
 }

@@ -44,17 +44,17 @@ fun WelcomeMemoraMessageComponent(modifier: Modifier = Modifier) {
             modifier = modifier.padding(top = 16.dp)
         )
 
-        Spacer(modifier = modifier.size(13.dp))
+        Spacer(modifier = modifier.size(10.dp))
 
         Image(
-            painter = painterResource(R.drawable.logo_memora_app),
+            painter = painterResource(R.drawable.logo_memora_app_oficial),
             contentDescription = "Logo MemoraApp",
             modifier = Modifier
-                .height(223.dp)
-                .width(223.dp)
+                .height(224.dp)
+                .width(224.dp)
         )
 
-        Spacer(modifier = modifier.size(8.dp))
+        Spacer(modifier = modifier.size(10.dp))
 
         Text(
             text = "Registre seus momentos mais preciosos.",

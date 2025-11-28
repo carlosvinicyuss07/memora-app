@@ -73,7 +73,7 @@ private fun LabelWithIconFormComponentView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            LabelFormComponent(title = "Categoria", memoryText = "Viagem")
+            LabelFormComponent(title = "Data da Memória", memoryText = "05/04/2023")
         }
     }
 }

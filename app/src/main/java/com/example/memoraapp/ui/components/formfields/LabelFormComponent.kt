@@ -67,7 +67,7 @@ fun LabelFormComponent(
     name = "Titulo da Memoria Dark Mode"
 )
 @Composable
-private fun LabelFormComponentTitleMemoryView() {
+private fun LabelFormComponentView() {
     MemoraAppTheme {
         Surface(
             color = MaterialTheme.colorScheme.background

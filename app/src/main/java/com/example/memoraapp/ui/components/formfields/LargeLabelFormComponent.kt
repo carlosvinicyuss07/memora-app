@@ -1,7 +1,6 @@
 package com.example.memoraapp.ui.components.formfields
 
 import android.content.res.Configuration
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,15 +19,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
-fun LabelWithIconFormComponent(
+fun LargeLabelFormComponent(
     modifier: Modifier = Modifier,
-    icon: Icon,
     title: String,
     memoryText: String
 ) {
@@ -41,7 +40,7 @@ fun LabelWithIconFormComponent(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.bodySmall.copy(fontSize = 16.sp)
+            style = MaterialTheme.typography.bodySmall.copy(fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
         )
 
         Spacer(modifier = modifier.size(5.dp))
@@ -61,19 +60,19 @@ fun LabelWithIconFormComponent(
     }
 }
 
-@Preview(name = "Categoria Light Mode")
+@Preview(name = "Titulo da Memoria Light Mode")
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true,
-    name = "Categoria Dark Mode"
+    name = "Titulo da Memoria Dark Mode"
 )
 @Composable
-private fun LabelWithIconFormComponentView() {
+private fun LargeLabelFormComponentView() {
     MemoraAppTheme {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            LabelFormComponent(title = "Data da Memória", memoryText = "05/04/2023")
+            LargeLabelFormComponent(title = "Título da Memória", memoryText = "Pôr do Sol Inesquecível")
         }
     }
 }

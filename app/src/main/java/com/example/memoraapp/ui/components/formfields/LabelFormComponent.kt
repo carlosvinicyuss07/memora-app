@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,7 +40,7 @@ fun LabelFormComponent(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.bodySmall.copy(fontSize = 16.sp)
+            style = MaterialTheme.typography.bodySmall.copy(fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
         )
 
         Spacer(modifier = modifier.size(5.dp))

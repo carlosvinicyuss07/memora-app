@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.memoraapp.ui.components.buttons.CircleShapeExtendedFAB
 import com.example.memoraapp.ui.components.cards.MemoryCardComponent
-import com.example.memoraapp.ui.components.topbar.ToolbarWithBackIconComponent
+import com.example.memoraapp.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -45,7 +44,7 @@ fun MemoriesScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         topBar = {
-            ToolbarWithBackIconComponent(screenName = "Minhas Memórias")
+            TopbarComponent(screenName = "Minhas Memórias")
         },
         floatingActionButton = {
             CircleShapeExtendedFAB(
@@ -77,7 +76,7 @@ fun MemoriesScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(memories) { memory ->
-                    MemoryCardComponent(title = memory.title, date = memory.date)
+                    MemoryCardComponent(memory = memory)
                 }
             }
         }

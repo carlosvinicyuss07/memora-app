@@ -23,13 +23,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.memoraapp.R
+import com.example.memoraapp.data.Memory
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
 fun MemoryCardComponent(
     modifier: Modifier = Modifier,
-    title: String,
-    date: String
+    memory: Memory
 ) {
     ElevatedCard(
         modifier = modifier.size(width = 163.dp, height = 180.dp),
@@ -37,12 +37,12 @@ fun MemoryCardComponent(
     ) {
         Column {
             Image(
-                painter = painterResource(R.drawable.quadro_example_memorycard),
+                painter = painterResource(memory.imageRes),
                 contentDescription = "Photo Memory Card",
                 modifier = modifier
                     .fillMaxWidth()
                     .height(90.dp),
-                contentScale = ContentScale.FillWidth
+                contentScale = ContentScale.FillBounds
             )
 
             Column(
@@ -52,7 +52,7 @@ fun MemoryCardComponent(
                 verticalArrangement = Arrangement.Bottom
             ) {
                 Text(
-                    text = title,
+                    text = memory.title,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
@@ -62,7 +62,7 @@ fun MemoryCardComponent(
                 Spacer(modifier.size(1.dp))
 
                 Text(
-                    text = date,
+                    text = memory.date,
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.sp)
                 )
             }
@@ -82,7 +82,7 @@ private fun MemoryCardComponentView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            MemoryCardComponent(title = "Montanhas de Outono", date = "10 de Outubro, 2023")
+            MemoryCardComponent(memory = Memory(id = 1, title = "Montanhas de Outono", date = "10 de Outubro, 2023", imageRes = R.drawable.quadro_example_memorycard))
         }
     }
 }

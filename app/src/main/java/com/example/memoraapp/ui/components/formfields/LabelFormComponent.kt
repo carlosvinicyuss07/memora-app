@@ -4,9 +4,8 @@ import android.content.res.Configuration
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -24,19 +23,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.memoraapp.ui.theme.MemoraAppTheme
+import kotlin.math.min
 
 @Composable
 fun LabelFormComponent(
     modifier: Modifier = Modifier,
     title: String,
-    memoryText: String
+    memoryText: String,
+    minLines: Int = 1
 ) {
     var textInput by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
-            .width(342.dp)
-            .height(73.dp)
+            .fillMaxWidth()
     ) {
         Text(
             text = title,
@@ -49,12 +49,13 @@ fun LabelFormComponent(
             value = textInput,
             onValueChange = { textInput = it },
             label = { Text(memoryText) },
+            minLines = minLines,
+            maxLines = Int.MAX_VALUE,
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = MaterialTheme.colorScheme.background
             ),
-            maxLines = Int.MAX_VALUE,
-            modifier = modifier
-                .width(342.dp)
+            modifier = Modifier
+                .fillMaxWidth()
                 .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(16.dp))
         )
     }

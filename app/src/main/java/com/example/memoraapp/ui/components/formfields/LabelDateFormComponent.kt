@@ -71,7 +71,6 @@ fun LabelDateFormComponent(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            // Ícone
             Icon(
                 imageVector = icon,
                 contentDescription = null,
@@ -81,7 +80,6 @@ fun LabelDateFormComponent(
                     .weight(1f)
             )
 
-            // Campo de texto somente leitura
             TextField(
                 value = selectedText,
                 textStyle = MaterialTheme.typography.bodyMedium,

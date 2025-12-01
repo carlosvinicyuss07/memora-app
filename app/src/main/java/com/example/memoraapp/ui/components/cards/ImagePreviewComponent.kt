@@ -44,7 +44,7 @@ fun ImagePreviewComponent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // ComponentDeImagemComBordaPontilhada
+        // Component de imagem com borda pontilhada
         DashedBorderImage(imageRes = imageRes)
 
         Spacer(modifier = Modifier.height(15.dp))

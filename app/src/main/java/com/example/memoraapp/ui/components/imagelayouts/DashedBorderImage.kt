@@ -1,0 +1,100 @@
+package com.example.memoraapp.ui.components.imagelayouts
+
+import android.content.res.Configuration
+import android.view.Surface
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.example.memoraapp.R
+import com.example.memoraapp.ui.theme.MemoraAppTheme
+
+@Composable
+fun DashedBorderImage(
+    modifier: Modifier = Modifier,
+    imageRes: Int?,
+    cornerRadius: Dp = 10.dp,
+    strokeWidth: Dp = 2.dp,
+    dashLength: Float = 12f,
+    gapLength: Float = 12f
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(175.dp),
+        contentAlignment = Alignment.Center
+    ) {
+
+        androidx.compose.foundation.Canvas(
+            modifier = Modifier
+                .matchParentSize()
+        ) {
+            val path = Path().apply {
+                addRoundRect(
+                    androidx.compose.ui.geometry.RoundRect(
+                        left = 0f,
+                        top = 0f,
+                        right = size.width,
+                        bottom = size.height,
+                        radiusX = cornerRadius.toPx(),
+                        radiusY = cornerRadius.toPx()
+                    )
+                )
+            }
+
+            drawPath(
+                path = path,
+                color = Color.LightGray,
+                style = Stroke(
+                    width = strokeWidth.toPx(),
+                    pathEffect = PathEffect.dashPathEffect(
+                        floatArrayOf(dashLength, gapLength)
+                    )
+                )
+            )
+        }
+
+        if (imageRes != null) {
+            Image(
+                painter = painterResource(imageRes),
+                contentDescription = "Preview Image",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(6.dp)
+                    .clip(RoundedCornerShape(cornerRadius)),
+                contentScale = ContentScale.Crop
+            )
+        }
+    }
+}
+
+@Preview(name = "Prévia Imagem Light")
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "Prévia Imagem Dark"
+)
+@Composable
+private fun DashedBorderImageView() {
+    MemoraAppTheme {
+        Surface {
+            DashedBorderImage(
+                imageRes = R.drawable.photo_example_memorycard
+            )
+        }
+    }
+}

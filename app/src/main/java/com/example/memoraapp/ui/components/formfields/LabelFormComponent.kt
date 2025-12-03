@@ -29,10 +29,11 @@ import kotlin.math.min
 fun LabelFormComponent(
     modifier: Modifier = Modifier,
     title: String,
-    memoryText: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
     minLines: Int = 1
 ) {
-    var textInput by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
@@ -46,9 +47,9 @@ fun LabelFormComponent(
         Spacer(modifier = modifier.size(5.dp))
 
         TextField(
-            value = textInput,
-            onValueChange = { textInput = it },
-            label = { Text(memoryText) },
+            value = value,
+            onValueChange = onValueChange,
+            placeholder = { Text(placeholder) },
             minLines = minLines,
             maxLines = Int.MAX_VALUE,
             colors = TextFieldDefaults.colors(
@@ -56,7 +57,11 @@ fun LabelFormComponent(
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(16.dp))
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline,
+                    shape = RoundedCornerShape(16.dp)
+                )
         )
     }
 }
@@ -73,7 +78,12 @@ private fun LabelFormComponentView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            LabelFormComponent(title = "Título da Memória", memoryText = "Pôr do Sol Inesquecível")
+            LabelFormComponent(
+                title = "Título da Memória",
+                value = "Pôr do sol na praia",
+                onValueChange = {},
+                placeholder = "Pôr do sol na praia"
+            )
         }
     }
 }

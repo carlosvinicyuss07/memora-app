@@ -6,7 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.memoraapp.ui.screens.memories.MemoriesScreen
-import com.example.memoraapp.ui.screens.memories.MemoriesViewModel
+import com.example.memoraapp.domain.viewmodels.MemoriesViewModel
 import com.example.memoraapp.ui.screens.welcome.WelcomeScreen
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 

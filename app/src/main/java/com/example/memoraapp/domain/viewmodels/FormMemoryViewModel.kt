@@ -1,4 +1,4 @@
-package com.example.memoraapp.ui.screens.form
+package com.example.memoraapp.domain.viewmodels
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -6,6 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.memoraapp.data.FakeMemoryRepository
 import com.example.memoraapp.domain.Memory
 import com.example.memoraapp.domain.MemoryRepository
+import com.example.memoraapp.ui.screens.form.FormMemoryAction
+import com.example.memoraapp.ui.screens.form.FormMemoryScreenMode
+import com.example.memoraapp.ui.screens.form.FormMemoryUiState
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow

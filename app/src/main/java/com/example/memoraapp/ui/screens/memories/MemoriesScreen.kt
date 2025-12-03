@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.memoraapp.domain.viewmodels.MemoriesViewModel
 import com.example.memoraapp.ui.components.buttons.CircleShapeExtendedFAB
 import com.example.memoraapp.ui.components.cards.MemoryCardComponent
 import com.example.memoraapp.ui.components.topbar.TopbarComponent

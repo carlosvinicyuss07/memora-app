@@ -38,7 +38,6 @@ fun LabelDateFormComponent(
     modifier: Modifier = Modifier,
     title: String,
     placeholder: String,
-    icon: ImageVector = Icons.Default.DateRange,
     onClick: () -> Unit
 ) {
     var selectedText by remember { mutableStateOf("05/04/2023") }
@@ -72,7 +71,7 @@ fun LabelDateFormComponent(
         ) {
 
             Icon(
-                imageVector = icon,
+                imageVector = Icons.Default.DateRange,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier

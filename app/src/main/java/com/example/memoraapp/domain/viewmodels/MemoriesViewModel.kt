@@ -1,4 +1,4 @@
-package com.example.memoraapp.ui.screens.memories
+package com.example.memoraapp.domain.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

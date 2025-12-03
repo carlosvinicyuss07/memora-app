@@ -57,7 +57,7 @@ fun FormScreen(modifier: Modifier = Modifier) {
             LazyColumn(
                 modifier = Modifier.padding(horizontal = 24.dp)
             ) {
-                LabelFormComponent()
+
             }
 
 

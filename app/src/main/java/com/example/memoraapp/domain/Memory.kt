@@ -1,9 +1,9 @@
-package com.example.memoraapp.data
+package com.example.memoraapp.domain
 
 import java.time.LocalDate
 
 data class Memory(
-    val id: Int,
+    val id: Int = 0,
     val title: String,
     val description: String,
     val date: LocalDate,

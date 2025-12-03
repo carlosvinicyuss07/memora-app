@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +27,7 @@ import com.example.memoraapp.ui.theme.MemoraAppTheme
 @Composable
 fun DashedBorderImage(
     modifier: Modifier = Modifier,
-    imageRes: Int?,
+    imageBitmap: ImageBitmap?,
     cornerRadius: Dp = 10.dp,
     strokeWidth: Dp = 2.dp,
     dashLength: Float = 12f,
@@ -68,9 +69,9 @@ fun DashedBorderImage(
             )
         }
 
-        if (imageRes != null) {
+        if (imageBitmap != null) {
             Image(
-                painter = painterResource(imageRes),
+                bitmap = imageBitmap,
                 contentDescription = "Preview Image",
                 modifier = Modifier
                     .fillMaxSize()
@@ -78,6 +79,8 @@ fun DashedBorderImage(
                     .clip(RoundedCornerShape(cornerRadius)),
                 contentScale = ContentScale.Crop
             )
+        } else {
+            Text(text = "Nenhuma imagem selecionada", modifier = Modifier.padding(8.dp))
         }
     }
 }
@@ -93,7 +96,7 @@ private fun DashedBorderImageView() {
     MemoraAppTheme {
         Surface {
             DashedBorderImage(
-                imageRes = R.drawable.photo_example_memorycard
+                imageBitmap = null
             )
         }
     }

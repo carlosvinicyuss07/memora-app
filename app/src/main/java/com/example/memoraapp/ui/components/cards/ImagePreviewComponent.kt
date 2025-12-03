@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,7 +21,7 @@ import com.example.memoraapp.ui.theme.MemoraAppTheme
 @Composable
 fun ImagePreviewComponent(
     modifier: Modifier = Modifier,
-    imageRes: Int?,
+    imageBitmap: ImageBitmap?,
     onSelectImage: () -> Unit
 ) {
     Column(
@@ -45,7 +46,7 @@ fun ImagePreviewComponent(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Component de imagem com borda pontilhada
-        DashedBorderImage(imageRes = imageRes)
+        DashedBorderImage(imageBitmap = imageBitmap)
 
         Spacer(modifier = Modifier.height(15.dp))
 
@@ -68,7 +69,7 @@ private fun ImagePreviewComponentPreview() {
     MemoraAppTheme {
         Surface {
             ImagePreviewComponent(
-                imageRes = R.drawable.photo_example_memorycard,
+                imageBitmap = null,
                 onSelectImage = {}
             )
         }

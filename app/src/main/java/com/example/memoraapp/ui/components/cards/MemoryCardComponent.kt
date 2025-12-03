@@ -17,14 +17,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.memoraapp.R
-import com.example.memoraapp.data.Memory
+import com.example.memoraapp.domain.Memory
 import com.example.memoraapp.ui.theme.MemoraAppTheme
+import com.example.memoraapp.ui.util.uriToImageBitmap
+import java.time.LocalDate
+import androidx.core.net.toUri
+import com.example.memoraapp.R
 
 @Composable
 fun MemoryCardComponent(
@@ -36,14 +40,27 @@ fun MemoryCardComponent(
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column {
-            Image(
-                painter = painterResource(memory.imageRes),
-                contentDescription = "Photo Memory Card",
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(90.dp),
-                contentScale = ContentScale.FillBounds
-            )
+            if (memory.imageUri != null) {
+                uriToImageBitmap(context = LocalContext.current, uri = memory.imageUri.toUri())?.let {
+                    Image(
+                        bitmap = it,
+                        contentDescription = "Photo Memory Card",
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .height(90.dp),
+                        contentScale = ContentScale.FillBounds
+                    )
+                }
+            } else {
+                Image(
+                    painter = painterResource(R.drawable.photo_example_memorycard),
+                    contentDescription = "Photo Memory Card",
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(90.dp),
+                    contentScale = ContentScale.FillBounds
+                )
+            }
 
             Column(
                 modifier = modifier
@@ -62,7 +79,7 @@ fun MemoryCardComponent(
                 Spacer(modifier.size(1.dp))
 
                 Text(
-                    text = memory.date,
+                    text = memory.date.toString(),
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.sp)
                 )
             }
@@ -82,7 +99,7 @@ private fun MemoryCardComponentView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            MemoryCardComponent(memory = Memory(id = 1, title = "Montanhas de Outono", date = "10 de Outubro, 2023", imageRes = R.drawable.quadro_example_memorycard))
+            MemoryCardComponent(memory = Memory(id = 1, title = "Montanhas de Outono", description = "Teste", date = LocalDate.now()))
         }
     }
 }

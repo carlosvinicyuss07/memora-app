@@ -2,6 +2,7 @@ package com.example.memoraapp.ui.components.cards
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,17 +30,21 @@ import com.example.memoraapp.ui.util.uriToImageBitmap
 import java.time.LocalDate
 import androidx.core.net.toUri
 import com.example.memoraapp.R
+import kotlin.Unit
 
 @Composable
 fun MemoryCardComponent(
     modifier: Modifier = Modifier,
-    memory: Memory
+    memory: Memory,
+    onClick: () -> Unit = {}
 ) {
     ElevatedCard(
         modifier = modifier.size(width = 163.dp, height = 180.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column {
+        Column(
+            modifier = Modifier.clickable { onClick() }
+        ) {
             if (memory.imageUri != null) {
                 uriToImageBitmap(context = LocalContext.current, uri = memory.imageUri.toUri())?.let {
                     Image(

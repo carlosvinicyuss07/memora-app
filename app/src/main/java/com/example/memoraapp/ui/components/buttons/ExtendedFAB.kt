@@ -21,9 +21,9 @@ import androidx.compose.ui.unit.sp
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
-fun ExtendedFAB(modifier: Modifier = Modifier, icon: ImageVector, text: String, containerColor: Color, contentColor: Color) {
+fun ExtendedFAB(modifier: Modifier = Modifier, icon: ImageVector, text: String, containerColor: Color, contentColor: Color, onClick: () -> Unit) {
     ExtendedFloatingActionButton(
-        onClick = {},
+        onClick = onClick,
         icon = { Icon(icon, "Extended FAB Padrão", modifier.size(20.dp)) },
         text = { Text(text = text, fontSize = 18.sp, fontWeight = FontWeight.SemiBold) },
         containerColor = containerColor,
@@ -45,7 +45,7 @@ private fun CircleShapeExtendedFABEditView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            ExtendedFAB(icon = Icons.Filled.BorderColor, text = "Editar", containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary)
+            ExtendedFAB(icon = Icons.Filled.BorderColor, text = "Editar", containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary, onClick = {})
         }
     }
 }
@@ -62,7 +62,7 @@ private fun CircleShapeExtendedFABDeleteView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            ExtendedFAB(icon = Icons.Filled.Delete, text = "Excluir", containerColor = MaterialTheme.colorScheme.error, contentColor = MaterialTheme.colorScheme.onError)
+            ExtendedFAB(icon = Icons.Filled.Delete, text = "Excluir", containerColor = MaterialTheme.colorScheme.error, contentColor = MaterialTheme.colorScheme.onError, onClick = {})
         }
     }
 }

@@ -27,7 +27,7 @@ fun CircleShapeExtendedFAB(
         text: String,
         onClick: () -> Unit
 ) {
-          ExtendedFloatingActionButton(
+    ExtendedFloatingActionButton(
         onClick = onClick,
         icon = { Icon(icon, contentDescription, modifier.size(24.dp)) },
         text = { Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.SemiBold) },

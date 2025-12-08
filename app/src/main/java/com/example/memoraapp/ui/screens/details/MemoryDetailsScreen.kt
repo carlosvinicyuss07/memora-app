@@ -3,6 +3,7 @@ package com.example.memoraapp.ui.screens.details
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,14 +38,17 @@ import java.time.LocalDate
 @Composable
 fun MemoryDetailsScreen(
     modifier: Modifier = Modifier,
-    memory: Memory
+    memory: Memory,
+    onEditClik: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onBack: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         topBar = {
-            TopbarComponent(screenName = "Detalhes da Memória")
+            TopbarComponent(screenName = "Detalhes da Memória", onBackClick = onBack)
         }
     ) { paddingValues ->
 
@@ -122,14 +126,16 @@ fun MemoryDetailsScreen(
                     icon = Icons.Filled.BorderColor,
                     text = "Editar",
                     containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    onClick = onEditClik
                 )
 
                 ExtendedFAB(
                     icon = Icons.Filled.Delete,
                     text = "Excluir",
                     containerColor = MaterialTheme.colorScheme.error,
-                    contentColor = MaterialTheme.colorScheme.onError
+                    contentColor = MaterialTheme.colorScheme.onError,
+                    onClick = onDeleteClick
                 )
             }
         }
@@ -155,7 +161,10 @@ private fun MemoryDetailsScreenView() {
                     title = "Viagem Inesquecível a Fernando de Noronha",
                     description = "Fernando de Noronha é um paraíso intocado, um lugar onde a natureza mostra sua força e beleza. As águas cristalinas, as praias de areia dourada e a rica vida marinha fazem deste um dos destinos mais espetaculares do Brasil.",
                     date = LocalDate.now()
-                )
+                ),
+                onEditClik = {},
+                onDeleteClick = {},
+                onBack = {}
             )
         }
     }

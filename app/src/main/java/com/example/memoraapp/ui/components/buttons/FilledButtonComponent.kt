@@ -18,9 +18,9 @@ import androidx.compose.ui.unit.dp
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
-fun FilledButtonComponent(modifier: Modifier = Modifier, text: String, containerColor: Color, contentColor: Color) {
+fun FilledButtonComponent(modifier: Modifier = Modifier, text: String, containerColor: Color, contentColor: Color, onClick: () -> Unit) {
     Button(
-        onClick = {},
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = containerColor, contentColor = contentColor),
         shape = ShapeDefaults.Large,
         modifier = modifier
@@ -43,7 +43,7 @@ private fun FilledButtonComponentView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            FilledButtonComponent(text = "Selecionar Foto", containerColor = MaterialTheme.colorScheme.surfaceVariant, contentColor = MaterialTheme.colorScheme.onBackground)
+            FilledButtonComponent(text = "Selecionar Foto", containerColor = MaterialTheme.colorScheme.surfaceVariant, contentColor = MaterialTheme.colorScheme.onBackground, onClick = {})
         }
     }
 }

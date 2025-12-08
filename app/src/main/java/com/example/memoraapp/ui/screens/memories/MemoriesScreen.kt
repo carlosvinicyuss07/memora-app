@@ -36,7 +36,9 @@ import com.example.memoraapp.ui.theme.MemoraAppTheme
 @Composable
 fun MemoriesScreen(
     viewModel: MemoriesViewModel,
-    onNewMemoryClick: () -> Unit
+    onNewMemoryClick: () -> Unit,
+    onCardClick: () -> Unit,
+    onBack: () -> Unit
 ) {
     val memories by viewModel.memories.collectAsState()
 
@@ -45,7 +47,7 @@ fun MemoriesScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         topBar = {
-            TopbarComponent(screenName = "Minhas Memórias")
+            TopbarComponent(screenName = "Minhas Memórias", onBackClick = onBack)
         },
         floatingActionButton = {
             CircleShapeExtendedFAB(
@@ -77,7 +79,7 @@ fun MemoriesScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(memories) { memory ->
-                    MemoryCardComponent(memory = memory)
+                    MemoryCardComponent(memory = memory, onClick = onCardClick)
                 }
             }
         }
@@ -96,7 +98,7 @@ private fun MemoriesScreenView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            MemoriesScreen(viewModel { MemoriesViewModel() }, onNewMemoryClick = {})
+            MemoriesScreen(viewModel { MemoriesViewModel() }, onNewMemoryClick = {}, onCardClick = {}, onBack = {})
         }
     }
 }

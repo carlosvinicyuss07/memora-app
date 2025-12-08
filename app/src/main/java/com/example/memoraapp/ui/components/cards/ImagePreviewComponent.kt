@@ -53,7 +53,8 @@ fun ImagePreviewComponent(
         FilledButtonComponent(
             text = "Selecionar Foto",
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = MaterialTheme.colorScheme.onBackground
+            contentColor = MaterialTheme.colorScheme.onBackground,
+            onClick = onSelectImage
         )
     }
 }

@@ -1,6 +1,7 @@
 package com.example.memoraapp.ui.components.topbar
 
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +27,12 @@ import androidx.compose.ui.unit.sp
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
-fun TopbarComponent(modifier: Modifier = Modifier, icon: ImageVector? = null, screenName: String) {
+fun TopbarComponent(
+    modifier: Modifier = Modifier,
+    icon: ImageVector? = null,
+    screenName: String,
+    onBackClick: () -> Unit = {}
+) {
 
     Row(
         modifier = modifier
@@ -37,27 +43,16 @@ fun TopbarComponent(modifier: Modifier = Modifier, icon: ImageVector? = null, sc
         horizontalArrangement = Arrangement.spacedBy(7.dp)
     ) {
 
-        if (icon != null) {
-            Icon(
-                imageVector = icon,
-                contentDescription = "IconToolbar",
-                tint = MaterialTheme.colorScheme.onBackground,
-                modifier = modifier
-                    .width(48.dp)
-                    .height(24.dp)
-                    .padding(start = 24.dp)
-            )
-        } else {
-            Icon(
-                imageVector = Icons.Filled.ArrowBackIosNew,
-                contentDescription = "IconToolbar",
-                tint = MaterialTheme.colorScheme.onBackground,
-                modifier = modifier
-                    .width(48.dp)
-                    .height(24.dp)
-                    .padding(start = 24.dp)
-            )
-        }
+        Icon(
+            imageVector = icon ?: Icons.Filled.ArrowBackIosNew,
+            contentDescription = "IconToolbar",
+            tint = MaterialTheme.colorScheme.onBackground,
+            modifier = modifier
+                .width(48.dp)
+                .height(24.dp)
+                .padding(start = 24.dp)
+                .clickable { onBackClick() }
+        )
 
         Text(
             text = screenName,

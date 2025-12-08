@@ -23,20 +23,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.savedstate.SavedStateRegistryOwner
-import com.example.memoraapp.data.FakeMemoryRepository
-import com.example.memoraapp.domain.MemoryRepository
 import com.example.memoraapp.domain.viewmodels.FormMemoryUiEvent
 import com.example.memoraapp.domain.viewmodels.FormMemoryViewModel
 import com.example.memoraapp.ui.components.buttons.FilledButtonComponent
@@ -47,13 +39,14 @@ import com.example.memoraapp.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 import com.example.memoraapp.ui.util.showDatePickerDialog
 import kotlinx.coroutines.flow.collectLatest
-import java.time.LocalDate
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FormMemoryScreen(
     viewModel: FormMemoryViewModel = viewModel(),
-    onSaved: () -> Unit = {}
+    onSelectImage: () -> Unit,
+    onSaved: () -> Unit,
+    onBack: () -> Unit
 ) {
 
     val state by viewModel.uiState.collectAsState()
@@ -87,7 +80,10 @@ fun FormMemoryScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         topBar = {
-            TopbarComponent(screenName = "Nova Memória")
+            TopbarComponent(
+                screenName = if (state.isEditMode) "Editar Memória" else "Nova Memória",
+                onBackClick = onBack
+            )
         }
     ) { paddingValues ->
 
@@ -143,7 +139,7 @@ fun FormMemoryScreen(
                 item {
                     ImagePreviewComponent(
                         imageBitmap = null,
-                        onSelectImage = {}
+                        onSelectImage = onSelectImage
                     )
                 }
 
@@ -153,7 +149,8 @@ fun FormMemoryScreen(
                     FilledButtonComponent(
                         text = "Salvar",
                         containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.background
+                        contentColor = MaterialTheme.colorScheme.background,
+                        onClick = onSaved
                     )
                 }
 
@@ -177,7 +174,7 @@ private fun FormMemoryScreenView() {
         ) {
             val fakeHandle = SavedStateHandle()
             val vm = FormMemoryViewModel(savedStateHandle = fakeHandle)
-            FormMemoryScreen(viewModel = vm)
+            FormMemoryScreen(viewModel = vm, onSelectImage = {}, onSaved = {}, onBack = {})
         }
     }
 }

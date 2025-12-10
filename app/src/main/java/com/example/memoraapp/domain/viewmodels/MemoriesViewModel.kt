@@ -2,13 +2,17 @@ package com.example.memoraapp.domain.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.memoraapp.data.FakeMemoryRepository
 import com.example.memoraapp.domain.Memory
+import com.example.memoraapp.domain.MemoryRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-class MemoriesViewModel : ViewModel() {
+class MemoriesViewModel(
+    private val repository: MemoryRepository = FakeMemoryRepository()
+) : ViewModel() {
 
     private val _memories = MutableStateFlow<List<Memory>>(emptyList())
     val memories: StateFlow<List<Memory>> = _memories

@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -46,22 +49,18 @@ fun LabelFormComponent(
 
         Spacer(modifier = modifier.size(5.dp))
 
-        TextField(
+        OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             placeholder = { Text(placeholder) },
             minLines = minLines,
             maxLines = Int.MAX_VALUE,
-            colors = TextFieldDefaults.colors(
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.outline,
                 unfocusedContainerColor = MaterialTheme.colorScheme.background
             ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.outline,
-                    shape = RoundedCornerShape(16.dp)
-                )
+            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }

@@ -107,9 +107,9 @@ fun MemoryDetailsScreen(
                     )
                 }
 
-                item { Spacer(modifier = Modifier.size(160.dp)) }
-
             }
+
+            Spacer(modifier = Modifier.weight(1f))
 
             HorizontalDivider(
                 thickness = 1.dp,
@@ -119,8 +119,7 @@ fun MemoryDetailsScreen(
 
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.Bottom
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 ExtendedFAB(
                     icon = Icons.Filled.BorderColor,

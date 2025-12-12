@@ -30,12 +30,13 @@ import com.example.memoraapp.ui.util.uriToImageBitmap
 import java.time.LocalDate
 import androidx.core.net.toUri
 import com.example.memoraapp.R
+import com.example.memoraapp.ui.screens.memories.MemoryUi
 import kotlin.Unit
 
 @Composable
 fun MemoryCardComponent(
     modifier: Modifier = Modifier,
-    memory: Memory,
+    memory: MemoryUi,
     onClick: () -> Unit = {}
 ) {
     ElevatedCard(
@@ -104,7 +105,7 @@ private fun MemoryCardComponentView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            MemoryCardComponent(memory = Memory(id = 1, title = "Montanhas de Outono", description = "Teste", date = LocalDate.now()))
+            MemoryCardComponent(memory = MemoryUi(id = 1, title = "Montanhas de Outono", date = "01-01-0000", imageUri = null))
         }
     }
 }

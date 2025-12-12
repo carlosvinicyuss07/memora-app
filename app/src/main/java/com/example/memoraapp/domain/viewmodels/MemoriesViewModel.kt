@@ -5,8 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.memoraapp.data.FakeMemoryRepository
 import com.example.memoraapp.domain.Memory
 import com.example.memoraapp.domain.MemoryRepository
+import com.example.memoraapp.domain.toUi
+import com.example.memoraapp.ui.screens.memories.MemoriesScreenEvent
+import com.example.memoraapp.ui.screens.memories.MemoriesScreenSideEffect
+import com.example.memoraapp.ui.screens.memories.MemoriesScreenState
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -14,24 +22,55 @@ class MemoriesViewModel(
     private val repository: MemoryRepository = FakeMemoryRepository()
 ) : ViewModel() {
 
-    private val _memories = MutableStateFlow<List<Memory>>(emptyList())
-    val memories: StateFlow<List<Memory>> = _memories
+    private val _uiState = MutableStateFlow(MemoriesScreenState())
+    val uiState = _uiState.asStateFlow()
 
-    init {
-        loadInitialData()
+    private val _events = MutableSharedFlow<MemoriesScreenSideEffect>()
+    val events = _events.asSharedFlow()
+
+    fun onEvent(event: MemoriesScreenEvent) {
+        when (event) {
+            MemoriesScreenEvent.OnInit -> handleOnInit()
+            MemoriesScreenEvent.OnRefresh -> handleOnRefresh()
+            MemoriesScreenEvent.OnAddMemoryClick -> handleOnClickAdd()
+            MemoriesScreenEvent.OnBackClick -> handleOnBackClick()
+            is MemoriesScreenEvent.OnMemoryClick -> handleOnClickMemory(event.id)
+        }
     }
 
-    private fun loadInitialData() {
+    private fun handleOnInit() {
+        _uiState.update { it.copy(isLoading = true, erroMessage = null) }
+
         viewModelScope.launch {
-            _memories.value = listOf(
-                Memory(1, "Pôr do Sol na Praia", "teste", LocalDate.now()),
-                Memory(2, "Luzes da Cidade", "teste", LocalDate.now()),
-                Memory(3, "Montanhas de Outono", "teste", LocalDate.now()),
-                Memory(4, "Café da Manhã Caseiro", "teste", LocalDate.now()),
-                Memory(5, "Caminhada no Parque", "teste", LocalDate.now()),
-                Memory(6, "Noite de Cinema", "teste", LocalDate.now()),
-                Memory(7, "Arte Futurística", "teste", LocalDate.now())
-            )
+            repository.getAllMemories()
+                .collect { list ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            memories = list.map { memory -> memory.toUi() }
+                        )
+                    }
+            }
+        }
+    }
+
+    private fun handleOnRefresh() = handleOnInit()
+
+    private fun handleOnClickAdd() {
+        viewModelScope.launch {
+            _events.emit(MemoriesScreenSideEffect.NavigateToCreate)
+        }
+    }
+
+    private fun handleOnBackClick() {
+        viewModelScope.launch {
+            _events.emit(MemoriesScreenSideEffect.NavigateToWelcome)
+        }
+    }
+
+    private fun handleOnClickMemory(id: Int) {
+        viewModelScope.launch {
+            _events.emit(MemoriesScreenSideEffect.NavigateToDetail(id))
         }
     }
 

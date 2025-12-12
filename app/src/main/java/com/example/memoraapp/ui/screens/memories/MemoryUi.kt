@@ -4,5 +4,5 @@ data class MemoryUi(
     val id: Int,
     val title: String,
     val date: String,
-    val imageUrl: String?
+    val imageUri: String?
 )

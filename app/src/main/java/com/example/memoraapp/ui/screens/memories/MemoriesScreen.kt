@@ -2,6 +2,7 @@ package com.example.memoraapp.ui.screens.memories
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,66 +20,108 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.memoraapp.domain.viewmodels.MemoriesViewModel
+import com.example.memoraapp.ui.AppRoute
 import com.example.memoraapp.ui.components.buttons.CircleShapeExtendedFAB
 import com.example.memoraapp.ui.components.cards.MemoryCardComponent
 import com.example.memoraapp.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun MemoriesScreen(
+    navController: NavController,
+    viewModel: MemoriesViewModel = koinViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { effect ->
+            when (effect) {
+                is MemoriesScreenSideEffect.NavigateToDetail ->
+                    navController.navigate("memory_detail/${effect.id}")
+
+                is MemoriesScreenSideEffect.NavigateToCreate ->
+                    navController.navigate(AppRoute.MemoryForm.route)
+
+                is MemoriesScreenSideEffect.NavigateToWelcome ->
+                    navController.navigateUp()
+
+                is MemoriesScreenSideEffect.ShowError ->
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    MemoriesScreenContent(
+        state = uiState,
+        onEvent = viewModel::onEvent
+    )
+}
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MemoriesScreen(
-    viewModel: MemoriesViewModel,
-    onNewMemoryClick: () -> Unit,
-    onCardClick: () -> Unit,
-    onBack: () -> Unit
+fun MemoriesScreenContent(
+    state: MemoriesScreenState,
+    onEvent: (MemoriesScreenEvent) -> Unit
 ) {
-    val memories by viewModel.memories.collectAsState()
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         topBar = {
-            TopbarComponent(screenName = "Minhas Memórias", onBackClick = onBack)
+            TopbarComponent(screenName = "Minhas Memórias", onBackClick = { onEvent(MemoriesScreenEvent.OnBackClick) } )
         },
         floatingActionButton = {
             CircleShapeExtendedFAB(
                 icon = Icons.Filled.Add,
                 contentDescription = "FAB Nova Memória",
                 text = "Nova Memória",
-                onClick = onNewMemoryClick
+                onClick = { onEvent(MemoriesScreenEvent.OnAddMemoryClick) }
             )
         },
         floatingActionButtonPosition = FabPosition.End
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(
-                    top = paddingValues.calculateTopPadding()
-                )
-                .fillMaxSize()
-        ) {
-            HorizontalDivider(
-                thickness = 1.dp,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
+        when {
+            state.isLoading -> {
+                Column(
+                    modifier = Modifier
+                        .padding(
+                            top = paddingValues.calculateTopPadding()
+                        )
+                        .fillMaxSize()
+                ) {
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(memories) { memory ->
-                    MemoryCardComponent(memory = memory, onClick = onCardClick)
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(state.memories) { memory ->
+                            MemoryCardComponent(
+                                memory = memory,
+                                onClick = {
+                                    onEvent(MemoriesScreenEvent.OnMemoryClick(memory.id))
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -97,7 +140,7 @@ private fun MemoriesScreenView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            MemoriesScreen(viewModel { MemoriesViewModel() }, onNewMemoryClick = {}, onCardClick = {}, onBack = {})
+            MemoriesScreenContent(state = MemoriesScreenState()) {}
         }
     }
 }

@@ -32,10 +32,7 @@ fun MemoraApp() {
 
             composable(AppRoute.Memories.route) {
                 MemoriesScreen(
-                    viewModel = viewModel { MemoriesViewModel() },
-                    onNewMemoryClick = { navController.navigate(AppRoute.MemoryForm.route) },
-                    onCardClick = { navController.navigate(AppRoute.MemoryDetails.route) },
-                    onBack = { navController.navigateUp() }
+                    navController = navController
                 )
             }
 

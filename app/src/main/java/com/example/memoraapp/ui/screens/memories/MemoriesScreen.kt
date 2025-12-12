@@ -1,6 +1,5 @@
 package com.example.memoraapp.ui.screens.memories
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -35,6 +34,7 @@ import com.example.memoraapp.ui.components.cards.MemoryCardComponent
 import com.example.memoraapp.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 import org.koin.compose.viewmodel.koinViewModel
+import java.time.LocalDate
 
 @Composable
 fun MemoriesScreen(
@@ -45,10 +45,14 @@ fun MemoriesScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
+        viewModel.onEvent(MemoriesScreenEvent.OnInit)
+    }
+
+    LaunchedEffect(Unit) {
         viewModel.events.collect { effect ->
             when (effect) {
                 is MemoriesScreenSideEffect.NavigateToDetail ->
-                    navController.navigate("memory_detail/${effect.id}")
+                    navController.navigate(AppRoute.MemoryDetails.route) // depois comecar a mandar effect.id
 
                 is MemoriesScreenSideEffect.NavigateToCreate ->
                     navController.navigate(AppRoute.MemoryForm.route)
@@ -67,8 +71,6 @@ fun MemoriesScreen(
         onEvent = viewModel::onEvent
     )
 }
-
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MemoriesScreenContent(
     state: MemoriesScreenState,
@@ -92,36 +94,32 @@ fun MemoriesScreenContent(
         },
         floatingActionButtonPosition = FabPosition.End
     ) { paddingValues ->
-        when {
-            state.isLoading -> {
-                Column(
-                    modifier = Modifier
-                        .padding(
-                            top = paddingValues.calculateTopPadding()
-                        )
-                        .fillMaxSize()
-                ) {
-                    HorizontalDivider(
-                        thickness = 1.dp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
+        Column(
+            modifier = Modifier
+                .padding(
+                    top = paddingValues.calculateTopPadding()
+                )
+                .fillMaxSize()
+        ) {
+            HorizontalDivider(
+                thickness = 1.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
 
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        items(state.memories) { memory ->
-                            MemoryCardComponent(
-                                memory = memory,
-                                onClick = {
-                                    onEvent(MemoriesScreenEvent.OnMemoryClick(memory.id))
-                                }
-                            )
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(state.memories) { memory ->
+                    MemoryCardComponent(
+                        memory = memory,
+                        onClick = {
+                            onEvent(MemoriesScreenEvent.OnMemoryClick(memory.id))
                         }
-                    }
+                    )
                 }
             }
         }
@@ -140,7 +138,18 @@ private fun MemoriesScreenView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            MemoriesScreenContent(state = MemoriesScreenState()) {}
+            MemoriesScreenContent(
+                state = MemoriesScreenState().copy(
+                    memories = listOf(
+                        MemoryUi(
+                            1,
+                            "Pôr do Sol na Praia",
+                            "teste",
+                            "01-01-1999"
+                        )
+                    )
+                )
+            ) {}
         }
     }
 }

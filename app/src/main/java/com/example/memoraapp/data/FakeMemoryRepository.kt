@@ -13,7 +13,12 @@ class FakeMemoryRepository : MemoryRepository {
     private val mutex = Mutex()
 
     private val memoryList = mutableListOf<StoredMemory>()
-    private val _memories = MutableStateFlow<List<Memory>>(emptyList())
+    private val _memories = MutableStateFlow<List<Memory>>(
+        listOf(
+            Memory(1, "Pôr do Sol na Praia", "teste", LocalDate.now()),
+            Memory(2, "Luzes da Cidade", "teste", LocalDate.now())
+        )
+    )
     override fun getAllMemories(): Flow<List<Memory>> = _memories.asStateFlow()
 
     override suspend fun insert(memory: Memory) {

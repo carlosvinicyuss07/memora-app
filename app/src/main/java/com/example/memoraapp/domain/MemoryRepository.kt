@@ -1,6 +1,5 @@
 package com.example.memoraapp.domain
 
-import com.example.memoraapp.domain.Memory
 import kotlinx.coroutines.flow.Flow
 
 interface MemoryRepository {
@@ -8,5 +7,5 @@ interface MemoryRepository {
     suspend fun insert(memory: Memory)
     suspend fun update(memory: Memory)
     suspend fun delete(memoryId: Int)
-    suspend fun getById(id: Int): Memory?
+    suspend fun getMemoryById(id: Int): Memory?
 }

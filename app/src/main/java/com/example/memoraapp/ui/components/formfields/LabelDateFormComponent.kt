@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -37,14 +38,14 @@ import com.example.memoraapp.ui.theme.MemoraAppTheme
 fun LabelDateFormComponent(
     modifier: Modifier = Modifier,
     title: String,
+    value: String? = null,
     placeholder: String,
     onClick: () -> Unit
 ) {
-    var selectedText by remember { mutableStateOf("05/04/2023") }
 
     Column(
         modifier = modifier
-            .width(342.dp)
+            .fillMaxWidth()
             .height(73.dp)
     ) {
         Text(
@@ -59,7 +60,7 @@ fun LabelDateFormComponent(
 
         Row(
             modifier = Modifier
-                .width(342.dp)
+                .fillMaxWidth()
                 .height(48.dp)
                 .border(
                     width = 1.dp,
@@ -80,10 +81,15 @@ fun LabelDateFormComponent(
             )
 
             TextField(
-                value = selectedText,
-                textStyle = MaterialTheme.typography.bodyMedium,
-                onValueChange = { selectedText = it },
-                placeholder = { Text(placeholder) },
+                value = value ?: "",
+                textStyle = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                onValueChange = {},
+                placeholder = {
+                    Text(
+                        text = placeholder,
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp)
+                    )
+                },
                 readOnly = true,
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = MaterialTheme.colorScheme.background,

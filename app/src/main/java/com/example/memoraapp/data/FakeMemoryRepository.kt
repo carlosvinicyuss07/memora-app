@@ -59,7 +59,7 @@ class FakeMemoryRepository : MemoryRepository {
         }
     }
 
-    override suspend fun getById(id: Int): Memory? {
+    override suspend fun getMemoryById(id: Int): Memory? {
         return mutex.withLock {
             memoryList.firstOrNull { it.id == id }?.toDomain()
         }

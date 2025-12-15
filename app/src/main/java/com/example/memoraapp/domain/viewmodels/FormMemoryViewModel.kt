@@ -1,105 +1,137 @@
 package com.example.memoraapp.domain.viewmodels
 
-import androidx.lifecycle.SavedStateHandle
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.memoraapp.data.FakeMemoryRepository
 import com.example.memoraapp.domain.Memory
 import com.example.memoraapp.domain.MemoryRepository
-import com.example.memoraapp.ui.screens.form.FormMemoryAction
-import com.example.memoraapp.ui.screens.form.FormMemoryScreenMode
+import com.example.memoraapp.ui.screens.form.FormMemoryScreenEvent
+import com.example.memoraapp.ui.screens.form.FormMemorySideEffect
 import com.example.memoraapp.ui.screens.form.FormMemoryUiState
+import com.example.memoraapp.ui.screens.memories.MemoriesScreenSideEffect
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-
-sealed class FormMemoryUiEvent {
-    object Saved : FormMemoryUiEvent()
-    data class Error(val message: String) : FormMemoryUiEvent()
-}
 
 class FormMemoryViewModel(
-    private val repository: MemoryRepository = FakeMemoryRepository(),
-    savedStateHandle: SavedStateHandle
+    private val repository: MemoryRepository = FakeMemoryRepository()
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(FormMemoryUiState(date = LocalDate.now()))
+    private val _uiState = MutableStateFlow(FormMemoryUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _events = MutableSharedFlow<FormMemoryUiEvent>()
-    val events = _events.asSharedFlow()
+    private val _effects = MutableSharedFlow<FormMemorySideEffect>()
+    val effects = _effects.asSharedFlow()
 
-    private val passedId: Int? = savedStateHandle["memoryId"]
+    fun onEvent(event: FormMemoryScreenEvent) {
+        when (event) {
+            is FormMemoryScreenEvent.OnInit -> handleOnInit(event.memoryId)
 
-    init {
-        if (passedId != null) loadMemory(passedId)
-    }
+            is FormMemoryScreenEvent.OnTitleChange ->
+                _uiState.update { it.copy(title = event.value) }
 
-    private fun loadMemory(id: Int) {
-        viewModelScope.launch {
-            val memory = repository.getById(id)
-            memory?.let {
-                _uiState.value = FormMemoryUiState(
-                    id = it.id,
-                    title = it.title,
-                    description = it.description,
-                    date = it.date,
-                    imageUri = it.imageUri,
-                    screenMode = FormMemoryScreenMode.EDIT
-                )
-            } ?: run {
-                _events.emit(FormMemoryUiEvent.Error("Memória não encontrada"))
-            }
-        }
-    }
+            is FormMemoryScreenEvent.OnDescriptionChange ->
+                _uiState.update { it.copy(description = event.value) }
 
-    fun onAction(action: FormMemoryAction) {
-        when (action) {
-            is FormMemoryAction.OnTitleChange ->
-                _uiState.value = _uiState.value.copy(title = action.value)
+            is FormMemoryScreenEvent.OnDateChange ->
+                _uiState.update { it.copy(date = event.value) }
 
-            is FormMemoryAction.OnDescriptionChange ->
-                _uiState.value = _uiState.value.copy(description = action.value)
+            is FormMemoryScreenEvent.OnImageSelected ->
+                _uiState.update { it.copy(imageUri = event.uri) }
 
-            is FormMemoryAction.OnDateChange ->
-                _uiState.value = _uiState.value.copy(date = action.value)
-
-            is FormMemoryAction.OnImageSelected ->
-                _uiState.value = _uiState.value.copy(imageUri = action.uri)
-
-            FormMemoryAction.OnSave -> save()
-        }
-    }
-
-    private fun save() {
-        viewModelScope.launch {
-            val s = _uiState.value
-            if (s.title.isBlank()) {
-                _events.emit(FormMemoryUiEvent.Error("Título obrigatório"))
-                return@launch
-            }
-
-            val memory = Memory(
-                id = s.id ?: 0,
-                title = s.title,
-                description = s.description,
-                date = s.date,
-                imageUri = s.imageUri
-            )
-
-            try {
-                if (s.isEditMode) {
-                    repository.update(memory)
-                } else {
-                    repository.insert(memory)
+            is FormMemoryScreenEvent.OnSelectPhotoClick ->
+                viewModelScope.launch {
+                    _effects.emit(FormMemorySideEffect.NavigateToPhotoSource(null))
                 }
-                _events.emit(FormMemoryUiEvent.Saved)
-            } catch (e: Exception) {
-                _events.emit(FormMemoryUiEvent.Error(e.message ?: "Erro ao salvar"))
+
+            FormMemoryScreenEvent.OnBackClick -> handleOnBackClick()
+
+            FormMemoryScreenEvent.OnSave -> handleSave()
+        }
+    }
+
+    private fun handleOnInit(id: Int?) {
+        if (id == null) return
+
+        _uiState.update { it.copy(isLoading = true, isEditMode = true) }
+
+        viewModelScope.launch {
+            runCatching { repository.getMemoryById(id) }
+                .onSuccess { memory ->
+                    if (memory != null) {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                title = memory.title,
+                                description = memory.description,
+                                date = memory.date
+                                // Sem imagem, por enquanto (falta configurar a câmera)
+                                // Portanto imageUri = null por padrão
+                            )
+                        }
+                    }
+                }
+                .onFailure {
+                    _effects.emit(FormMemorySideEffect.ShowError("Erro ao carregar memória"))
+                }
+        }
+    }
+
+    private fun handleOnBackClick() {
+        viewModelScope.launch {
+            _effects.emit(FormMemorySideEffect.CloseScreen)
+        }
+    }
+
+    private fun handleSave() {
+        val state = uiState.value
+
+        if (state.title.isBlank()) {
+            viewModelScope.launch {
+                _effects.emit(FormMemorySideEffect.ShowError("Título é obrigatório"))
             }
+            return
+        }
+
+        if (state.date == null) {
+            viewModelScope.launch {
+                _effects.emit(FormMemorySideEffect.ShowError("Selecione uma data"))
+            }
+            return
+        }
+
+        viewModelScope.launch {
+            runCatching {
+                if (state.isEditMode) {
+                    repository.update(
+                        Memory(
+                            title = state.title,
+                            description = state.description,
+                            date = state.date
+                            // Sem imagem, por enquanto (falta configurar a câmera)
+                            // Portanto imageUri = null por padrão
+                        )
+                    )
+                } else {
+                    repository.insert(
+                        Memory(
+                            title = state.title,
+                            description = state.description,
+                            date = state.date
+                        )
+                    )
+                }
+            }
+                .onSuccess {
+                    _effects.emit(FormMemorySideEffect.CloseScreen)
+                }
+                .onFailure {
+                    _effects.emit(FormMemorySideEffect.ShowError("Erro ao salvar"))
+                }
         }
     }
 

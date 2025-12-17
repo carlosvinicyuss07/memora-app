@@ -37,7 +37,6 @@ import java.time.LocalDate
 
 @Composable
 fun MemoryDetailsScreen(
-    modifier: Modifier = Modifier,
     memory: Memory,
     onEditClik: () -> Unit,
     onDeleteClick: () -> Unit,

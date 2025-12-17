@@ -1,14 +1,12 @@
 package com.example.memoraapp.ui
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.memoraapp.data.FakeMemoryRepository
+import androidx.navigation.navArgument
 import com.example.memoraapp.domain.Memory
-import com.example.memoraapp.domain.viewmodels.FormMemoryViewModel
 import com.example.memoraapp.ui.screens.memories.MemoriesScreen
 import com.example.memoraapp.ui.screens.details.MemoryDetailsScreen
 import com.example.memoraapp.ui.screens.form.FormMemoryScreen
@@ -37,34 +35,17 @@ fun MemoraApp() {
 
             composable(AppRoute.MemoryForm.route) {
                 FormMemoryScreen(
-                    // Apenas de exemplo, isso será substituído para passar apenas o navController
-                    viewModel = viewModel {
-                        FormMemoryViewModel(
-                            repository =  FakeMemoryRepository(),
-                            savedStateHandle = SavedStateHandle()
-                        )
-                    },
-                    onSelectImage = { navController.navigate(AppRoute.PhotoSource.route) },
-                    onSaved = { navController.navigateUp() },
-                    onBack = { navController.navigateUp() }
+                    navController = navController, memoryId = null
                 )
             }
 
-            composable(AppRoute.MemoryFormEdit.route) { backStackEntry ->
-                // Apenas de exemplo, isso será substituído para passar apenas o navController
-
-                val memoryId = backStackEntry.arguments?.getString("memoryId")?.toIntOrNull()
-
+            composable(
+                route = AppRoute.MemoryFormEdit.route,
+                arguments = listOf(navArgument("memoryId") { type = NavType.IntType })
+            ) {
+                val id = it.arguments?.getInt("memoryId")
                 FormMemoryScreen(
-                    viewModel = viewModel {
-                        FormMemoryViewModel(
-                            repository =  FakeMemoryRepository(),
-                            savedStateHandle = SavedStateHandle()
-                        )
-                    },
-                    onSelectImage = { navController.navigate(AppRoute.PhotoSource.route) },
-                    onSaved = { navController.navigateUp() },
-                    onBack = { navController.navigateUp() }
+                    navController = navController, memoryId = id
                 )
             }
 

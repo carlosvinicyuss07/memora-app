@@ -1,10 +1,10 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.memoraapp.ui.screens.form
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,65 +13,111 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.memoraapp.domain.viewmodels.FormMemoryUiEvent
+import androidx.navigation.NavController
 import com.example.memoraapp.domain.viewmodels.FormMemoryViewModel
+import com.example.memoraapp.ui.AppRoute
 import com.example.memoraapp.ui.components.buttons.FilledButtonComponent
 import com.example.memoraapp.ui.components.cards.ImagePreviewComponent
 import com.example.memoraapp.ui.components.formfields.LabelDateFormComponent
 import com.example.memoraapp.ui.components.formfields.LabelFormComponent
 import com.example.memoraapp.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
-import com.example.memoraapp.ui.util.showDatePickerDialog
-import kotlinx.coroutines.flow.collectLatest
+import org.koin.androidx.compose.koinViewModel
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FormMemoryScreen(
-    viewModel: FormMemoryViewModel = viewModel(),
-    onSelectImage: () -> Unit,
-    onSaved: () -> Unit,
-    onBack: () -> Unit
+    navController: NavController,
+    viewModel: FormMemoryViewModel = koinViewModel(),
+    memoryId: Int?
 ) {
 
-    val state by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    val pickLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        viewModel.onAction(FormMemoryAction.OnImageSelected(uri?.toString()))
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(FormMemoryScreenEvent.OnInit(memoryId))
     }
 
     LaunchedEffect(Unit) {
-        viewModel.events.collectLatest { event ->
-            when (event) {
-                is FormMemoryUiEvent.Saved -> onSaved()
-                is FormMemoryUiEvent.Error -> {
-                    // Implementar
-                }
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                FormMemorySideEffect.CloseScreen ->
+                    navController.navigateUp()
+
+                is FormMemorySideEffect.ShowSuccessMessage ->
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+
+                is FormMemorySideEffect.ShowError ->
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+
+                is FormMemorySideEffect.NavigateToPhotoSource ->
+                    navController.navigate(AppRoute.PhotoSource.route)
             }
         }
     }
 
-    val showDatePicker = remember { mutableStateOf(false) }
-    if (showDatePicker.value) {
-        showDatePickerDialog(context, state.date) { picked ->
-            viewModel.onAction(FormMemoryAction.OnDateChange(picked))
-            showDatePicker.value = false
+    FormMemoryScreenContent(
+        state = uiState,
+        onEvent = viewModel::onEvent
+    )
+}
+
+@Composable
+fun FormMemoryScreenContent(
+    state: FormMemoryUiState,
+    onEvent: (FormMemoryScreenEvent) -> Unit
+) {
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = state.date?.toEpochDay()?.let {
+            it * 24L * 60L * 1000L
+        }
+    )
+
+    var showDatePicker by remember { mutableStateOf(false) }
+
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    val millis = datePickerState.selectedDateMillis ?: return@TextButton
+                    val selectedDate = Instant.ofEpochMilli(millis)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate()
+
+                    onEvent(FormMemoryScreenEvent.OnDateChange(selectedDate))
+                    showDatePicker = false
+                }) {
+                    Text("OK")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
         }
     }
 
@@ -81,8 +127,8 @@ fun FormMemoryScreen(
             .background(MaterialTheme.colorScheme.background),
         topBar = {
             TopbarComponent(
-                screenName = if (state.isEditMode) "Editar Memória" else "Nova Memória",
-                onBackClick = onBack
+                screenName = state.screenName,
+                onBackClick = { onEvent(FormMemoryScreenEvent.OnBackClick)}
             )
         }
     ) { paddingValues ->
@@ -106,8 +152,8 @@ fun FormMemoryScreen(
                 item {
                     LabelFormComponent(
                         title = "Título da Memória",
-                        value = "Pôr do sol na praia",
-                        onValueChange = {},
+                        value = state.title,
+                        onValueChange = { onEvent(FormMemoryScreenEvent.OnTitleChange(it)) },
                         placeholder = "Dê um titúlo marcante a sua memória"
                     )
                 }
@@ -117,8 +163,8 @@ fun FormMemoryScreen(
                 item {
                     LabelFormComponent(
                         title = "Descrição",
-                        value = "Um dia perfeito na praia, com o sol se pondo em tons vibrantes de laranja e rosa sobre o oceano calmo. Um momento de pura paz.",
-                        onValueChange = {},
+                        value = state.description,
+                        onValueChange = { onEvent(FormMemoryScreenEvent.OnDescriptionChange(it)) },
                         placeholder = "Descreva sua memória",
                         minLines = 4
                     )
@@ -129,8 +175,9 @@ fun FormMemoryScreen(
                 item {
                     LabelDateFormComponent(
                         title = "Data da Memória",
+                        value = state.date?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                         placeholder = "Selecione uma data",
-                        onClick = { showDatePicker.value = true }
+                        onClick = { showDatePicker = true }
                     )
                 }
 
@@ -139,7 +186,7 @@ fun FormMemoryScreen(
                 item {
                     ImagePreviewComponent(
                         imageBitmap = null,
-                        onSelectImage = onSelectImage
+                        onSelectImage = { onEvent(FormMemoryScreenEvent.OnSelectPhotoClick) }
                     )
                 }
 
@@ -147,10 +194,10 @@ fun FormMemoryScreen(
 
                 item {
                     FilledButtonComponent(
-                        text = "Salvar",
+                        text = state.buttonText,
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.background,
-                        onClick = onSaved
+                        onClick = { onEvent(FormMemoryScreenEvent.OnSave) }
                     )
                 }
 
@@ -172,9 +219,9 @@ private fun FormMemoryScreenView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            val fakeHandle = SavedStateHandle()
-            val vm = FormMemoryViewModel(savedStateHandle = fakeHandle)
-            FormMemoryScreen(viewModel = vm, onSelectImage = {}, onSaved = {}, onBack = {})
+            FormMemoryScreenContent(
+                state = FormMemoryUiState()
+            ) { }
         }
     }
 }

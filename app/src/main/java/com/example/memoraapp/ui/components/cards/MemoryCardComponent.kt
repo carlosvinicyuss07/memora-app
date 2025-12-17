@@ -57,6 +57,7 @@ fun MemoryCardComponent(
                 }
             } else {
                 Image(
+                    // TODO: Será realizado em outro momento
                     painter = painterResource(R.drawable.photo_example_memorycard),
                     contentDescription = "Photo Memory Card",
                     modifier = modifier

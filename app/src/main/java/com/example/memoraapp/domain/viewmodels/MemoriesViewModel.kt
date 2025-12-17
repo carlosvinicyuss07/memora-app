@@ -8,10 +8,12 @@ import com.example.memoraapp.domain.toUi
 import com.example.memoraapp.ui.screens.memories.MemoriesScreenEvent
 import com.example.memoraapp.ui.screens.memories.MemoriesScreenSideEffect
 import com.example.memoraapp.ui.screens.memories.MemoriesScreenState
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -22,8 +24,8 @@ class MemoriesViewModel(
     private val _uiState = MutableStateFlow(MemoriesScreenState())
     val uiState = _uiState.asStateFlow()
 
-    private val _events = MutableSharedFlow<MemoriesScreenSideEffect>()
-    val events = _events.asSharedFlow()
+    private val _events = Channel<MemoriesScreenSideEffect>(Channel.BUFFERED)
+    val events = _events.receiveAsFlow()
 
     fun onEvent(event: MemoriesScreenEvent) {
         when (event) {
@@ -55,19 +57,19 @@ class MemoriesViewModel(
 
     private fun handleOnClickAdd() {
         viewModelScope.launch {
-            _events.emit(MemoriesScreenSideEffect.NavigateToCreate)
+            _events.send(MemoriesScreenSideEffect.NavigateToCreate)
         }
     }
 
     private fun handleOnBackClick() {
         viewModelScope.launch {
-            _events.emit(MemoriesScreenSideEffect.NavigateToPreviousScreen)
+            _events.send(MemoriesScreenSideEffect.NavigateToPreviousScreen)
         }
     }
 
     private fun handleOnClickMemory(id: Int) {
         viewModelScope.launch {
-            _events.emit(MemoriesScreenSideEffect.NavigateToDetail(id))
+            _events.send(MemoriesScreenSideEffect.NavigateToDetail(id))
         }
     }
 

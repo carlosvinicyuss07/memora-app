@@ -46,9 +46,7 @@ fun MemoriesScreen(
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(MemoriesScreenEvent.OnInit)
-    }
 
-    LaunchedEffect(Unit) {
         viewModel.events.collect { effect ->
             when (effect) {
                 is MemoriesScreenSideEffect.NavigateToDetail ->

@@ -3,7 +3,6 @@ package com.example.memoraapp.domain.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.memoraapp.data.FakeMemoryRepository
-import com.example.memoraapp.domain.Memory
 import com.example.memoraapp.domain.MemoryRepository
 import com.example.memoraapp.domain.toUi
 import com.example.memoraapp.ui.screens.memories.MemoriesScreenEvent
@@ -11,12 +10,10 @@ import com.example.memoraapp.ui.screens.memories.MemoriesScreenSideEffect
 import com.example.memoraapp.ui.screens.memories.MemoriesScreenState
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 class MemoriesViewModel(
     private val repository: MemoryRepository = FakeMemoryRepository()
@@ -64,7 +61,7 @@ class MemoriesViewModel(
 
     private fun handleOnBackClick() {
         viewModelScope.launch {
-            _events.emit(MemoriesScreenSideEffect.NavigateToWelcome)
+            _events.emit(MemoriesScreenSideEffect.NavigateToPreviousScreen)
         }
     }
 

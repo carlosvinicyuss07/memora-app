@@ -34,7 +34,6 @@ import com.example.memoraapp.ui.components.cards.MemoryCardComponent
 import com.example.memoraapp.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 import org.koin.compose.viewmodel.koinViewModel
-import java.time.LocalDate
 
 @Composable
 fun MemoriesScreen(
@@ -55,7 +54,7 @@ fun MemoriesScreen(
                 is MemoriesScreenSideEffect.NavigateToCreate ->
                     navController.navigate(AppRoute.MemoryForm.route)
 
-                is MemoriesScreenSideEffect.NavigateToWelcome ->
+                is MemoriesScreenSideEffect.NavigateToPreviousScreen ->
                     navController.navigateUp()
 
                 is MemoriesScreenSideEffect.ShowError ->

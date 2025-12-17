@@ -24,18 +24,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.memoraapp.domain.Memory
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 import com.example.memoraapp.ui.util.uriToImageBitmap
-import java.time.LocalDate
 import androidx.core.net.toUri
 import com.example.memoraapp.R
+import com.example.memoraapp.ui.screens.memories.MemoryUi
 import kotlin.Unit
 
 @Composable
 fun MemoryCardComponent(
     modifier: Modifier = Modifier,
-    memory: Memory,
+    memory: MemoryUi,
     onClick: () -> Unit = {}
 ) {
     ElevatedCard(
@@ -84,7 +83,7 @@ fun MemoryCardComponent(
                 Spacer(modifier.size(1.dp))
 
                 Text(
-                    text = memory.date.toString(),
+                    text = memory.date,
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.sp)
                 )
             }
@@ -104,7 +103,7 @@ private fun MemoryCardComponentView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            MemoryCardComponent(memory = Memory(id = 1, title = "Montanhas de Outono", description = "Teste", date = LocalDate.now()))
+            MemoryCardComponent(memory = MemoryUi(id = 1, title = "Montanhas de Outono", description = "Teste", date = "01-01-0000"))
         }
     }
 }

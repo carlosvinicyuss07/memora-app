@@ -1,7 +1,7 @@
 package com.example.memoraapp.ui.screens.memories
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,42 +19,74 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.memoraapp.domain.viewmodels.MemoriesViewModel
+import com.example.memoraapp.ui.AppRoute
 import com.example.memoraapp.ui.components.buttons.CircleShapeExtendedFAB
 import com.example.memoraapp.ui.components.cards.MemoryCardComponent
 import com.example.memoraapp.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
+import org.koin.compose.viewmodel.koinViewModel
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MemoriesScreen(
-    viewModel: MemoriesViewModel,
-    onNewMemoryClick: () -> Unit,
-    onCardClick: () -> Unit,
-    onBack: () -> Unit
+    navController: NavController,
+    viewModel: MemoriesViewModel = koinViewModel()
 ) {
-    val memories by viewModel.memories.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(MemoriesScreenEvent.OnInit)
+
+        viewModel.events.collect { effect ->
+            when (effect) {
+                is MemoriesScreenSideEffect.NavigateToDetail ->
+                    navController.navigate(AppRoute.MemoryDetails.route) // depois comecar a mandar effect.id
+
+                is MemoriesScreenSideEffect.NavigateToCreate ->
+                    navController.navigate(AppRoute.MemoryForm.route)
+
+                is MemoriesScreenSideEffect.NavigateToPreviousScreen ->
+                    navController.navigateUp()
+
+                is MemoriesScreenSideEffect.ShowError ->
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    MemoriesScreenContent(
+        state = uiState,
+        onEvent = viewModel::onEvent
+    )
+}
+@Composable
+fun MemoriesScreenContent(
+    state: MemoriesScreenState,
+    onEvent: (MemoriesScreenEvent) -> Unit
+) {
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         topBar = {
-            TopbarComponent(screenName = "Minhas Memórias", onBackClick = onBack)
+            TopbarComponent(screenName = "Minhas Memórias", onBackClick = { onEvent(MemoriesScreenEvent.OnBackClick) } )
         },
         floatingActionButton = {
             CircleShapeExtendedFAB(
                 icon = Icons.Filled.Add,
                 contentDescription = "FAB Nova Memória",
                 text = "Nova Memória",
-                onClick = onNewMemoryClick
+                onClick = { onEvent(MemoriesScreenEvent.OnAddMemoryClick) }
             )
         },
         floatingActionButtonPosition = FabPosition.End
@@ -78,8 +110,13 @@ fun MemoriesScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(memories) { memory ->
-                    MemoryCardComponent(memory = memory, onClick = onCardClick)
+                items(state.memories) { memory ->
+                    MemoryCardComponent(
+                        memory = memory,
+                        onClick = {
+                            onEvent(MemoriesScreenEvent.OnMemoryClick(memory.id))
+                        }
+                    )
                 }
             }
         }
@@ -98,7 +135,18 @@ private fun MemoriesScreenView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            MemoriesScreen(viewModel { MemoriesViewModel() }, onNewMemoryClick = {}, onCardClick = {}, onBack = {})
+            MemoriesScreenContent(
+                state = MemoriesScreenState().copy(
+                    memories = listOf(
+                        MemoryUi(
+                            1,
+                            "Pôr do Sol na Praia",
+                            "teste",
+                            "01-01-1999"
+                        )
+                    )
+                )
+            ) {}
         }
     }
 }

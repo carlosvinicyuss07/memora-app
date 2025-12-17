@@ -10,7 +10,6 @@ import com.example.memoraapp.data.FakeMemoryRepository
 import com.example.memoraapp.domain.Memory
 import com.example.memoraapp.domain.viewmodels.FormMemoryViewModel
 import com.example.memoraapp.ui.screens.memories.MemoriesScreen
-import com.example.memoraapp.domain.viewmodels.MemoriesViewModel
 import com.example.memoraapp.ui.screens.details.MemoryDetailsScreen
 import com.example.memoraapp.ui.screens.form.FormMemoryScreen
 import com.example.memoraapp.ui.screens.photoselection.PhotoSelectionScreen
@@ -32,15 +31,13 @@ fun MemoraApp() {
 
             composable(AppRoute.Memories.route) {
                 MemoriesScreen(
-                    viewModel = viewModel { MemoriesViewModel() },
-                    onNewMemoryClick = { navController.navigate(AppRoute.MemoryForm.route) },
-                    onCardClick = { navController.navigate(AppRoute.MemoryDetails.route) },
-                    onBack = { navController.navigateUp() }
+                    navController = navController
                 )
             }
 
             composable(AppRoute.MemoryForm.route) {
                 FormMemoryScreen(
+                    // Apenas de exemplo, isso será substituído para passar apenas o navController
                     viewModel = viewModel {
                         FormMemoryViewModel(
                             repository =  FakeMemoryRepository(),
@@ -54,6 +51,8 @@ fun MemoraApp() {
             }
 
             composable(AppRoute.MemoryFormEdit.route) { backStackEntry ->
+                // Apenas de exemplo, isso será substituído para passar apenas o navController
+
                 val memoryId = backStackEntry.arguments?.getString("memoryId")?.toIntOrNull()
 
                 FormMemoryScreen(
@@ -74,6 +73,8 @@ fun MemoraApp() {
             }
 
             composable(AppRoute.MemoryDetails.route) {
+                // Apenas de exemplo, isso será substituído para passar apenas o navController
+
                 val memory: Memory = Memory(
                     id = 1,
                     title = "Viagem Inesquecível a Fernando de Noronha",

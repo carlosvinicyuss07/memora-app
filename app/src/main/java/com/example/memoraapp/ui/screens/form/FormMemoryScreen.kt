@@ -69,6 +69,9 @@ fun FormMemoryScreen(
                 FormMemorySideEffect.CloseScreen ->
                     navController.navigateUp()
 
+                is FormMemorySideEffect.ShowSuccessMessage ->
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+
                 is FormMemorySideEffect.ShowError ->
                     Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
 
@@ -124,7 +127,7 @@ fun FormMemoryScreenContent(
             .background(MaterialTheme.colorScheme.background),
         topBar = {
             TopbarComponent(
-                screenName = if (state.isEditMode) "Editar Memória" else "Nova Memória",
+                screenName = state.screenName,
                 onBackClick = { onEvent(FormMemoryScreenEvent.OnBackClick)}
             )
         }
@@ -191,7 +194,7 @@ fun FormMemoryScreenContent(
 
                 item {
                     FilledButtonComponent(
-                        text = if (state.isEditMode) "Atualizar" else "Salvar",
+                        text = state.buttonText,
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.background,
                         onClick = { onEvent(FormMemoryScreenEvent.OnSave) }

@@ -11,5 +11,7 @@ data class FormMemoryUiState(
     val imageUri: Uri? = null,
     val isLoading: Boolean = false,
     val isEditMode: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val screenName: String = "Nova Memória",
+    val buttonText: String = "Salvar"
 )

@@ -10,10 +10,12 @@ import com.example.memoraapp.ui.screens.form.FormMemoryScreenEvent
 import com.example.memoraapp.ui.screens.form.FormMemorySideEffect
 import com.example.memoraapp.ui.screens.form.FormMemoryUiState
 import com.example.memoraapp.ui.screens.memories.MemoriesScreenSideEffect
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -24,8 +26,8 @@ class FormMemoryViewModel(
     private val _uiState = MutableStateFlow(FormMemoryUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _effects = MutableSharedFlow<FormMemorySideEffect>()
-    val effects = _effects.asSharedFlow()
+    private val _effects = Channel<FormMemorySideEffect>(Channel.BUFFERED)
+    val effects = _effects.receiveAsFlow()
 
     fun onEvent(event: FormMemoryScreenEvent) {
         when (event) {
@@ -45,7 +47,7 @@ class FormMemoryViewModel(
 
             is FormMemoryScreenEvent.OnSelectPhotoClick ->
                 viewModelScope.launch {
-                    _effects.emit(FormMemorySideEffect.NavigateToPhotoSource(null))
+                    _effects.send(FormMemorySideEffect.NavigateToPhotoSource(null))
                 }
 
             FormMemoryScreenEvent.OnBackClick -> handleOnBackClick()
@@ -57,7 +59,7 @@ class FormMemoryViewModel(
     private fun handleOnInit(id: Int?) {
         if (id == null) return
 
-        _uiState.update { it.copy(isLoading = true, isEditMode = true) }
+        _uiState.update { it.copy(isLoading = true, isEditMode = true, screenName = "Editar Memória" , buttonText = "Atualizar") }
 
         viewModelScope.launch {
             runCatching { repository.getMemoryById(id) }
@@ -76,14 +78,14 @@ class FormMemoryViewModel(
                     }
                 }
                 .onFailure {
-                    _effects.emit(FormMemorySideEffect.ShowError("Erro ao carregar memória"))
+                    _effects.send(FormMemorySideEffect.ShowError("Erro ao carregar memória"))
                 }
         }
     }
 
     private fun handleOnBackClick() {
         viewModelScope.launch {
-            _effects.emit(FormMemorySideEffect.CloseScreen)
+            _effects.send(FormMemorySideEffect.CloseScreen)
         }
     }
 
@@ -92,14 +94,14 @@ class FormMemoryViewModel(
 
         if (state.title.isBlank()) {
             viewModelScope.launch {
-                _effects.emit(FormMemorySideEffect.ShowError("Título é obrigatório"))
+                _effects.send(FormMemorySideEffect.ShowError("Título é obrigatório"))
             }
             return
         }
 
         if (state.date == null) {
             viewModelScope.launch {
-                _effects.emit(FormMemorySideEffect.ShowError("Selecione uma data"))
+                _effects.send(FormMemorySideEffect.ShowError("Selecione uma data"))
             }
             return
         }
@@ -127,10 +129,15 @@ class FormMemoryViewModel(
                 }
             }
                 .onSuccess {
-                    _effects.emit(FormMemorySideEffect.CloseScreen)
+                    _effects.send(FormMemorySideEffect.ShowSuccessMessage(
+                        if (state.isEditMode) "Atualizado com sucesso" else "Salvo com sucesso")
+                    )
+                    _effects.send(FormMemorySideEffect.CloseScreen)
                 }
                 .onFailure {
-                    _effects.emit(FormMemorySideEffect.ShowError("Erro ao salvar"))
+                    _effects.send(FormMemorySideEffect.ShowError(
+                        if (state.isEditMode) "Erro ao atualizar" else "Erro ao salvar")
+                    )
                 }
         }
     }

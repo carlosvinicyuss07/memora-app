@@ -6,6 +6,6 @@ fun Memory.toUi() = MemoryUi(
     id = id,
     title = title,
     description = description,
-    date = date.toString(),
+    date = date.formattedToString(),
     imageUri = imageUri
 )

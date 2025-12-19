@@ -52,7 +52,7 @@ fun MemoriesScreen(
         viewModel.events.collect { effect ->
             when (effect) {
                 is MemoriesScreenSideEffect.NavigateToDetail ->
-                    navController.navigate(AppRoute.MemoryDetails.route) // depois comecar a mandar effect.id
+                    navController.navigate(AppRoute.MemoryDetails.createRoute(effect.id))
 
                 is MemoriesScreenSideEffect.NavigateToCreate ->
                     navController.navigate(AppRoute.MemoryForm.route)

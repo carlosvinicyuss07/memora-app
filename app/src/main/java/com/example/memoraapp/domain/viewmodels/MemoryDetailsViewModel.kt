@@ -4,11 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.memoraapp.data.FakeMemoryRepository
 import com.example.memoraapp.domain.MemoryRepository
+import com.example.memoraapp.domain.formattedToString
 import com.example.memoraapp.ui.screens.details.MemoryDetailsScreenEvent
 import com.example.memoraapp.ui.screens.details.MemoryDetailsSideEffect
 import com.example.memoraapp.ui.screens.details.MemoryDetailsUiState
-import com.example.memoraapp.ui.screens.form.FormMemoryScreenEvent
-import com.example.memoraapp.ui.screens.form.FormMemorySideEffect
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -49,10 +48,11 @@ class MemoryDetailsViewModel(
                     if (memory != null) {
                         _uiState.update {
                             it.copy(
+                                id = memory.id,
                                 isLoading = false,
                                 title = memory.title,
                                 description = memory.description,
-                                date = memory.date.toString()
+                                date = memory.date.formattedToString()
                             )
                         }
                     }

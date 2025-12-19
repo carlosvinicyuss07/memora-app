@@ -1,6 +1,5 @@
 package com.example.memoraapp.domain.viewmodels
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.memoraapp.data.FakeMemoryRepository
@@ -9,11 +8,8 @@ import com.example.memoraapp.domain.MemoryRepository
 import com.example.memoraapp.ui.screens.form.FormMemoryScreenEvent
 import com.example.memoraapp.ui.screens.form.FormMemorySideEffect
 import com.example.memoraapp.ui.screens.form.FormMemoryUiState
-import com.example.memoraapp.ui.screens.memories.MemoriesScreenSideEffect
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -67,6 +63,7 @@ class FormMemoryViewModel(
                     if (memory != null) {
                         _uiState.update {
                             it.copy(
+                                id = memory.id,
                                 isLoading = false,
                                 title = memory.title,
                                 description = memory.description,
@@ -111,6 +108,7 @@ class FormMemoryViewModel(
                 if (state.isEditMode) {
                     repository.update(
                         Memory(
+                            id = state.id ?: -1,
                             title = state.title,
                             description = state.description,
                             date = state.date

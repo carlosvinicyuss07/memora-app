@@ -50,7 +50,9 @@ fun MemoraApp() {
             }
 
             composable(AppRoute.PhotoSource.route) {
-                PhotoSelectionScreen()
+                PhotoSelectionScreen(
+                    navController = navController
+                )
             }
 
             composable(
@@ -80,6 +82,8 @@ sealed class AppRoute(val route: String) {
         }
     }
     object PhotoSource : AppRoute("photoSource")
+    object Camera : AppRoute("camera") //TODO: Implementar depois
+    object Gallery : AppRoute("galery") //TODO: Implementar depois
     object MemoryDetails : AppRoute("memoryDetails/{memoryId}") {
         fun createRoute(memoryId: Int?): String {
             return "memoryDetails/$memoryId"

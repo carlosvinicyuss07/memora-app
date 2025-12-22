@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.memoraapp.data.FakeMemoryRepository
 import com.example.memoraapp.domain.MemoryRepository
-import com.example.memoraapp.domain.formattedToString
+import com.example.memoraapp.ui.extensions.formattedToString
 import com.example.memoraapp.ui.screens.details.MemoryDetailsScreenEvent
 import com.example.memoraapp.ui.screens.details.MemoryDetailsSideEffect
 import com.example.memoraapp.ui.screens.details.MemoryDetailsUiState
@@ -58,6 +58,7 @@ class MemoryDetailsViewModel(
                     }
                 }
                 .onFailure {
+                    _uiState.update { it.copy(isLoading = false) }
                     _effects.send(MemoryDetailsSideEffect.ShowError("Erro ao carregar memória"))
                 }
         }

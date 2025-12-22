@@ -10,8 +10,3 @@ data class Memory(
     val date: LocalDate,
     val imageUri: String? = null
 )
-
-fun LocalDate.formattedToString(): String {
-    val formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy")
-    return this.format(formatter)
-}

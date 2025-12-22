@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.memoraapp.ui.components.buttons.CaptureButton
+import com.example.memoraapp.ui.components.buttons.CircleShapeSmallFAB
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
@@ -75,16 +76,12 @@ fun CameraScreenContent(
 
                 CaptureButton(onClick = onCapture)
 
-                SmallFloatingActionButton(
-                    onClick = onSwitchCamera,
-                    shape = CircleShape,
+                CircleShapeSmallFAB(
+                    onClick = onCapture,
                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                     contentColor = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier
-                        .size(56.dp)
-                ) {
-                    Icon(Icons.Default.Cached, null, modifier = Modifier.size(24.dp))
-                }
+                    icon = Icons.Default.Cached
+                )
             }
         }
     }

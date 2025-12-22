@@ -42,32 +42,29 @@ fun MemoraApp() {
             composable(
                 route = AppRoute.MemoryFormEdit.route,
                 arguments = listOf(navArgument("memoryId") { type = NavType.IntType })
-            ) {
-                val id = it.arguments?.getInt("memoryId")
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getInt("memoryId")
                 FormMemoryScreen(
                     navController = navController, memoryId = id
                 )
             }
 
             composable(AppRoute.PhotoSource.route) {
-                PhotoSelectionScreen()
+                PhotoSelectionScreen(
+                    navController = navController
+                )
             }
 
-            composable(AppRoute.MemoryDetails.route) {
-                // Apenas de exemplo, isso será substituído para passar apenas o navController
+            composable(
+                route = AppRoute.MemoryDetails.route,
+                arguments = listOf(navArgument("memoryId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getInt("memoryId")
 
-                val memory: Memory = Memory(
-                    id = 1,
-                    title = "Viagem Inesquecível a Fernando de Noronha",
-                    description = "Fernando de Noronha é um paraíso intocado, um lugar onde a natureza mostra sua força e beleza. As águas cristalinas, as praias de areia dourada e a rica vida marinha fazem deste um dos destinos mais espetaculares do Brasil.",
-                    date = LocalDate.now()
-                )
+                if (id == null) return@composable
 
                 MemoryDetailsScreen(
-                    memory = memory,
-                    onEditClik = { navController.navigate("memoryForm/${memory.id}") },
-                    onDeleteClick = { navController.navigateUp() },
-                    onBack = { navController.navigateUp() }
+                    navController = navController, memoryId = id
                 )
             }
 
@@ -79,7 +76,17 @@ sealed class AppRoute(val route: String) {
     object Welcome : AppRoute("welcome")
     object Memories : AppRoute("memories")
     object MemoryForm : AppRoute("memoryForm")
-    object MemoryFormEdit : AppRoute("memoryForm/{memoryId}")
+    object MemoryFormEdit : AppRoute("memoryForm/{memoryId}") {
+        fun createRoute(memoryId: Int?): String {
+            return "memoryForm/$memoryId"
+        }
+    }
     object PhotoSource : AppRoute("photoSource")
-    object MemoryDetails : AppRoute("memoryDetails")
+    object Camera : AppRoute("camera") //TODO: Implementar depois
+    object Gallery : AppRoute("galery") //TODO: Implementar depois
+    object MemoryDetails : AppRoute("memoryDetails/{memoryId}") {
+        fun createRoute(memoryId: Int?): String {
+            return "memoryDetails/$memoryId"
+        }
+    }
 }

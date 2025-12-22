@@ -2,6 +2,7 @@ package com.example.memoraapp.ui.screens.details
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,33 +23,80 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.memoraapp.domain.Memory
+import com.example.memoraapp.domain.viewmodels.FormMemoryViewModel
+import com.example.memoraapp.domain.viewmodels.MemoryDetailsViewModel
+import com.example.memoraapp.ui.AppRoute
 import com.example.memoraapp.ui.components.buttons.ExtendedFAB
 import com.example.memoraapp.ui.components.imagelayouts.MemoryDetailsImageComponent
 import com.example.memoraapp.ui.components.topbar.TopbarComponent
+import com.example.memoraapp.ui.screens.form.FormMemoryScreenEvent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
+import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 
 @Composable
 fun MemoryDetailsScreen(
-    modifier: Modifier = Modifier,
-    memory: Memory,
-    onEditClik: () -> Unit,
-    onDeleteClick: () -> Unit,
-    onBack: () -> Unit
+    navController: NavController,
+    viewModel: MemoryDetailsViewModel = koinViewModel(),
+    memoryId: Int?
+) {
+
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(MemoryDetailsScreenEvent.OnInit(memoryId))
+
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                MemoryDetailsSideEffect.CloseScreen ->
+                    navController.navigateUp()
+
+                is MemoryDetailsSideEffect.ShowSuccessMessage ->
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+
+                is MemoryDetailsSideEffect.ShowError ->
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+
+                is MemoryDetailsSideEffect.NavigateToEdit ->
+                    navController.navigate(AppRoute.MemoryFormEdit.createRoute(memoryId))
+            }
+        }
+    }
+
+    MemoryDetailsScreenContent(
+        state = uiState,
+        onEvent = viewModel::onEvent
+    )
+
+}
+
+@Composable
+fun MemoryDetailsScreenContent(
+    state: MemoryDetailsUiState,
+    onEvent: (MemoryDetailsScreenEvent) -> Unit
 ) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         topBar = {
-            TopbarComponent(screenName = "Detalhes da Memória", onBackClick = onBack)
+            TopbarComponent(
+                screenName = "Detalhes da Memória",
+                onBackClick = { onEvent(MemoryDetailsScreenEvent.OnBackClick)}
+            )
         }
     ) { paddingValues ->
 
@@ -78,7 +126,7 @@ fun MemoryDetailsScreen(
 
                 item {
                     Text(
-                        text = memory.title,
+                        text = state.title,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontSize = 24.sp,
                             lineHeight = 24.sp,
@@ -91,7 +139,7 @@ fun MemoryDetailsScreen(
 
                 item {
                     Text(
-                        text = memory.date.toString(),
+                        text = state.date,
                         style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp)
                     )
                 }
@@ -100,7 +148,7 @@ fun MemoryDetailsScreen(
 
                 item {
                     Text(
-                        text = memory.description,
+                        text = state.description,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontSize = 16.sp
                         ),
@@ -126,7 +174,7 @@ fun MemoryDetailsScreen(
                     text = "Editar",
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary,
-                    onClick = onEditClik
+                    onClick = { onEvent(MemoryDetailsScreenEvent.OnEditClick(memoryId = state.id)) }
                 )
 
                 ExtendedFAB(
@@ -134,7 +182,7 @@ fun MemoryDetailsScreen(
                     text = "Excluir",
                     containerColor = MaterialTheme.colorScheme.error,
                     contentColor = MaterialTheme.colorScheme.onError,
-                    onClick = onDeleteClick
+                    onClick = { onEvent(MemoryDetailsScreenEvent.OnDeleteClick(memoryId = state.id)) }
                 )
             }
         }
@@ -154,17 +202,9 @@ private fun MemoryDetailsScreenView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            MemoryDetailsScreen(
-                memory = Memory(
-                    id = 1,
-                    title = "Viagem Inesquecível a Fernando de Noronha",
-                    description = "Fernando de Noronha é um paraíso intocado, um lugar onde a natureza mostra sua força e beleza. As águas cristalinas, as praias de areia dourada e a rica vida marinha fazem deste um dos destinos mais espetaculares do Brasil.",
-                    date = LocalDate.now()
-                ),
-                onEditClik = {},
-                onDeleteClick = {},
-                onBack = {}
-            )
+            MemoryDetailsScreenContent(
+                state = MemoryDetailsUiState()
+            ) {}
         }
     }
 }

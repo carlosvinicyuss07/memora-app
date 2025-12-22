@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.memoraapp.data.FakeMemoryRepository
 import com.example.memoraapp.domain.MemoryRepository
-import com.example.memoraapp.domain.toUi
+import com.example.memoraapp.ui.extensions.toUi
 import com.example.memoraapp.ui.screens.memories.MemoriesScreenEvent
 import com.example.memoraapp.ui.screens.memories.MemoriesScreenSideEffect
 import com.example.memoraapp.ui.screens.memories.MemoriesScreenState

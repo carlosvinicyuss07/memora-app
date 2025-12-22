@@ -12,12 +12,12 @@ import java.time.LocalDate
 class FakeMemoryRepository : MemoryRepository {
     private val mutex = Mutex()
 
-    private val memoryList = mutableListOf<StoredMemory>()
-    private val _memories = MutableStateFlow<List<Memory>>(
-        listOf(
-            Memory(1, "Pôr do Sol na Praia", "teste", LocalDate.now()),
-            Memory(2, "Luzes da Cidade", "teste", LocalDate.now())
-        )
+    private val memoryList = mutableListOf(
+        StoredMemory(1, "Pôr do Sol na Praia", "teste", LocalDate.now().toString(), null),
+        StoredMemory(2, "Luzes da Cidade", "teste", LocalDate.now().toString(), null)
+    )
+    private val _memories = MutableStateFlow(
+        memoryList.map { it.toDomain() }
     )
     override fun getAllMemories(): Flow<List<Memory>> = _memories.asStateFlow()
 
@@ -40,8 +40,7 @@ class FakeMemoryRepository : MemoryRepository {
         mutex.withLock {
             val index = memoryList.indexOfFirst { it.id == memory.id }
             if (index != -1) {
-                memoryList[index] = StoredMemory(
-                    id = memory.id,
+                memoryList[index] = memoryList[index].copy(
                     title = memory.title,
                     description = memory.description,
                     dateIso = memory.date.toString(),

@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.memoraapp.domain.Memory
+import com.example.memoraapp.ui.screens.camera.CameraScreen
 import com.example.memoraapp.ui.screens.memories.MemoriesScreen
 import com.example.memoraapp.ui.screens.details.MemoryDetailsScreen
 import com.example.memoraapp.ui.screens.form.FormMemoryScreen
@@ -68,6 +69,10 @@ fun MemoraApp() {
                 )
             }
 
+            composable(AppRoute.Camera.route) {
+                CameraScreen(navController = navController)
+            }
+
         }
     }
 }
@@ -82,7 +87,7 @@ sealed class AppRoute(val route: String) {
         }
     }
     object PhotoSource : AppRoute("photoSource")
-    object Camera : AppRoute("camera") //TODO: Implementar depois
+    object Camera : AppRoute("camera")
     object Gallery : AppRoute("galery") //TODO: Implementar depois
     object MemoryDetails : AppRoute("memoryDetails/{memoryId}") {
         fun createRoute(memoryId: Int?): String {

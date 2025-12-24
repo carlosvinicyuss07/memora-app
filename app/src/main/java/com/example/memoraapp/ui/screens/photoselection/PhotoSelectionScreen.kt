@@ -82,7 +82,7 @@ fun PhotoSelectionScreenContent(
         SourceImageOptionsComponent(
             text = "Tirar Foto",
             icon = Icons.Default.PhotoCamera,
-            onClick = {} //TODO: Implementar depois (onEvent)
+            onClick = { onEvent(PhotoSelectionScreenEvent.OnClickCamera) }
         )
 
         Spacer(modifier = Modifier.size(16.dp))

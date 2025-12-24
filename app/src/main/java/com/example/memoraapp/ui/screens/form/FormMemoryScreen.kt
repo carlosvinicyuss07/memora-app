@@ -4,6 +4,7 @@ package com.example.memoraapp.ui.screens.form
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -47,6 +48,8 @@ import org.koin.androidx.compose.koinViewModel
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import androidx.core.net.toUri
+import com.example.memoraapp.ui.util.uriToImageBitmap
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -58,6 +61,21 @@ fun FormMemoryScreen(
 
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    val photoUri =
+        navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.getStateFlow<String?>("photo_uri", null)
+            ?.collectAsState()
+
+    photoUri?.value?.let { uriString ->
+        LaunchedEffect(uriString) {
+            viewModel.onEvent(
+                FormMemoryScreenEvent.OnImageSelected(uriString.toUri())
+            )
+        }
+    }
+
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(FormMemoryScreenEvent.OnInit(memoryId))
@@ -118,6 +136,14 @@ fun FormMemoryScreenContent(
             }
         ) {
             DatePicker(state = datePickerState)
+        }
+    }
+
+    val context = LocalContext.current
+
+    val imageBitmap = remember(state.imageUri) {
+        state.imageUri?.let {
+            uriToImageBitmap(context, it)
         }
     }
 
@@ -185,7 +211,7 @@ fun FormMemoryScreenContent(
 
                 item {
                     ImagePreviewComponent(
-                        imageBitmap = null,
+                        imageBitmap = imageBitmap,
                         onSelectImage = { onEvent(FormMemoryScreenEvent.OnSelectPhotoClick) }
                     )
                 }

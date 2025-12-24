@@ -51,6 +51,11 @@ dependencies {
     // Navigation Compose
     implementation(libs.androidx.navigation.compose)
 
+    // CameraX
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

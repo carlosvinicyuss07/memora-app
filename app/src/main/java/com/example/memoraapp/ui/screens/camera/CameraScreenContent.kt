@@ -77,7 +77,7 @@ fun CameraScreenContent(
                 CaptureButton(onClick = onCapture)
 
                 CircleShapeSmallFAB(
-                    onClick = onCapture,
+                    onClick = onSwitchCamera,
                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                     contentColor = MaterialTheme.colorScheme.onBackground,
                     icon = Icons.Default.Cached

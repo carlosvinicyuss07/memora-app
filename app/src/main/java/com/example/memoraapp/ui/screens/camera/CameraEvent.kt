@@ -4,6 +4,6 @@ import android.net.Uri
 
 sealed interface CameraEvent {
     object OnSwitchCamera : CameraEvent
-    object OnTakePhoto : CameraEvent
-    data class OnPhotoCaptured(val uri: Uri) : CameraEvent
+    data class OnPhotoCaptured(val uri: String) : CameraEvent
+    data class OnSetReturnRoute(val route: String) : CameraEvent
 }

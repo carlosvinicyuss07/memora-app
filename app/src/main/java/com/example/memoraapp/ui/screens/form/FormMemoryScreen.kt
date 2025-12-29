@@ -4,7 +4,6 @@ package com.example.memoraapp.ui.screens.form
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -44,11 +43,11 @@ import com.example.memoraapp.ui.components.formfields.LabelDateFormComponent
 import com.example.memoraapp.ui.components.formfields.LabelFormComponent
 import com.example.memoraapp.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
+import com.example.memoraapp.ui.util.rememberImageBitmap
 import org.koin.androidx.compose.koinViewModel
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import androidx.core.net.toUri
 import com.example.memoraapp.ui.util.uriToImageBitmap
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -62,16 +61,17 @@ fun FormMemoryScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    val photoUri =
-        navController.currentBackStackEntry
-            ?.savedStateHandle
-            ?.getStateFlow<String?>("photo_uri", null)
-            ?.collectAsState()
+    val photoUri by navController
+        .currentBackStackEntry
+        ?.savedStateHandle
+        ?.getStateFlow<String?>("photo_uri", null)
+        ?.collectAsState()
+        ?: remember { mutableStateOf(null) }
 
-    photoUri?.value?.let { uriString ->
-        LaunchedEffect(uriString) {
+    LaunchedEffect(photoUri) {
+        photoUri?.let {
             viewModel.onEvent(
-                FormMemoryScreenEvent.OnImageSelected(uriString.toUri())
+                FormMemoryScreenEvent.OnImageSelected(it)
             )
         }
     }
@@ -94,7 +94,11 @@ fun FormMemoryScreen(
                     Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
 
                 is FormMemorySideEffect.NavigateToPhotoSource ->
-                    navController.navigate(AppRoute.PhotoSource.route)
+                    if (memoryId == null) {
+                        navController.navigate(AppRoute.PhotoSource.create(returnRoute = AppRoute.MemoryForm.route))
+                    } else {
+                        navController.navigate(AppRoute.PhotoSource.create(returnRoute = AppRoute.MemoryFormEdit.route))
+                    }
             }
         }
     }
@@ -141,11 +145,9 @@ fun FormMemoryScreenContent(
 
     val context = LocalContext.current
 
-    val imageBitmap = remember(state.imageUri) {
-        state.imageUri?.let {
-            uriToImageBitmap(context, it)
-        }
-    }
+    val imageBitmap = rememberImageBitmap(
+        state.imageUri
+    )
 
     Scaffold(
         modifier = Modifier

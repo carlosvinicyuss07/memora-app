@@ -8,7 +8,7 @@ data class FormMemoryUiState(
     val title: String = "",
     val description: String = "",
     val date: LocalDate? = null,
-    val imageUri: Uri? = null,
+    val imageUri: String? = null,
     val isLoading: Boolean = false,
     val isEditMode: Boolean = false,
     val errorMessage: String? = null,

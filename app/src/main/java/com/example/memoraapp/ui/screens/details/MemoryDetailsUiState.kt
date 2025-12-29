@@ -7,6 +7,6 @@ data class MemoryDetailsUiState(
     val title: String = "",
     val description: String = "",
     val date: String = "",
-    val imageUri: Uri? = null,
+    val imageUri: String? = null,
     val isLoading: Boolean = false
 )

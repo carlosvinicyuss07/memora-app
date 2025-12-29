@@ -43,7 +43,7 @@ class FormMemoryViewModel(
 
             is FormMemoryScreenEvent.OnSelectPhotoClick ->
                 viewModelScope.launch {
-                    _effects.send(FormMemorySideEffect.NavigateToPhotoSource(null))
+                    _effects.send(FormMemorySideEffect.NavigateToPhotoSource(uiState.value.id))
                 }
 
             FormMemoryScreenEvent.OnBackClick -> handleOnBackClick()
@@ -68,8 +68,6 @@ class FormMemoryViewModel(
                                 title = memory.title,
                                 description = memory.description,
                                 date = memory.date
-                                // Sem imagem, por enquanto (falta configurar a câmera)
-                                // Portanto imageUri = null por padrão
                             )
                         }
                     }
@@ -111,9 +109,8 @@ class FormMemoryViewModel(
                             id = state.id ?: -1,
                             title = state.title,
                             description = state.description,
-                            date = state.date
-                            // Sem imagem, por enquanto (falta configurar a câmera)
-                            // Portanto imageUri = null por padrão
+                            date = state.date,
+                            imageUri = state.imageUri.toString()
                         )
                     )
                 } else {
@@ -121,7 +118,8 @@ class FormMemoryViewModel(
                         Memory(
                             title = state.title,
                             description = state.description,
-                            date = state.date
+                            date = state.date,
+                            imageUri = state.imageUri.toString()
                         )
                     )
                 }

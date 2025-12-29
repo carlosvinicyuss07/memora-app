@@ -50,9 +50,19 @@ fun MemoraApp() {
                 )
             }
 
-            composable(AppRoute.PhotoSource.route) {
+            composable(
+                route = AppRoute.PhotoSource.route,
+                arguments = listOf(
+                    navArgument("returnRoute") {
+                        type = NavType.StringType
+                        nullable = false
+                    }
+                )
+            ) { navBackStackEntry ->
+
                 PhotoSelectionScreen(
-                    navController = navController
+                    navController = navController,
+                    returnRoute = navBackStackEntry.arguments!!.getString("returnRoute")!!
                 )
             }
 
@@ -86,8 +96,14 @@ sealed class AppRoute(val route: String) {
             return "memoryForm/$memoryId"
         }
     }
-    object PhotoSource : AppRoute("photoSource")
-    object Camera : AppRoute("camera")
+    object PhotoSource : AppRoute("photoSource?returnRoute={returnRoute}") {
+        fun create(returnRoute: String) =
+            "photoSource?returnRoute=$returnRoute"
+    }
+    object Camera : AppRoute("camera?returnRoute={returnRoute}") {
+        fun create(returnRoute: String) =
+            "camera?returnRoute=$returnRoute"
+    }
     object Gallery : AppRoute("galery") //TODO: Implementar depois
     object MemoryDetails : AppRoute("memoryDetails/{memoryId}") {
         fun createRoute(memoryId: Int?): String {

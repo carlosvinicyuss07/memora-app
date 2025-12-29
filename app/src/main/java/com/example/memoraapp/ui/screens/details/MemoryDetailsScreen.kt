@@ -43,6 +43,7 @@ import com.example.memoraapp.ui.components.imagelayouts.MemoryDetailsImageCompon
 import com.example.memoraapp.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.ui.screens.form.FormMemoryScreenEvent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
+import com.example.memoraapp.ui.util.rememberImageBitmap
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 
@@ -88,6 +89,11 @@ fun MemoryDetailsScreenContent(
     state: MemoryDetailsUiState,
     onEvent: (MemoryDetailsScreenEvent) -> Unit
 ) {
+
+    val imageBitmap = rememberImageBitmap(
+        state.imageUri
+    )
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -115,7 +121,7 @@ fun MemoryDetailsScreenContent(
 
             MemoryDetailsImageComponent(
                 modifier = Modifier.padding(horizontal = 24.dp),
-                imageBitmap = null
+                imageBitmap = imageBitmap
             )
 
             LazyColumn(

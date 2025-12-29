@@ -10,7 +10,7 @@ interface FormMemoryScreenEvent {
     data class OnTitleChange(val value: String) : FormMemoryScreenEvent
     data class OnDescriptionChange(val value: String) : FormMemoryScreenEvent
     data class OnDateChange(val value: LocalDate) : FormMemoryScreenEvent
-    data class OnImageSelected(val uri: Uri?) : FormMemoryScreenEvent
+    data class OnImageSelected(val uri: String?) : FormMemoryScreenEvent
     object OnSave : FormMemoryScreenEvent
     object OnSelectPhotoClick : FormMemoryScreenEvent
 

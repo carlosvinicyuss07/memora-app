@@ -32,6 +32,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun PhotoSelectionScreen(
     navController: NavController,
+    returnRoute: String,
     viewModel: PhotoSelectionViewModel = koinViewModel()
 ) {
 
@@ -41,7 +42,7 @@ fun PhotoSelectionScreen(
         viewModel.effects.collect { effect ->
             when (effect) {
                 is PhotoSelectionSideEffect.NavigateToCamera ->
-                    navController.navigate(AppRoute.Camera.route)
+                    navController.navigate(AppRoute.Camera.create(returnRoute))
 
                 is PhotoSelectionSideEffect.NavigateToGallery ->
                     navController.navigate(AppRoute.Gallery.route)

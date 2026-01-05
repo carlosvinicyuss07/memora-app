@@ -43,7 +43,7 @@ class FormMemoryViewModel(
 
             is FormMemoryScreenEvent.OnSelectPhotoClick ->
                 viewModelScope.launch {
-                    _effects.send(FormMemorySideEffect.NavigateToPhotoSource(uiState.value.id))
+                    _effects.send(FormMemorySideEffect.NavigateToPhotoSource)
                 }
 
             FormMemoryScreenEvent.OnBackClick -> handleOnBackClick()
@@ -110,7 +110,7 @@ class FormMemoryViewModel(
                             title = state.title,
                             description = state.description,
                             date = state.date,
-                            imageUri = state.imageUri.toString()
+                            imageUri = state.imageUri
                         )
                     )
                 } else {
@@ -119,7 +119,7 @@ class FormMemoryViewModel(
                             title = state.title,
                             description = state.description,
                             date = state.date,
-                            imageUri = state.imageUri.toString()
+                            imageUri = state.imageUri
                         )
                     )
                 }

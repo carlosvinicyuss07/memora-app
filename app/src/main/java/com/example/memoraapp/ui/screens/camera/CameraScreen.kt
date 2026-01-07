@@ -80,8 +80,7 @@ fun CameraScreen(
                         navController.getBackStackEntry(AppRoute.MemoryFormGraph)
 
                     formGraphEntry
-                        .savedStateHandle
-                        .set("photo_uri", effect.uri)
+                        .savedStateHandle["photo_uri"] = effect.uri
 
                     // Remove Camera
                     navController.popBackStack()

@@ -94,11 +94,7 @@ fun FormMemoryScreen(
                     Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
 
                 is FormMemorySideEffect.NavigateToPhotoSource ->
-                    if (memoryId == null) {
-                        navController.navigate(AppRoute.PhotoSource.create(returnRoute = AppRoute.MemoryForm.route))
-                    } else {
-                        navController.navigate(AppRoute.PhotoSource.create(returnRoute = AppRoute.MemoryFormEdit.route))
-                    }
+                    navController.navigate(AppRoute.PhotoSource)
             }
         }
     }

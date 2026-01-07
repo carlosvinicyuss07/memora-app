@@ -35,18 +35,11 @@ class CameraViewModel : ViewModel() {
                 }
             }
 
-            is CameraEvent.OnSetReturnRoute -> {
-                _state.update {
-                    it.copy(returnRoute = event.route)
-                }
-            }
-
             is CameraEvent.OnPhotoCaptured -> {
                 viewModelScope.launch {
                     _sideEffects.send(
                         CameraSideEffect.ReturnPhoto(
-                            uri = event.uri,
-                            returnRoute = state.value.returnRoute
+                            uri = event.uri
                         )
                     )
                 }

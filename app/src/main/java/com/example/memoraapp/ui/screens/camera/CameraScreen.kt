@@ -65,19 +65,6 @@ fun CameraScreen(
     val cameraPermission =
         rememberPermissionState(Manifest.permission.CAMERA)
 
-    val returnRoute =
-        navController.currentBackStackEntry
-            ?.arguments
-            ?.getString("returnRoute")
-
-    LaunchedEffect(returnRoute) {
-        returnRoute?.let {
-            viewModel.onEvent(
-                CameraEvent.OnSetReturnRoute(returnRoute)
-            )
-        }
-    }
-
     LaunchedEffect(Unit) {
         if (!cameraPermission.status.isGranted) {
             cameraPermission.launchPermissionRequest()
@@ -90,13 +77,12 @@ fun CameraScreen(
                 is CameraSideEffect.ReturnPhoto -> {
 
                     navController
-                        .getBackStackEntry(effect.returnRoute)
-                        .savedStateHandle["photo_uri"] = effect.uri
+                        .previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("photo_uri", effect.uri)
 
-                    navController.popBackStack(
-                        route = effect.returnRoute,
-                        inclusive = false
-                    )
+                    // Remove Camera
+                    navController.popBackStack()
                 }
 
                 is CameraSideEffect.ShowError ->

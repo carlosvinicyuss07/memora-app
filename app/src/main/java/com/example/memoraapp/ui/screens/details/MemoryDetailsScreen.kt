@@ -72,7 +72,7 @@ fun MemoryDetailsScreen(
                     Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
 
                 is MemoryDetailsSideEffect.NavigateToEdit ->
-                    navController.navigate(AppRoute.MemoryFormEdit.createRoute(memoryId))
+                    navController.navigate(AppRoute.MemoryFormEdit(memoryId = memoryId))
             }
         }
     }

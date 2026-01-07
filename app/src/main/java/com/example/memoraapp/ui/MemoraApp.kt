@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.example.memoraapp.ui.screens.camera.CameraScreen
 import com.example.memoraapp.ui.screens.memories.MemoriesScreen
@@ -32,17 +33,22 @@ fun MemoraApp() {
                 )
             }
 
-            composable<AppRoute.MemoryForm> {
-                FormMemoryScreen(
-                    navController = navController, memoryId = null
-                )
-            }
+            navigation<AppRoute.MemoryFormGraph>(
+                startDestination = AppRoute.MemoryForm
+            ) {
 
-            composable<AppRoute.MemoryFormEdit> { backStackEntry ->
-                val args = backStackEntry.toRoute<AppRoute.MemoryFormEdit>()
-                FormMemoryScreen(
-                    navController = navController, memoryId = args.memoryId
-                )
+                composable<AppRoute.MemoryForm> {
+                    FormMemoryScreen(
+                        navController = navController, memoryId = null
+                    )
+                }
+
+                composable<AppRoute.MemoryFormEdit> { backStackEntry ->
+                    val args = backStackEntry.toRoute<AppRoute.MemoryFormEdit>()
+                    FormMemoryScreen(
+                        navController = navController, memoryId = args.memoryId
+                    )
+                }
             }
 
             composable<AppRoute.PhotoSource> {
@@ -70,7 +76,7 @@ fun MemoraApp() {
 }
 
 @Serializable
-sealed class AppRoute() {
+sealed class AppRoute {
     @Serializable
     data object Welcome
 
@@ -79,6 +85,9 @@ sealed class AppRoute() {
 
     @Serializable
     data class MemoryDetails(val memoryId: Int?)
+
+    @Serializable
+    data object MemoryFormGraph
 
     @Serializable
     data object MemoryForm

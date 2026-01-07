@@ -76,12 +76,17 @@ fun CameraScreen(
             when (effect) {
                 is CameraSideEffect.ReturnPhoto -> {
 
-                    navController
-                        .previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set("photo_uri", effect.uri)
+                    val formGraphEntry =
+                        navController.getBackStackEntry(AppRoute.MemoryFormGraph)
+
+                    formGraphEntry
+                        .savedStateHandle
+                        .set("photo_uri", effect.uri)
 
                     // Remove Camera
+                    navController.popBackStack()
+
+                    // Remove PhotoSelection
                     navController.popBackStack()
                 }
 

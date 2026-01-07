@@ -39,7 +39,7 @@ class FormMemoryViewModel(
                 _uiState.update { it.copy(date = event.value) }
 
             is FormMemoryScreenEvent.OnImageSelected ->
-                _uiState.update { it.copy(imageUri = event.uri) }
+                _uiState.value = _uiState.value.copy(imageUri = event.uri)
 
             is FormMemoryScreenEvent.OnSelectPhotoClick ->
                 viewModelScope.launch {

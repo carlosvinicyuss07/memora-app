@@ -50,7 +50,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import com.example.memoraapp.ui.util.uriToImageBitmap
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedGetBackStackEntry")
 @Composable
 fun FormMemoryScreen(
     navController: NavController,
@@ -61,12 +61,14 @@ fun FormMemoryScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    val photoUri by navController
-        .currentBackStackEntry
-        ?.savedStateHandle
-        ?.getStateFlow<String?>("photo_uri", null)
-        ?.collectAsState()
-        ?: remember { mutableStateOf(null) }
+    val graphEntry = remember {
+        navController.getBackStackEntry(AppRoute.MemoryFormGraph)
+    }
+
+    val photoUri by graphEntry
+        .savedStateHandle
+        .getStateFlow<String?>("photo_uri", null)
+        .collectAsState()
 
     LaunchedEffect(photoUri) {
         photoUri?.let {

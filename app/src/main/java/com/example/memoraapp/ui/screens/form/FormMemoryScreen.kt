@@ -31,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -141,7 +142,8 @@ fun FormMemoryScreenContent(
         }
     }
 
-    val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
     val imageBitmap = rememberImageBitmap(
         state.imageUri
@@ -159,10 +161,13 @@ fun FormMemoryScreenContent(
         }
     ) { paddingValues ->
 
+        val paddingStartValue = if (isPortrait) 0 else 60
+
         Column(
             modifier = Modifier
                 .padding(
-                    top = paddingValues.calculateTopPadding()
+                    top = paddingValues.calculateTopPadding(),
+                    start = paddingStartValue.dp
                 )
                 .fillMaxSize()
         ) {

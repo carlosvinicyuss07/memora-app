@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
@@ -20,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,6 +34,9 @@ fun TopbarComponent(
     onBackClick: () -> Unit = {}
 ) {
 
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
     Row(
         modifier = modifier
             .height(108.dp)
@@ -43,15 +46,23 @@ fun TopbarComponent(
         horizontalArrangement = Arrangement.spacedBy(7.dp)
     ) {
 
+        val modifierIcon = if (isPortrait) {
+            modifier
+                .width(48.dp)
+                .height(24.dp)
+                .padding(start = 24.dp)
+        } else {
+            modifier
+                .width(108.dp)
+                .height(24.dp)
+                .padding(start = 60.dp)
+        }
+
         Icon(
             imageVector = icon ?: Icons.Filled.ArrowBackIosNew,
             contentDescription = "IconToolbar",
             tint = MaterialTheme.colorScheme.onBackground,
-            modifier = modifier
-                .width(48.dp)
-                .height(24.dp)
-                .padding(start = 24.dp)
-                .clickable { onBackClick() }
+            modifier = if (icon == null) modifierIcon.clickable { onBackClick() } else modifierIcon
         )
 
         Text(

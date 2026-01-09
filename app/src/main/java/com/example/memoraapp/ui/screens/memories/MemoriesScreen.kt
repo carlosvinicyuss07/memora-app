@@ -23,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -77,6 +78,15 @@ fun MemoriesScreenContent(
     onEvent: (MemoriesScreenEvent) -> Unit
 ) {
 
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
+    val modifierFab = if (isPortrait) {
+        Modifier.padding(bottom = 50.dp)
+    } else {
+        Modifier.padding(bottom = 50.dp)
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -94,11 +104,13 @@ fun MemoriesScreenContent(
         },
         floatingActionButtonPosition = FabPosition.End
     ) { paddingValues ->
+
+        val paddingHorizontalValue = if (isPortrait) 0 else 60
+
         Column(
             modifier = Modifier
-                .padding(
-                    top = paddingValues.calculateTopPadding()
-                )
+                .padding(top = paddingValues.calculateTopPadding())
+                .padding(horizontal = paddingHorizontalValue.dp)
                 .fillMaxSize()
         ) {
             HorizontalDivider(

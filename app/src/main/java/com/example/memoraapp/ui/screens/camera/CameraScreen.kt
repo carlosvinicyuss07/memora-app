@@ -1,6 +1,9 @@
 package com.example.memoraapp.ui.screens.camera
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.camera.core.ImageCapture
@@ -25,6 +28,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -34,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,12 +55,15 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import org.koin.androidx.compose.koinViewModel
 
+@SuppressLint("SourceLockedOrientationActivity", "ContextCastToActivity")
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CameraScreen(
     navController: NavController,
     viewModel: CameraViewModel = koinViewModel()
 ) {
+
+    val activity = LocalContext.current as Activity
 
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
@@ -64,6 +72,14 @@ fun CameraScreen(
 
     val cameraPermission =
         rememberPermissionState(Manifest.permission.CAMERA)
+
+    DisposableEffect(Unit) {
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+        onDispose {
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+    }
 
     LaunchedEffect(Unit) {
         if (!cameraPermission.status.isGranted) {
@@ -139,6 +155,11 @@ fun CameraScreenContent(
     onSwitchCamera: () -> Unit,
     preview: @Composable () -> Unit
 ) {
+
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    val paddingTopValue = if (isPortrait) 108 else 0
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -154,7 +175,7 @@ fun CameraScreenContent(
                 thickness = 1.dp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 108.dp, bottom = 16.dp)
+                    .padding(top = paddingTopValue.dp, bottom = 16.dp)
             )
 
             Box(

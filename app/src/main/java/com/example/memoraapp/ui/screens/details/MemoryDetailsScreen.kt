@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -94,7 +95,7 @@ fun MemoryDetailsScreenContent(
             .padding(horizontal = 26.dp)
             .padding(top = 16.dp, bottom = 50.dp)
     } else {
-        Modifier.padding(horizontal = 250.dp, vertical = 16.dp)
+        Modifier.padding(horizontal = 275.dp, vertical = 16.dp)
     }
 
     val imageBitmap = rememberImageBitmap(
@@ -121,7 +122,7 @@ fun MemoryDetailsScreenContent(
 
             Row(
                 modifier = modifierBottomBar,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.Center
             ) {
                 ExtendedFAB(
                     icon = Icons.Filled.BorderColor,
@@ -130,6 +131,8 @@ fun MemoryDetailsScreenContent(
                     contentColor = MaterialTheme.colorScheme.onPrimary,
                     onClick = { onEvent(MemoryDetailsScreenEvent.OnEditClick(memoryId = state.id)) }
                 )
+
+                Spacer(Modifier.size(16.dp))
 
                 ExtendedFAB(
                     icon = Icons.Filled.Delete,
@@ -149,7 +152,8 @@ fun MemoryDetailsScreenContent(
                     bottom = paddingValues.calculateBottomPadding()
                 )
                 .padding(horizontal = paddingHorizontalValue.dp)
-                .fillMaxSize()
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HorizontalDivider(
                 thickness = 1.dp,

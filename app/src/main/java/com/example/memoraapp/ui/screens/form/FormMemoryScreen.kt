@@ -161,14 +161,14 @@ fun FormMemoryScreenContent(
         }
     ) { paddingValues ->
 
-        val paddingStartValue = if (isPortrait) 0 else 60
+        val paddingHorizontalValue = if (isPortrait) 0 else 60
 
         Column(
             modifier = Modifier
                 .padding(
-                    top = paddingValues.calculateTopPadding(),
-                    start = paddingStartValue.dp
+                    top = paddingValues.calculateTopPadding()
                 )
+                .padding(horizontal = paddingHorizontalValue.dp)
                 .fillMaxSize()
         ) {
             HorizontalDivider(

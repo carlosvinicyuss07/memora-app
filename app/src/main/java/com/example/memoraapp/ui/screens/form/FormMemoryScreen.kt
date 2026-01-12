@@ -43,12 +43,14 @@ import com.example.memoraapp.ui.components.formfields.LabelDateFormComponent
 import com.example.memoraapp.ui.components.formfields.LabelFormComponent
 import com.example.memoraapp.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
+import com.example.memoraapp.ui.util.rememberImageBitmap
 import org.koin.androidx.compose.koinViewModel
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import com.example.memoraapp.ui.util.uriToImageBitmap
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedGetBackStackEntry")
 @Composable
 fun FormMemoryScreen(
     navController: NavController,
@@ -58,6 +60,24 @@ fun FormMemoryScreen(
 
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    val graphEntry = remember {
+        navController.getBackStackEntry(AppRoute.MemoryFormGraph)
+    }
+
+    val photoUri by graphEntry
+        .savedStateHandle
+        .getStateFlow<String?>("photo_uri", null)
+        .collectAsState()
+
+    LaunchedEffect(photoUri) {
+        photoUri?.let {
+            viewModel.onEvent(
+                FormMemoryScreenEvent.OnImageSelected(it)
+            )
+        }
+    }
+
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(FormMemoryScreenEvent.OnInit(memoryId))
@@ -76,7 +96,7 @@ fun FormMemoryScreen(
                     Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
 
                 is FormMemorySideEffect.NavigateToPhotoSource ->
-                    navController.navigate(AppRoute.PhotoSource.route)
+                    navController.navigate(AppRoute.PhotoSource)
             }
         }
     }
@@ -120,6 +140,12 @@ fun FormMemoryScreenContent(
             DatePicker(state = datePickerState)
         }
     }
+
+    val context = LocalContext.current
+
+    val imageBitmap = rememberImageBitmap(
+        state.imageUri
+    )
 
     Scaffold(
         modifier = Modifier
@@ -185,7 +211,7 @@ fun FormMemoryScreenContent(
 
                 item {
                     ImagePreviewComponent(
-                        imageBitmap = null,
+                        imageBitmap = imageBitmap,
                         onSelectImage = { onEvent(FormMemoryScreenEvent.OnSelectPhotoClick) }
                     )
                 }

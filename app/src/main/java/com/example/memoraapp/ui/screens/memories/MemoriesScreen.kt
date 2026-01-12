@@ -49,10 +49,10 @@ fun MemoriesScreen(
         viewModel.events.collect { effect ->
             when (effect) {
                 is MemoriesScreenSideEffect.NavigateToDetail ->
-                    navController.navigate(AppRoute.MemoryDetails.createRoute(effect.id))
+                    navController.navigate(AppRoute.MemoryDetails(memoryId = effect.id))
 
                 is MemoriesScreenSideEffect.NavigateToCreate ->
-                    navController.navigate(AppRoute.MemoryForm.route)
+                    navController.navigate(AppRoute.MemoryForm)
 
                 is MemoriesScreenSideEffect.NavigateToPreviousScreen ->
                     navController.navigateUp()

@@ -52,7 +52,8 @@ class MemoryDetailsViewModel(
                                 isLoading = false,
                                 title = memory.title,
                                 description = memory.description,
-                                date = memory.date.formattedToString()
+                                date = memory.date.formattedToString(),
+                                imageUri = memory.imageUri
                             )
                         }
                     }

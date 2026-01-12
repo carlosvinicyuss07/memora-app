@@ -35,16 +35,14 @@ fun PhotoSelectionScreen(
     viewModel: PhotoSelectionViewModel = koinViewModel()
 ) {
 
-    val context = LocalContext.current
-
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effect ->
             when (effect) {
                 is PhotoSelectionSideEffect.NavigateToCamera ->
-                    navController.navigate(AppRoute.Camera.route)
+                    navController.navigate(AppRoute.Camera)
 
                 is PhotoSelectionSideEffect.NavigateToGallery ->
-                    navController.navigate(AppRoute.Gallery.route)
+                    navController.navigate(AppRoute.Gallery)
 
                 is PhotoSelectionSideEffect.NavigateBack ->
                     navController.navigateUp()
@@ -82,7 +80,7 @@ fun PhotoSelectionScreenContent(
         SourceImageOptionsComponent(
             text = "Tirar Foto",
             icon = Icons.Default.PhotoCamera,
-            onClick = {} //TODO: Implementar depois (onEvent)
+            onClick = { onEvent(PhotoSelectionScreenEvent.OnClickCamera) }
         )
 
         Spacer(modifier = Modifier.size(16.dp))

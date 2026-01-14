@@ -42,8 +42,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.example.memoraapp.domain.viewmodels.CameraViewModel
+import com.example.memoraapp.domain.viewmodels.ImagePickerViewModel
 import com.example.memoraapp.ui.AppRoute
 import com.example.memoraapp.ui.components.buttons.CaptureButton
 import com.example.memoraapp.ui.components.buttons.CircleShapeSmallFAB
@@ -60,6 +62,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CameraScreen(
     navController: NavController,
+    imagePickerViewModel: ImagePickerViewModel,
     viewModel: CameraViewModel = koinViewModel()
 ) {
 
@@ -92,11 +95,7 @@ fun CameraScreen(
             when (effect) {
                 is CameraSideEffect.ReturnPhoto -> {
 
-                    val formGraphEntry =
-                        navController.getBackStackEntry(AppRoute.MemoryFormGraph)
-
-                    formGraphEntry
-                        .savedStateHandle["photo_uri"] = effect.uri
+                    imagePickerViewModel.setSelectedImage(effect.uri.toUri())
 
                     // Remove Camera
                     navController.popBackStack()

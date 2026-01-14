@@ -1,7 +1,6 @@
 package com.example.memoraapp.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -55,7 +54,8 @@ fun MemoraApp() {
                 composable<AppRoute.MemoryFormEdit> { backStackEntry ->
                     val args = backStackEntry.toRoute<AppRoute.MemoryFormEdit>()
                     FormMemoryScreen(
-                        navController = navController, memoryId = args.memoryId,
+                        navController = navController,
+                        memoryId = args.memoryId,
                         imagePickerViewModel = imagePickerViewModel
                     )
                 }
@@ -79,9 +79,11 @@ fun MemoraApp() {
             }
 
             composable<AppRoute.Camera> {
-                CameraScreen(navController = navController)
+                CameraScreen(
+                    navController = navController,
+                    imagePickerViewModel = imagePickerViewModel
+                )
             }
-
         }
     }
 }

@@ -44,6 +44,7 @@ fun PhotoSelectionScreen(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         if (uri != null) {
+
             imagePickerViewModel.setSelectedImage(uri)
 
             navController.popBackStack()

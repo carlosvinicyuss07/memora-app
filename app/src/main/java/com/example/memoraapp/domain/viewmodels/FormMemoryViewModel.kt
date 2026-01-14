@@ -1,5 +1,6 @@
 package com.example.memoraapp.domain.viewmodels
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.memoraapp.data.FakeMemoryRepository
@@ -17,7 +18,8 @@ import kotlinx.coroutines.launch
 
 class FormMemoryViewModel(
     private val repository: MemoryRepository = FakeMemoryRepository(),
-    private val imagePickerViewModel: ImagePickerViewModel
+    private val imagePickerViewModel: ImagePickerViewModel,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FormMemoryUiState())
@@ -26,10 +28,16 @@ class FormMemoryViewModel(
     private val _effects = Channel<FormMemorySideEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
 
+    fun initIfNeeded(memoryId: Int?) {
+        if (savedStateHandle.get<Boolean>("initialized") == true) return
+
+        savedStateHandle["initialized"] = true
+
+        handleOnInit(memoryId)
+    }
+
     fun onEvent(event: FormMemoryScreenEvent) {
         when (event) {
-            is FormMemoryScreenEvent.OnInit -> handleOnInit(event.memoryId)
-
             is FormMemoryScreenEvent.OnTitleChange ->
                 _uiState.update { it.copy(title = event.value) }
 
@@ -102,6 +110,13 @@ class FormMemoryViewModel(
         if (state.date == null) {
             viewModelScope.launch {
                 _effects.send(FormMemorySideEffect.ShowError("Selecione uma data"))
+            }
+            return
+        }
+
+        if (state.imageUri == null) {
+            viewModelScope.launch {
+                _effects.send(FormMemorySideEffect.ShowError("É obrigatório ter uma imagem para salvar uma memória"))
             }
             return
         }

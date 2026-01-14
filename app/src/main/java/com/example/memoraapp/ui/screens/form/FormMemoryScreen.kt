@@ -50,7 +50,6 @@ import org.koin.androidx.compose.koinViewModel
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import com.example.memoraapp.ui.util.uriToImageBitmap
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedGetBackStackEntry")
 @Composable
@@ -64,23 +63,6 @@ fun FormMemoryScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    val graphEntry = remember {
-        navController.getBackStackEntry(AppRoute.MemoryFormGraph)
-    }
-
-    val photoUri by graphEntry
-        .savedStateHandle
-        .getStateFlow<String?>("photo_uri", null)
-        .collectAsState()
-
-    LaunchedEffect(photoUri) {
-        photoUri?.let {
-            viewModel.onEvent(
-                FormMemoryScreenEvent.OnImageSelected(it)
-            )
-        }
-    }
-
     val selectedImageUri by imagePickerViewModel.selectedImageUri.collectAsState()
 
     LaunchedEffect(selectedImageUri) {
@@ -92,7 +74,7 @@ fun FormMemoryScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.onEvent(FormMemoryScreenEvent.OnInit(memoryId))
+        viewModel.initIfNeeded(memoryId)
     }
 
     LaunchedEffect(Unit) {

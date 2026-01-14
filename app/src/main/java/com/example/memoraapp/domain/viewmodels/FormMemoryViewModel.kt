@@ -116,7 +116,7 @@ class FormMemoryViewModel(
 
         if (state.imageUri == null) {
             viewModelScope.launch {
-                _effects.send(FormMemorySideEffect.ShowError("É obrigatório ter uma imagem para salvar uma memória"))
+                _effects.send(FormMemorySideEffect.ShowError("É obrigatório ter uma imagem para salvar uma memória!"))
             }
             return
         }

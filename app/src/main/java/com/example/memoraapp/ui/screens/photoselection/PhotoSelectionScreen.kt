@@ -1,6 +1,9 @@
 package com.example.memoraapp.ui.screens.photoselection
 
 import android.content.res.Configuration
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.memoraapp.domain.viewmodels.ImagePickerViewModel
 import com.example.memoraapp.domain.viewmodels.PhotoSelectionViewModel
 import com.example.memoraapp.ui.AppRoute
 import com.example.memoraapp.ui.components.buttons.SourceImageOptionsComponent
@@ -32,8 +36,19 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun PhotoSelectionScreen(
     navController: NavController,
+    imagePickerViewModel: ImagePickerViewModel,
     viewModel: PhotoSelectionViewModel = koinViewModel()
 ) {
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        if (uri != null) {
+            imagePickerViewModel.setSelectedImage(uri)
+
+            navController.popBackStack()
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effect ->
@@ -42,7 +57,9 @@ fun PhotoSelectionScreen(
                     navController.navigate(AppRoute.Camera)
 
                 is PhotoSelectionSideEffect.NavigateToGallery ->
-                    navController.navigate(AppRoute.Gallery)
+                    galleryLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
 
                 is PhotoSelectionSideEffect.NavigateBack ->
                     navController.navigateUp()
@@ -88,7 +105,7 @@ fun PhotoSelectionScreenContent(
         SourceImageOptionsComponent(
             text = "Escolher da Galeria",
             icon = Icons.Default.Image,
-            onClick = {} //TODO: Implementar depois (onEvent)
+            onClick = { onEvent(PhotoSelectionScreenEvent.OnClickGallery) }
         )
     }
 }

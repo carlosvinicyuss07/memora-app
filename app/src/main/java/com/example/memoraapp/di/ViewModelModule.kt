@@ -2,6 +2,7 @@ package com.example.memoraapp.di
 
 import com.example.memoraapp.domain.viewmodels.CameraViewModel
 import com.example.memoraapp.domain.viewmodels.FormMemoryViewModel
+import com.example.memoraapp.domain.viewmodels.ImagePickerViewModel
 import com.example.memoraapp.domain.viewmodels.MemoriesViewModel
 import com.example.memoraapp.domain.viewmodels.MemoryDetailsViewModel
 import com.example.memoraapp.domain.viewmodels.PhotoSelectionViewModel
@@ -18,7 +19,8 @@ val viewModelModule = module {
 
     viewModel {
         FormMemoryViewModel(
-            repository = get()
+            repository = get(),
+            imagePickerViewModel = get()
         )
     }
 
@@ -34,6 +36,10 @@ val viewModelModule = module {
 
     viewModel {
         CameraViewModel()
+    }
+
+    viewModel {
+        ImagePickerViewModel()
     }
 
 }

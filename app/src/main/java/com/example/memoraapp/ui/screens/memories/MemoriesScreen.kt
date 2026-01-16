@@ -23,10 +23,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.memoraapp.domain.viewmodels.ImagePickerViewModel
 import com.example.memoraapp.domain.viewmodels.MemoriesViewModel
 import com.example.memoraapp.ui.AppRoute
 import com.example.memoraapp.ui.components.buttons.CircleShapeExtendedFAB
@@ -38,6 +40,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun MemoriesScreen(
     navController: NavController,
+    imagePickerViewModel: ImagePickerViewModel,
     viewModel: MemoriesViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -51,8 +54,10 @@ fun MemoriesScreen(
                 is MemoriesScreenSideEffect.NavigateToDetail ->
                     navController.navigate(AppRoute.MemoryDetails(memoryId = effect.id))
 
-                is MemoriesScreenSideEffect.NavigateToCreate ->
+                is MemoriesScreenSideEffect.NavigateToCreate -> {
+                    imagePickerViewModel.clear()
                     navController.navigate(AppRoute.MemoryForm)
+                }
 
                 is MemoriesScreenSideEffect.NavigateToPreviousScreen ->
                     navController.navigateUp()
@@ -74,6 +79,15 @@ fun MemoriesScreenContent(
     onEvent: (MemoriesScreenEvent) -> Unit
 ) {
 
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
+    val modifierFab = if (isPortrait) {
+        Modifier.padding(bottom = 50.dp)
+    } else {
+        Modifier.padding(bottom = 50.dp)
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -91,11 +105,13 @@ fun MemoriesScreenContent(
         },
         floatingActionButtonPosition = FabPosition.End
     ) { paddingValues ->
+
+        val paddingHorizontalValue = if (isPortrait) 0 else 60
+
         Column(
             modifier = Modifier
-                .padding(
-                    top = paddingValues.calculateTopPadding()
-                )
+                .padding(top = paddingValues.calculateTopPadding())
+                .padding(horizontal = paddingHorizontalValue.dp)
                 .fillMaxSize()
         ) {
             HorizontalDivider(

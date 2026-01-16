@@ -16,7 +16,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class FormMemoryViewModel(
-    private val repository: MemoryRepository = FakeMemoryRepository()
+    private val repository: MemoryRepository = FakeMemoryRepository(),
+    private val imagePickerViewModel: ImagePickerViewModel
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FormMemoryUiState())
@@ -48,7 +49,9 @@ class FormMemoryViewModel(
 
             FormMemoryScreenEvent.OnBackClick -> handleOnBackClick()
 
-            FormMemoryScreenEvent.OnSave -> handleSave()
+            FormMemoryScreenEvent.OnSave -> {
+                handleSave()
+            }
         }
     }
 
@@ -67,7 +70,8 @@ class FormMemoryViewModel(
                                 isLoading = false,
                                 title = memory.title,
                                 description = memory.description,
-                                date = memory.date
+                                date = memory.date,
+                                imageUri = memory.imageUri
                             )
                         }
                     }
@@ -79,6 +83,7 @@ class FormMemoryViewModel(
     }
 
     private fun handleOnBackClick() {
+        imagePickerViewModel.clear()
         viewModelScope.launch {
             _effects.send(FormMemorySideEffect.CloseScreen)
         }
@@ -125,6 +130,9 @@ class FormMemoryViewModel(
                 }
             }
                 .onSuccess {
+                    if (!state.isEditMode) {
+                        imagePickerViewModel.clear()
+                    }
                     _effects.send(FormMemorySideEffect.ShowSuccessMessage(
                         if (state.isEditMode) "Atualizado com sucesso" else "Salvo com sucesso")
                     )

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,24 +27,21 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.memoraapp.domain.Memory
-import com.example.memoraapp.domain.viewmodels.FormMemoryViewModel
 import com.example.memoraapp.domain.viewmodels.MemoryDetailsViewModel
 import com.example.memoraapp.ui.AppRoute
 import com.example.memoraapp.ui.components.buttons.ExtendedFAB
 import com.example.memoraapp.ui.components.imagelayouts.MemoryDetailsImageComponent
 import com.example.memoraapp.ui.components.topbar.TopbarComponent
-import com.example.memoraapp.ui.screens.form.FormMemoryScreenEvent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 import com.example.memoraapp.ui.util.rememberImageBitmap
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDate
 
 @Composable
 fun MemoryDetailsScreen(
@@ -90,6 +86,18 @@ fun MemoryDetailsScreenContent(
     onEvent: (MemoryDetailsScreenEvent) -> Unit
 ) {
 
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    val paddingHorizontalValue = if (isPortrait) 0 else 60
+
+    val modifierBottomBar = if (isPortrait) {
+        Modifier
+            .padding(horizontal = 26.dp)
+            .padding(top = 16.dp, bottom = 50.dp)
+    } else {
+        Modifier.padding(horizontal = 275.dp, vertical = 16.dp)
+    }
+
     val imageBitmap = rememberImageBitmap(
         state.imageUri
     )
@@ -103,15 +111,49 @@ fun MemoryDetailsScreenContent(
                 screenName = "Detalhes da Memória",
                 onBackClick = { onEvent(MemoryDetailsScreenEvent.OnBackClick)}
             )
+        },
+        bottomBar = {
+            HorizontalDivider(
+                thickness = 1.dp,
+                modifier = Modifier
+                    .padding(horizontal = paddingHorizontalValue.dp)
+                    .fillMaxWidth()
+            )
+
+            Row(
+                modifier = modifierBottomBar,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                ExtendedFAB(
+                    icon = Icons.Filled.BorderColor,
+                    text = "Editar",
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    onClick = { onEvent(MemoryDetailsScreenEvent.OnEditClick(memoryId = state.id)) }
+                )
+
+                Spacer(Modifier.size(16.dp))
+
+                ExtendedFAB(
+                    icon = Icons.Filled.Delete,
+                    text = "Excluir",
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError,
+                    onClick = { onEvent(MemoryDetailsScreenEvent.OnDeleteClick(memoryId = state.id)) }
+                )
+            }
         }
     ) { paddingValues ->
 
         Column(
             modifier = Modifier
                 .padding(
-                    top = paddingValues.calculateTopPadding()
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = paddingValues.calculateBottomPadding()
                 )
-                .fillMaxSize()
+                .padding(horizontal = paddingHorizontalValue.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HorizontalDivider(
                 thickness = 1.dp,
@@ -119,14 +161,16 @@ fun MemoryDetailsScreenContent(
                     .fillMaxWidth()
             )
 
-            MemoryDetailsImageComponent(
-                modifier = Modifier.padding(horizontal = 24.dp),
-                imageBitmap = imageBitmap
-            )
-
             LazyColumn(
                 modifier = Modifier.padding(horizontal = 40.dp, vertical = 16.dp)
             ) {
+
+                item {
+                    MemoryDetailsImageComponent(
+                        modifier = Modifier.padding(horizontal = 24.dp),
+                        imageBitmap = imageBitmap
+                    )
+                }
 
                 item { Spacer(modifier = Modifier.size(26.dp)) }
 
@@ -160,36 +204,6 @@ fun MemoryDetailsScreenContent(
                         ),
                     )
                 }
-
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            HorizontalDivider(
-                thickness = 1.dp,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-
-            Row(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                ExtendedFAB(
-                    icon = Icons.Filled.BorderColor,
-                    text = "Editar",
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                    onClick = { onEvent(MemoryDetailsScreenEvent.OnEditClick(memoryId = state.id)) }
-                )
-
-                ExtendedFAB(
-                    icon = Icons.Filled.Delete,
-                    text = "Excluir",
-                    containerColor = MaterialTheme.colorScheme.error,
-                    contentColor = MaterialTheme.colorScheme.onError,
-                    onClick = { onEvent(MemoryDetailsScreenEvent.OnDeleteClick(memoryId = state.id)) }
-                )
             }
         }
     }

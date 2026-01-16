@@ -52,7 +52,7 @@ fun MemoryCardComponent(
                         modifier = modifier
                             .fillMaxWidth()
                             .height(90.dp),
-                        contentScale = ContentScale.FillBounds
+                        contentScale = ContentScale.Crop
                     )
                 }
             } else {
@@ -63,7 +63,7 @@ fun MemoryCardComponent(
                     modifier = modifier
                         .fillMaxWidth()
                         .height(90.dp),
-                    contentScale = ContentScale.FillBounds
+                    contentScale = ContentScale.Crop
                 )
             }
 

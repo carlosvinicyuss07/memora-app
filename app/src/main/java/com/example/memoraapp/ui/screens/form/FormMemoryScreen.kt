@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.memoraapp.domain.viewmodels.FormMemoryViewModel
+import com.example.memoraapp.domain.viewmodels.ImagePickerViewModel
 import com.example.memoraapp.ui.AppRoute
 import com.example.memoraapp.ui.components.buttons.FilledButtonComponent
 import com.example.memoraapp.ui.components.cards.ImagePreviewComponent
@@ -55,6 +56,7 @@ import com.example.memoraapp.ui.util.uriToImageBitmap
 @Composable
 fun FormMemoryScreen(
     navController: NavController,
+    imagePickerViewModel: ImagePickerViewModel,
     viewModel: FormMemoryViewModel = koinViewModel(),
     memoryId: Int?
 ) {
@@ -79,6 +81,15 @@ fun FormMemoryScreen(
         }
     }
 
+    val selectedImageUri by imagePickerViewModel.selectedImageUri.collectAsState()
+
+    LaunchedEffect(selectedImageUri) {
+        selectedImageUri?.let {
+            viewModel.onEvent(
+                FormMemoryScreenEvent.OnImageSelected(it.toString())
+            )
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(FormMemoryScreenEvent.OnInit(memoryId))

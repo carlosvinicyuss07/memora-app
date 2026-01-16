@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.memoraapp.domain.viewmodels.ImagePickerViewModel
 import com.example.memoraapp.domain.viewmodels.MemoriesViewModel
 import com.example.memoraapp.ui.AppRoute
 import com.example.memoraapp.ui.components.buttons.CircleShapeExtendedFAB
@@ -40,6 +41,7 @@ import java.time.LocalDate
 @Composable
 fun MemoriesScreen(
     navController: NavController,
+    imagePickerViewModel: ImagePickerViewModel,
     viewModel: MemoriesViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -55,8 +57,10 @@ fun MemoriesScreen(
                 is MemoriesScreenSideEffect.NavigateToDetail ->
                     navController.navigate(AppRoute.MemoryDetails(memoryId = effect.id))
 
-                is MemoriesScreenSideEffect.NavigateToCreate ->
+                is MemoriesScreenSideEffect.NavigateToCreate -> {
+                    imagePickerViewModel.clear()
                     navController.navigate(AppRoute.MemoryForm)
+                }
 
                 is MemoriesScreenSideEffect.NavigateToWelcome ->
                     navController.navigateUp()

@@ -1,11 +1,13 @@
 package com.example.memoraapp.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.example.memoraapp.domain.viewmodels.ImagePickerViewModel
 import com.example.memoraapp.ui.screens.camera.CameraScreen
 import com.example.memoraapp.ui.screens.memories.MemoriesScreen
 import com.example.memoraapp.ui.screens.details.MemoryDetailsScreen
@@ -14,10 +16,13 @@ import com.example.memoraapp.ui.screens.photoselection.PhotoSelectionScreen
 import com.example.memoraapp.ui.screens.welcome.WelcomeScreen
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MemoraApp() {
     val navController = rememberNavController()
+
+    val imagePickerViewModel: ImagePickerViewModel = koinViewModel()
 
     MemoraAppTheme {
         NavHost(navController = navController, startDestination = AppRoute.Welcome) {
@@ -29,7 +34,8 @@ fun MemoraApp() {
 
             composable<AppRoute.Memories> {
                 MemoriesScreen(
-                    navController = navController
+                    navController = navController,
+                    imagePickerViewModel = imagePickerViewModel
                 )
             }
 
@@ -38,22 +44,27 @@ fun MemoraApp() {
             ) {
 
                 composable<AppRoute.MemoryForm> {
+
                     FormMemoryScreen(
-                        navController = navController, memoryId = null
+                        navController = navController,
+                        memoryId = null,
+                        imagePickerViewModel = imagePickerViewModel
                     )
                 }
 
                 composable<AppRoute.MemoryFormEdit> { backStackEntry ->
                     val args = backStackEntry.toRoute<AppRoute.MemoryFormEdit>()
                     FormMemoryScreen(
-                        navController = navController, memoryId = args.memoryId
+                        navController = navController, memoryId = args.memoryId,
+                        imagePickerViewModel = imagePickerViewModel
                     )
                 }
             }
 
             composable<AppRoute.PhotoSource> {
                 PhotoSelectionScreen(
-                    navController = navController
+                    navController = navController,
+                    imagePickerViewModel = imagePickerViewModel
                 )
             }
 
@@ -100,7 +111,4 @@ sealed class AppRoute {
 
     @Serializable
     data object Camera
-
-    @Serializable
-    data object Gallery //TODO: Implementar depois
 }

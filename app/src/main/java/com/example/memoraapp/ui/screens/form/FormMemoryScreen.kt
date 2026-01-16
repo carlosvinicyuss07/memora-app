@@ -74,7 +74,7 @@ fun FormMemoryScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.initIfNeeded(memoryId)
+        viewModel.onEvent(FormMemoryScreenEvent.OnInit(memoryId))
     }
 
     LaunchedEffect(Unit) {

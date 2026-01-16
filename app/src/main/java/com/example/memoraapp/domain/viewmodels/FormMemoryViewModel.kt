@@ -28,16 +28,10 @@ class FormMemoryViewModel(
     private val _effects = Channel<FormMemorySideEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
 
-    fun initIfNeeded(memoryId: Int?) {
-        if (savedStateHandle.get<Boolean>("initialized") == true) return
-
-        savedStateHandle["initialized"] = true
-
-        handleOnInit(memoryId)
-    }
-
     fun onEvent(event: FormMemoryScreenEvent) {
         when (event) {
+            is FormMemoryScreenEvent.OnInit -> handleOnInit(event.memoryId)
+
             is FormMemoryScreenEvent.OnTitleChange ->
                 _uiState.update { it.copy(title = event.value) }
 
@@ -65,6 +59,9 @@ class FormMemoryViewModel(
 
     private fun handleOnInit(id: Int?) {
         if (id == null) return
+
+        if (savedStateHandle.get<Boolean>("initialized") == true) return
+        savedStateHandle["initialized"] = true
 
         _uiState.update { it.copy(isLoading = true, isEditMode = true, screenName = "Editar Memória" , buttonText = "Atualizar") }
 

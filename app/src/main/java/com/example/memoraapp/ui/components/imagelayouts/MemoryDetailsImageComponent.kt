@@ -39,7 +39,7 @@ fun MemoryDetailsImageComponent(
                     .fillMaxSize()
                     .padding(6.dp)
                     .clip(RoundedCornerShape(10.dp)),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.None
             )
         } else {
             Text(

@@ -89,7 +89,8 @@ fun PhotoSelectionScreenContent(
             text = "Escolha a Fonte da Imagem",
             style = MaterialTheme.typography.bodyMedium.copy(
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             ),
         )
 

@@ -46,7 +46,6 @@ fun MemoryDetailsImageComponent(
                 text = "Nenhuma imagem selecionada",
                 modifier = Modifier
                     .padding(8.dp)
-                    .border(BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onBackground))
             )
         }
     }

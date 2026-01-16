@@ -20,7 +20,8 @@ val viewModelModule = module {
     viewModel {
         FormMemoryViewModel(
             repository = get(),
-            imagePickerViewModel = get()
+            imagePickerViewModel = get(),
+            savedStateHandle = get()
         )
     }
 

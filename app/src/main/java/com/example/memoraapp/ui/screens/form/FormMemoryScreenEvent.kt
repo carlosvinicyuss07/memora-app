@@ -13,6 +13,5 @@ interface FormMemoryScreenEvent {
     data class OnImageSelected(val uri: String?) : FormMemoryScreenEvent
     object OnSave : FormMemoryScreenEvent
     object OnSelectPhotoClick : FormMemoryScreenEvent
-
     data object OnBackClick : FormMemoryScreenEvent
 }

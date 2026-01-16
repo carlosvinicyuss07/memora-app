@@ -46,7 +46,6 @@ import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.example.memoraapp.domain.viewmodels.CameraViewModel
 import com.example.memoraapp.domain.viewmodels.ImagePickerViewModel
-import com.example.memoraapp.ui.AppRoute
 import com.example.memoraapp.ui.components.buttons.CaptureButton
 import com.example.memoraapp.ui.components.buttons.CircleShapeSmallFAB
 import com.example.memoraapp.ui.components.imagelayouts.CameraPreview
@@ -70,6 +69,8 @@ fun CameraScreen(
 
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
+
+    val currentLensFacing = viewModel.lensFacing
 
     var imageCapture by remember { mutableStateOf<ImageCapture?>(null) }
 
@@ -130,9 +131,10 @@ fun CameraScreen(
                 },
                 preview = {
                     CameraPreview(
-                        lensFacing = state.lensFacing,
-                        onImageCaptureReady = { imageCapture = it }
-                    )
+                        lensFacing = currentLensFacing
+                    ) {
+                        imageCapture = it
+                    }
                 }
             )
         }

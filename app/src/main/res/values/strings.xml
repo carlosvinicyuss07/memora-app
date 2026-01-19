@@ -31,4 +31,5 @@
     <string name="erro_ao_salvar">Erro ao salvar</string>
     <string name="excluido_com_sucesso">Excluído com sucesso!</string>
     <string name="erro_ao_tentar_excluir">Erro ao tentar excluir</string>
+    <string name="bem_vindo">Bem-vindo</string>
 </resources>

@@ -23,10 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.memoraapp.R
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
@@ -80,13 +82,13 @@ private fun LabelFormComponentView() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 SourceImageOptionsComponent(
-                    text = "Tirar Foto",
+                    text = stringResource(R.string.tirar_foto),
                     icon = Icons.Default.PhotoCamera,
                     onClick = {}
                 )
 
                 SourceImageOptionsComponent(
-                    text = "Escolher da Galeria",
+                    text = stringResource(R.string.escolher_da_galeria),
                     icon = Icons.Default.Image,
                     onClick = {}
                 )

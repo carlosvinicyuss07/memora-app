@@ -1,6 +1,6 @@
 package com.example.memoraapp.ui.screens.form
 
-import android.net.Uri
+import com.example.memoraapp.ui.util.UiText
 import java.time.LocalDate
 
 data class FormMemoryUiState(
@@ -12,6 +12,6 @@ data class FormMemoryUiState(
     val isLoading: Boolean = false,
     val isEditMode: Boolean = false,
     val errorMessage: String? = null,
-    val screenName: String = "Nova Memória",
-    val buttonText: String = "Salvar"
+    val screenName: UiText? = null,
+    val buttonText: UiText? = null
 )

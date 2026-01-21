@@ -1,4 +1,4 @@
-package com.example.memoraapp.data
+package com.example.memoraapp.data.repository
 
 import com.example.memoraapp.domain.Memory
 import com.example.memoraapp.domain.MemoryRepository

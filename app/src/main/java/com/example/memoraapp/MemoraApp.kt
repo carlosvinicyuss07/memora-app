@@ -1,6 +1,7 @@
 package com.example.memoraapp
 
 import android.app.Application
+import com.example.memoraapp.di.databaseModule
 import com.example.memoraapp.di.repositoryModule
 import com.example.memoraapp.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
@@ -13,6 +14,7 @@ class MemoraApp : Application() {
         startKoin {
             androidContext(this@MemoraApp)
             modules(
+                databaseModule,
                 repositoryModule,
                 viewModelModule
             )

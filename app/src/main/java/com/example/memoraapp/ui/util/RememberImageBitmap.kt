@@ -11,11 +11,17 @@ fun rememberImageBitmap(uri: String?): ImageBitmap? {
     val context = LocalContext.current
 
     return remember(uri) {
-        uri?.let {
+        if (uri == null) return@remember null
+
+        try {
             uriToImageBitmap(
                 context,
-                it.toUri()
+                uri.toUri()
             )
+        } catch (e: SecurityException) {
+            null
+        } catch (e: Exception) {
+            null
         }
     }
 }

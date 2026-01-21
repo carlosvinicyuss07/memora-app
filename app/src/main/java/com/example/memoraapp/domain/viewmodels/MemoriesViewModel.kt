@@ -2,14 +2,11 @@ package com.example.memoraapp.domain.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.memoraapp.R
-import com.example.memoraapp.data.FakeMemoryRepository
 import com.example.memoraapp.domain.MemoryRepository
 import com.example.memoraapp.ui.extensions.toUi
 import com.example.memoraapp.ui.screens.memories.MemoriesScreenEvent
 import com.example.memoraapp.ui.screens.memories.MemoriesScreenSideEffect
 import com.example.memoraapp.ui.screens.memories.MemoriesScreenState
-import com.example.memoraapp.ui.util.UiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MemoriesViewModel(
-    private val repository: MemoryRepository = FakeMemoryRepository()
+    private val repository: MemoryRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MemoriesScreenState())
@@ -26,6 +23,10 @@ class MemoriesViewModel(
 
     private val _events = Channel<MemoriesScreenSideEffect>(Channel.BUFFERED)
     val events = _events.receiveAsFlow()
+
+    init {
+        observeMemories()
+    }
 
     fun onEvent(event: MemoriesScreenEvent) {
         when (event) {
@@ -37,9 +38,7 @@ class MemoriesViewModel(
         }
     }
 
-    private fun handleOnInit() {
-        _uiState.update { it.copy(isLoading = true, erroMessage = null) }
-
+    private fun observeMemories() {
         viewModelScope.launch {
             repository.getAllMemories()
                 .collect { list ->
@@ -51,6 +50,10 @@ class MemoriesViewModel(
                     }
                 }
         }
+    }
+
+    private fun handleOnInit() {
+        _uiState.update { it.copy(isLoading = true, erroMessage = null) }
     }
 
     private fun handleOnRefresh() = handleOnInit()

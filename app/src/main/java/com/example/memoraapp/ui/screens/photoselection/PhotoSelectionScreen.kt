@@ -21,11 +21,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.memoraapp.R
 import com.example.memoraapp.domain.viewmodels.ImagePickerViewModel
 import com.example.memoraapp.domain.viewmodels.PhotoSelectionViewModel
 import com.example.memoraapp.ui.AppRoute
@@ -86,7 +88,7 @@ fun PhotoSelectionScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Escolha a Fonte da Imagem",
+            text = stringResource(R.string.escolha_a_fonte_da_imagem),
             style = MaterialTheme.typography.bodyMedium.copy(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
@@ -97,7 +99,7 @@ fun PhotoSelectionScreenContent(
         Spacer(modifier = Modifier.size(54.dp))
 
         SourceImageOptionsComponent(
-            text = "Tirar Foto",
+            text = stringResource(R.string.tirar_foto),
             icon = Icons.Default.PhotoCamera,
             onClick = { onEvent(PhotoSelectionScreenEvent.OnClickCamera) }
         )
@@ -105,7 +107,7 @@ fun PhotoSelectionScreenContent(
         Spacer(modifier = Modifier.size(16.dp))
 
         SourceImageOptionsComponent(
-            text = "Escolher da Galeria",
+            text = stringResource(R.string.escolher_da_galeria),
             icon = Icons.Default.Image,
             onClick = { onEvent(PhotoSelectionScreenEvent.OnClickGallery) }
         )

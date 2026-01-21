@@ -14,10 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.memoraapp.R
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
@@ -45,7 +47,7 @@ private fun CircleShapeExtendedFABEditView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            ExtendedFAB(icon = Icons.Filled.BorderColor, text = "Editar", containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary, onClick = {})
+            ExtendedFAB(icon = Icons.Filled.BorderColor, text = stringResource(R.string.editar), containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary, onClick = {})
         }
     }
 }
@@ -62,7 +64,7 @@ private fun CircleShapeExtendedFABDeleteView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            ExtendedFAB(icon = Icons.Filled.Delete, text = "Excluir", containerColor = MaterialTheme.colorScheme.error, contentColor = MaterialTheme.colorScheme.onError, onClick = {})
+            ExtendedFAB(icon = Icons.Filled.Delete, text = stringResource(R.string.excluir), containerColor = MaterialTheme.colorScheme.error, contentColor = MaterialTheme.colorScheme.onError, onClick = {})
         }
     }
 }

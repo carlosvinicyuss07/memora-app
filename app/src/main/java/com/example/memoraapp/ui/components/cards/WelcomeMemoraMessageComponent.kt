@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,12 +34,16 @@ fun WelcomeMemoraMessageComponent(modifier: Modifier = Modifier) {
             .height(464.dp)
             .width(390.dp)
             .padding(20.dp)
-            .border(width = 0.4.dp, color = MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(12.dp)),
+            .border(
+                width = 0.4.dp,
+                color = MaterialTheme.colorScheme.outline,
+                shape = RoundedCornerShape(12.dp)
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
         Text(
-            text = "Memora",
+            text = stringResource(R.string.welcome_title),
             style = MaterialTheme.typography.titleLarge.copy(fontSize = 36.sp, fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.onBackground,
             modifier = modifier.padding(top = 16.dp)
@@ -57,7 +62,7 @@ fun WelcomeMemoraMessageComponent(modifier: Modifier = Modifier) {
         Spacer(modifier = modifier.size(10.dp))
 
         Text(
-            text = "Registre seus momentos mais preciosos.",
+            text = stringResource(R.string.welcome_subtitulo),
             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center),
             color = MaterialTheme.colorScheme.onBackground,
             modifier = modifier
@@ -66,7 +71,7 @@ fun WelcomeMemoraMessageComponent(modifier: Modifier = Modifier) {
         )
 
         Text(
-            text = "Gerencie suas memórias pessoais com facilidade.",
+            text = stringResource(R.string.welcome_text),
             style = MaterialTheme.typography.bodyMedium.copy(
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center

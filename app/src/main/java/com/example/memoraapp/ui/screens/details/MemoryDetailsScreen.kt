@@ -29,11 +29,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.memoraapp.R
 import com.example.memoraapp.domain.viewmodels.MemoryDetailsViewModel
 import com.example.memoraapp.ui.AppRoute
 import com.example.memoraapp.ui.components.buttons.ExtendedFAB
@@ -62,10 +64,10 @@ fun MemoryDetailsScreen(
                     navController.navigateUp()
 
                 is MemoryDetailsSideEffect.ShowSuccessMessage ->
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
 
                 is MemoryDetailsSideEffect.ShowError ->
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
 
                 is MemoryDetailsSideEffect.NavigateToEdit ->
                     navController.navigate(AppRoute.MemoryFormEdit(memoryId = memoryId))
@@ -108,7 +110,7 @@ fun MemoryDetailsScreenContent(
             .background(MaterialTheme.colorScheme.background),
         topBar = {
             TopbarComponent(
-                screenName = "Detalhes da Memória",
+                screenName = stringResource(R.string.scr_name_detalhes_da_memoria),
                 onBackClick = { onEvent(MemoryDetailsScreenEvent.OnBackClick)}
             )
         },
@@ -126,7 +128,7 @@ fun MemoryDetailsScreenContent(
             ) {
                 ExtendedFAB(
                     icon = Icons.Filled.BorderColor,
-                    text = "Editar",
+                    text = stringResource(R.string.editar),
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary,
                     onClick = { onEvent(MemoryDetailsScreenEvent.OnEditClick(memoryId = state.id)) }
@@ -136,7 +138,7 @@ fun MemoryDetailsScreenContent(
 
                 ExtendedFAB(
                     icon = Icons.Filled.Delete,
-                    text = "Excluir",
+                    text = stringResource(R.string.excluir),
                     containerColor = MaterialTheme.colorScheme.error,
                     contentColor = MaterialTheme.colorScheme.onError,
                     onClick = { onEvent(MemoryDetailsScreenEvent.OnDeleteClick(memoryId = state.id)) }

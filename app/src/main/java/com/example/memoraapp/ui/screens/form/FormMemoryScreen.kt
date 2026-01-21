@@ -33,9 +33,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.memoraapp.R
 import com.example.memoraapp.domain.viewmodels.FormMemoryViewModel
 import com.example.memoraapp.domain.viewmodels.ImagePickerViewModel
 import com.example.memoraapp.ui.AppRoute
@@ -45,7 +47,9 @@ import com.example.memoraapp.ui.components.formfields.LabelDateFormComponent
 import com.example.memoraapp.ui.components.formfields.LabelFormComponent
 import com.example.memoraapp.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
+import com.example.memoraapp.ui.util.UiText
 import com.example.memoraapp.ui.util.rememberImageBitmap
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import java.time.Instant
 import java.time.ZoneId
@@ -78,16 +82,16 @@ fun FormMemoryScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.effects.collect { effect ->
+        viewModel.effects.collectLatest { effect ->
             when (effect) {
                 FormMemorySideEffect.CloseScreen ->
                     navController.navigateUp()
 
                 is FormMemorySideEffect.ShowSuccessMessage ->
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
 
                 is FormMemorySideEffect.ShowError ->
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
 
                 is FormMemorySideEffect.NavigateToPhotoSource ->
                     navController.navigate(AppRoute.PhotoSource)
@@ -148,7 +152,7 @@ fun FormMemoryScreenContent(
             .background(MaterialTheme.colorScheme.background),
         topBar = {
             TopbarComponent(
-                screenName = state.screenName,
+                screenName = state.screenName?.asString().orEmpty(),
                 onBackClick = { onEvent(FormMemoryScreenEvent.OnBackClick)}
             )
         }
@@ -175,7 +179,7 @@ fun FormMemoryScreenContent(
             ) {
                 item {
                     LabelFormComponent(
-                        title = "Título da Memória",
+                        title = stringResource(R.string.titulo_da_memoria),
                         value = state.title,
                         onValueChange = { onEvent(FormMemoryScreenEvent.OnTitleChange(it)) },
                         placeholder = "Dê um titúlo marcante a sua memória"
@@ -186,7 +190,7 @@ fun FormMemoryScreenContent(
 
                 item {
                     LabelFormComponent(
-                        title = "Descrição",
+                        title = stringResource(R.string.descricao),
                         value = state.description,
                         onValueChange = { onEvent(FormMemoryScreenEvent.OnDescriptionChange(it)) },
                         placeholder = "Descreva sua memória",
@@ -198,7 +202,7 @@ fun FormMemoryScreenContent(
 
                 item {
                     LabelDateFormComponent(
-                        title = "Data da Memória",
+                        title = stringResource(R.string.data_da_memoria),
                         value = state.date?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                         placeholder = "Selecione uma data",
                         onClick = { showDatePicker = true }
@@ -209,16 +213,15 @@ fun FormMemoryScreenContent(
 
                 item {
                     ImagePreviewComponent(
-                        imageBitmap = imageBitmap,
-                        onSelectImage = { onEvent(FormMemoryScreenEvent.OnSelectPhotoClick) }
-                    )
+                        imageBitmap = imageBitmap
+                    ) { onEvent(FormMemoryScreenEvent.OnSelectPhotoClick) }
                 }
 
                 item { Spacer(modifier = Modifier.size(6.dp)) }
 
                 item {
                     FilledButtonComponent(
-                        text = state.buttonText,
+                        text = state.buttonText?.asString().orEmpty(),
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.background,
                         onClick = { onEvent(FormMemoryScreenEvent.OnSave) }
@@ -244,7 +247,10 @@ private fun FormMemoryScreenView() {
             color = MaterialTheme.colorScheme.background
         ) {
             FormMemoryScreenContent(
-                state = FormMemoryUiState()
+                state = FormMemoryUiState(
+                    screenName = UiText.StringResource(R.string.nova_memoria),
+                    buttonText = UiText.StringResource(R.string.salvar)
+                )
             ) { }
         }
     }

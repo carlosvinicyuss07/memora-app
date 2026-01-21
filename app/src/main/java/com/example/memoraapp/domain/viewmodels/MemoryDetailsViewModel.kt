@@ -2,12 +2,14 @@ package com.example.memoraapp.domain.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.memoraapp.R
 import com.example.memoraapp.data.FakeMemoryRepository
 import com.example.memoraapp.domain.MemoryRepository
 import com.example.memoraapp.ui.extensions.formattedToString
 import com.example.memoraapp.ui.screens.details.MemoryDetailsScreenEvent
 import com.example.memoraapp.ui.screens.details.MemoryDetailsSideEffect
 import com.example.memoraapp.ui.screens.details.MemoryDetailsUiState
+import com.example.memoraapp.ui.util.UiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -60,7 +62,7 @@ class MemoryDetailsViewModel(
                 }
                 .onFailure {
                     _uiState.update { it.copy(isLoading = false) }
-                    _effects.send(MemoryDetailsSideEffect.ShowError("Erro ao carregar memória"))
+                    _effects.send(MemoryDetailsSideEffect.ShowError(UiText.StringResource(R.string.erro_ao_carregar_memoria)))
                 }
         }
     }
@@ -81,11 +83,11 @@ class MemoryDetailsViewModel(
                 repository.delete(id)
             }
                 .onSuccess {
-                    _effects.send(MemoryDetailsSideEffect.ShowSuccessMessage("Excluído com sucesso!"))
+                    _effects.send(MemoryDetailsSideEffect.ShowSuccessMessage(UiText.StringResource(R.string.excluido_com_sucesso)))
                     _effects.send(MemoryDetailsSideEffect.CloseScreen)
                 }
                 .onFailure {
-                    _effects.send(MemoryDetailsSideEffect.ShowError("Erro ao tentar excluir"))
+                    _effects.send(MemoryDetailsSideEffect.ShowError(UiText.StringResource(R.string.erro_ao_tentar_excluir)))
                 }
         }
     }

@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,7 +21,6 @@ import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
 fun ImagePreviewComponent(
-    modifier: Modifier = Modifier,
     imageBitmap: ImageBitmap?,
     onSelectImage: () -> Unit
 ) {
@@ -38,7 +38,7 @@ fun ImagePreviewComponent(
         Spacer(modifier = Modifier.height(2.dp))
 
         Text(
-            text = "Pré-visualização da Imagem",
+            text = stringResource(R.string.pre_visualizacao_da_imagem),
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.onSurface,
         )
@@ -51,7 +51,7 @@ fun ImagePreviewComponent(
         Spacer(modifier = Modifier.height(15.dp))
 
         FilledButtonComponent(
-            text = "Selecionar Foto",
+            text = stringResource(R.string.selecionar_foto),
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
             contentColor = MaterialTheme.colorScheme.onBackground,
             onClick = onSelectImage
@@ -70,9 +70,8 @@ private fun ImagePreviewComponentPreview() {
     MemoraAppTheme {
         Surface {
             ImagePreviewComponent(
-                imageBitmap = null,
-                onSelectImage = {}
-            )
+                imageBitmap = null
+            ) {}
         }
     }
 }

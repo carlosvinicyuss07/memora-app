@@ -1,7 +1,5 @@
 package com.example.memoraapp.ui.screens.details
 
-import android.net.Uri
-
 data class MemoryDetailsUiState(
     val id: Int? = null,
     val title: String = "",

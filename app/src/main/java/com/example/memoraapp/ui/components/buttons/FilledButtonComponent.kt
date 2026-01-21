@@ -13,8 +13,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.memoraapp.R
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
@@ -43,7 +45,7 @@ private fun FilledButtonComponentView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            FilledButtonComponent(text = "Selecionar Foto", containerColor = MaterialTheme.colorScheme.surfaceVariant, contentColor = MaterialTheme.colorScheme.onBackground, onClick = {})
+            FilledButtonComponent(text = stringResource(R.string.selecionar_foto), containerColor = MaterialTheme.colorScheme.surfaceVariant, contentColor = MaterialTheme.colorScheme.onBackground, onClick = {})
         }
     }
 }

@@ -3,12 +3,14 @@ package com.example.memoraapp.domain.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.memoraapp.R
 import com.example.memoraapp.data.FakeMemoryRepository
 import com.example.memoraapp.domain.Memory
 import com.example.memoraapp.domain.MemoryRepository
 import com.example.memoraapp.ui.screens.form.FormMemoryScreenEvent
 import com.example.memoraapp.ui.screens.form.FormMemorySideEffect
 import com.example.memoraapp.ui.screens.form.FormMemoryUiState
+import com.example.memoraapp.ui.util.UiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -58,12 +60,27 @@ class FormMemoryViewModel(
     }
 
     private fun handleOnInit(id: Int?) {
-        if (id == null) return
+        if (id == null) {
+            _uiState.update {
+                it.copy(
+                    screenName = UiText.StringResource(R.string.nova_memoria),
+                    buttonText = UiText.StringResource(R.string.salvar)
+                )
+            }
+            return
+        }
 
         if (savedStateHandle.get<Boolean>("initialized") == true) return
         savedStateHandle["initialized"] = true
 
-        _uiState.update { it.copy(isLoading = true, isEditMode = true, screenName = "Editar Memória" , buttonText = "Atualizar") }
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                isEditMode = true,
+                screenName = UiText.StringResource(R.string.scr_name_editar_memoria),
+                buttonText = UiText.StringResource(R.string.atualizar)
+            )
+        }
 
         viewModelScope.launch {
             runCatching { repository.getMemoryById(id) }
@@ -82,7 +99,7 @@ class FormMemoryViewModel(
                     }
                 }
                 .onFailure {
-                    _effects.send(FormMemorySideEffect.ShowError("Erro ao carregar memória"))
+                    _effects.send(FormMemorySideEffect.ShowError(UiText.StringResource(R.string.erro_ao_carregar_memoria)))
                 }
         }
     }
@@ -99,21 +116,21 @@ class FormMemoryViewModel(
 
         if (state.title.isBlank()) {
             viewModelScope.launch {
-                _effects.send(FormMemorySideEffect.ShowError("Título é obrigatório"))
+                _effects.send(FormMemorySideEffect.ShowError(UiText.StringResource(R.string.erro_titulo_obrigatorio)))
             }
             return
         }
 
         if (state.date == null) {
             viewModelScope.launch {
-                _effects.send(FormMemorySideEffect.ShowError("Selecione uma data"))
+                _effects.send(FormMemorySideEffect.ShowError(UiText.StringResource(R.string.selecione_uma_data)))
             }
             return
         }
 
         if (state.imageUri == null) {
             viewModelScope.launch {
-                _effects.send(FormMemorySideEffect.ShowError("É obrigatório ter uma imagem para salvar uma memória!"))
+                _effects.send(FormMemorySideEffect.ShowError(UiText.StringResource(R.string.erro_imagem_obrigatoria)))
             }
             return
         }
@@ -145,14 +162,21 @@ class FormMemoryViewModel(
                     if (!state.isEditMode) {
                         imagePickerViewModel.clear()
                     }
-                    _effects.send(FormMemorySideEffect.ShowSuccessMessage(
-                        if (state.isEditMode) "Atualizado com sucesso" else "Salvo com sucesso")
+                    _effects.send(
+                        FormMemorySideEffect.ShowSuccessMessage(
+                            if (state.isEditMode) UiText.StringResource(R.string.atualizado_com_sucesso)
+                            else
+                                UiText.StringResource(R.string.salvo_com_sucesso)
+                        )
                     )
                     _effects.send(FormMemorySideEffect.CloseScreen)
                 }
                 .onFailure {
-                    _effects.send(FormMemorySideEffect.ShowError(
-                        if (state.isEditMode) "Erro ao atualizar" else "Erro ao salvar")
+                    _effects.send(
+                        FormMemorySideEffect.ShowError(
+                            if (state.isEditMode) UiText.StringResource(R.string.erro_ao_atualizar)
+                            else UiText.StringResource(R.string.erro_ao_salvar)
+                        )
                     )
                 }
         }

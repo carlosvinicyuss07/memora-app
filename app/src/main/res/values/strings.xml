@@ -1,3 +1,35 @@
 <resources>
     <string name="app_name">MemoraApp</string>
+    <string name="permissao_de_camera_necessaria">Permissão de câmera necessária</string>
+    <string name="scr_name_detalhes_da_memoria">Detalhes da Memória</string>
+    <string name="editar">Editar</string>
+    <string name="excluir">Excluir</string>
+    <string name="nenhuma_imagem_selecionada">Nenhuma imagem selecionada</string>
+    <string name="scr_name_minhas_memorias">Minhas Memórias</string>
+    <string name="nova_memoria">Nova Memória</string>
+    <string name="scr_name_editar_memoria">Editar Memória</string>
+    <string name="pre_visualizacao_da_imagem">Pré-visualização da Imagem</string>
+    <string name="escolha_a_fonte_da_imagem">Escolha a Fonte da Imagem</string>
+    <string name="tirar_foto">Tirar Foto</string>
+    <string name="escolher_da_galeria">Escolher da Galeria</string>
+    <string name="selecionar_foto">Selecionar Foto</string>
+    <string name="welcome_title">Memora</string>
+    <string name="welcome_subtitulo">Registre seus momentos mais preciosos.</string>
+    <string name="welcome_text">Gerencie suas memórias pessoais com facilidade.</string>
+    <string name="atualizar">Atualizar</string>
+    <string name="salvar">Salvar</string>
+    <string name="titulo_da_memoria">Título da Memória</string>
+    <string name="descricao">Descrição</string>
+    <string name="data_da_memoria">Data da Memória</string>
+    <string name="erro_ao_carregar_memoria">Erro ao carregar memória</string>
+    <string name="erro_titulo_obrigatorio">Título é obrigatório</string>
+    <string name="selecione_uma_data">Selecione uma data</string>
+    <string name="erro_imagem_obrigatoria">É obrigatório ter uma imagem para salvar uma memória!</string>
+    <string name="atualizado_com_sucesso">Atualizado com sucesso</string>
+    <string name="salvo_com_sucesso">Salvo com sucesso</string>
+    <string name="erro_ao_atualizar">Erro ao atualizar</string>
+    <string name="erro_ao_salvar">Erro ao salvar</string>
+    <string name="excluido_com_sucesso">Excluído com sucesso!</string>
+    <string name="erro_ao_tentar_excluir">Erro ao tentar excluir</string>
+    <string name="bem_vindo">Bem-vindo</string>
 </resources>

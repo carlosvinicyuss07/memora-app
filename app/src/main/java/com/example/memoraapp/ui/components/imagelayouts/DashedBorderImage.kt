@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -80,7 +81,7 @@ fun DashedBorderImage(
                 contentScale = ContentScale.Crop
             )
         } else {
-            Text(text = "Nenhuma imagem selecionada", modifier = Modifier.padding(8.dp))
+            Text(text = stringResource(R.string.nenhuma_imagem_selecionada), modifier = Modifier.padding(8.dp))
         }
     }
 }

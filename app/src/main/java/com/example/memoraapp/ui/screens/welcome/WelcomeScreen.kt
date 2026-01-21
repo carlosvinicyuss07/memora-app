@@ -1,6 +1,5 @@
 package com.example.memoraapp.ui.screens.welcome
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -21,14 +20,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.memoraapp.R
 import com.example.memoraapp.ui.components.buttons.ActionButtonForMyMemories
 import com.example.memoraapp.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.ui.components.cards.WelcomeMemoraMessageComponent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WelcomeScreen(onStartClick: () -> Unit) {
 
@@ -40,7 +40,7 @@ fun WelcomeScreen(onStartClick: () -> Unit) {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         topBar = {
-            TopbarComponent(icon = Icons.Filled.Home, screenName = "Bem-vindo")
+            TopbarComponent(icon = Icons.Filled.Home, screenName = stringResource(R.string.bem_vindo))
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->

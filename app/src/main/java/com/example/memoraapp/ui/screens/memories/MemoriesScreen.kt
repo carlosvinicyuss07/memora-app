@@ -25,9 +25,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.memoraapp.R
 import com.example.memoraapp.domain.viewmodels.ImagePickerViewModel
 import com.example.memoraapp.domain.viewmodels.MemoriesViewModel
 import com.example.memoraapp.ui.AppRoute
@@ -63,7 +65,7 @@ fun MemoriesScreen(
                     navController.navigateUp()
 
                 is MemoriesScreenSideEffect.ShowError ->
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -82,24 +84,18 @@ fun MemoriesScreenContent(
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    val modifierFab = if (isPortrait) {
-        Modifier.padding(bottom = 50.dp)
-    } else {
-        Modifier.padding(bottom = 50.dp)
-    }
-
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         topBar = {
-            TopbarComponent(screenName = "Minhas Memórias", onBackClick = { onEvent(MemoriesScreenEvent.OnBackClick) } )
+            TopbarComponent(screenName = stringResource(R.string.scr_name_minhas_memorias), onBackClick = { onEvent(MemoriesScreenEvent.OnBackClick) } )
         },
         floatingActionButton = {
             CircleShapeExtendedFAB(
                 icon = Icons.Filled.Add,
                 contentDescription = "FAB Nova Memória",
-                text = "Nova Memória",
+                text = stringResource(R.string.nova_memoria),
                 onClick = { onEvent(MemoriesScreenEvent.OnAddMemoryClick) }
             )
         },

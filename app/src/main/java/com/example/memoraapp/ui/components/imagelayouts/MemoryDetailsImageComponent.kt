@@ -15,8 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.memoraapp.R
 import com.example.memoraapp.ui.theme.MemoraAppTheme
 
 @Composable
@@ -39,11 +41,11 @@ fun MemoryDetailsImageComponent(
                     .fillMaxSize()
                     .padding(6.dp)
                     .clip(RoundedCornerShape(10.dp)),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.None
             )
         } else {
             Text(
-                text = "Nenhuma imagem selecionada",
+                text = stringResource(R.string.nenhuma_imagem_selecionada),
                 modifier = Modifier
                     .padding(8.dp)
             )

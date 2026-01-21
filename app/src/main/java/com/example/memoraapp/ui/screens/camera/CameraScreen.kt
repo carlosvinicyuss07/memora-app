@@ -40,13 +40,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
+import com.example.memoraapp.R
 import com.example.memoraapp.domain.viewmodels.CameraViewModel
 import com.example.memoraapp.domain.viewmodels.ImagePickerViewModel
-import com.example.memoraapp.ui.AppRoute
 import com.example.memoraapp.ui.components.buttons.CaptureButton
 import com.example.memoraapp.ui.components.buttons.CircleShapeSmallFAB
 import com.example.memoraapp.ui.components.imagelayouts.CameraPreview
@@ -68,8 +69,9 @@ fun CameraScreen(
 
     val activity = LocalContext.current as Activity
 
-    val state by viewModel.state.collectAsState()
     val context = LocalContext.current
+
+    val currentLensFacing = viewModel.lensFacing
 
     var imageCapture by remember { mutableStateOf<ImageCapture?>(null) }
 
@@ -105,7 +107,7 @@ fun CameraScreen(
                 }
 
                 is CameraSideEffect.ShowError ->
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -130,9 +132,10 @@ fun CameraScreen(
                 },
                 preview = {
                     CameraPreview(
-                        lensFacing = state.lensFacing,
-                        onImageCaptureReady = { imageCapture = it }
-                    )
+                        lensFacing = currentLensFacing
+                    ) {
+                        imageCapture = it
+                    }
                 }
             )
         }
@@ -142,7 +145,7 @@ fun CameraScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Permissão de câmera necessária")
+                Text(stringResource(R.string.permissao_de_camera_necessaria))
             }
         }
     }

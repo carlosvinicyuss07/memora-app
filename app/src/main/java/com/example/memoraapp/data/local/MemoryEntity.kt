@@ -1,5 +1,6 @@
 package com.example.memoraapp.data.local
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -11,5 +12,7 @@ data class MemoryEntity(
     val description: String,
     val dateIso: String,
     val imageUri: String?,
-    val category: String
+
+    @ColumnInfo(defaultValue = "")
+    val categoria: String
 )

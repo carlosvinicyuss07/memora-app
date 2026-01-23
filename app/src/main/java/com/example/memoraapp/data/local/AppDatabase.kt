@@ -16,7 +16,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         AutoMigration (
             from = 2,
             to = 3,
-            spec = RenameCategoryToCategoraSpec::class
+            spec = RenameCategoryToCategoriaSpec::class
         )
     ]
 )
@@ -24,8 +24,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun memoryDao(): MemoryDao
 }
 
-@RenameColumn(tableName = "memories", fromColumnName = "category", toColumnName = "category")
-class RenameCategoryToCategoraSpec : AutoMigrationSpec
+@RenameColumn(tableName = "memories", fromColumnName = "category", toColumnName = "categori")
+class RenameCategoryToCategoriaSpec : AutoMigrationSpec
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(db: SupportSQLiteDatabase) {

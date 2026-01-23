@@ -19,5 +19,6 @@ fun Memory.toEntity(): MemoryEntity =
         title = title,
         description = description,
         dateIso = date.toString(),
-        imageUri = imageUri
+        imageUri = imageUri,
+        category = "categoria"
     )

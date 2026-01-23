@@ -10,5 +10,6 @@ data class MemoryEntity(
     val title: String,
     val description: String,
     val dateIso: String,
-    val imageUri: String?
+    val imageUri: String?,
+    val category: String
 )

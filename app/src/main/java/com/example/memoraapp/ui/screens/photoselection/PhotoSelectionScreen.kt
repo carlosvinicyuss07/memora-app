@@ -1,5 +1,6 @@
 package com.example.memoraapp.ui.screens.photoselection
 
+import android.content.Intent
 import android.content.res.Configuration
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.example.memoraapp.R
 import com.example.memoraapp.domain.viewmodels.ImagePickerViewModel
@@ -33,6 +35,7 @@ import com.example.memoraapp.domain.viewmodels.PhotoSelectionViewModel
 import com.example.memoraapp.ui.AppRoute
 import com.example.memoraapp.ui.components.buttons.SourceImageOptionsComponent
 import com.example.memoraapp.ui.theme.MemoraAppTheme
+import com.example.memoraapp.ui.util.copyUriToCache
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -42,12 +45,16 @@ fun PhotoSelectionScreen(
     viewModel: PhotoSelectionViewModel = koinViewModel()
 ) {
 
+    val context = LocalContext.current
+
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         if (uri != null) {
 
-            imagePickerViewModel.setSelectedImage(uri)
+            val localUri = copyUriToCache(context, uri)
+
+            imagePickerViewModel.setSelectedImage(localUri.toUri())
 
             navController.popBackStack()
         }

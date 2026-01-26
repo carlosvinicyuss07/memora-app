@@ -1,5 +1,6 @@
 package com.example.memoraapp.ui.util
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.ImageBitmap
@@ -11,11 +12,19 @@ fun rememberImageBitmap(uri: String?): ImageBitmap? {
     val context = LocalContext.current
 
     return remember(uri) {
-        uri?.let {
+        if (uri == null) return@remember null
+
+        try {
             uriToImageBitmap(
                 context,
-                it.toUri()
+                uri.toUri()
             )
+        } catch (e: SecurityException) {
+            Log.e("ImageLoader", "Sem permissão para acessar a URI: $uri", e)
+            null
+        } catch (e: Exception) {
+            Log.e("ImageLoader", "Erro inesperado ao carregar $uri", e)
+            null
         }
     }
 }

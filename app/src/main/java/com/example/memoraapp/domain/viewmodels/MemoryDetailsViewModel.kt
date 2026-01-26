@@ -3,7 +3,7 @@ package com.example.memoraapp.domain.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.memoraapp.R
-import com.example.memoraapp.data.FakeMemoryRepository
+import com.example.memoraapp.data.repository.FakeMemoryRepository
 import com.example.memoraapp.domain.MemoryRepository
 import com.example.memoraapp.ui.extensions.formattedToString
 import com.example.memoraapp.ui.screens.details.MemoryDetailsScreenEvent
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MemoryDetailsViewModel(
-    private val repository: MemoryRepository = FakeMemoryRepository()
+    private val repository: MemoryRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MemoryDetailsUiState())

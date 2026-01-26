@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.memoraapp.R
-import com.example.memoraapp.data.FakeMemoryRepository
+import com.example.memoraapp.data.repository.FakeMemoryRepository
 import com.example.memoraapp.domain.Memory
 import com.example.memoraapp.domain.MemoryRepository
 import com.example.memoraapp.ui.screens.form.FormMemoryScreenEvent
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class FormMemoryViewModel(
-    private val repository: MemoryRepository = FakeMemoryRepository(),
+    private val repository: MemoryRepository,
     private val imagePickerViewModel: ImagePickerViewModel,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {

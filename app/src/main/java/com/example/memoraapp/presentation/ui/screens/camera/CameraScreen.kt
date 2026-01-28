@@ -96,7 +96,7 @@ fun CameraScreen(
             when (effect) {
                 is CameraSideEffect.ReturnPhoto -> {
 
-                    imagePickerViewModel.setSelectedImage(effect.uri.toUri())
+                    imagePickerViewModel.setSelectedImage(effect.uri)
 
                     // Remove Camera
                     navController.popBackStack()

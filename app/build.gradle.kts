@@ -78,6 +78,10 @@ dependencies {
 
     ksp(libs.room.compiler)
 
+    // Auxiliares nos testes unitários
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.test.core)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

@@ -53,7 +53,7 @@ fun PhotoSelectionScreen(
 
             val localUri = copyUriToCache(context, uri)
 
-            imagePickerViewModel.setSelectedImage(localUri.toUri())
+            imagePickerViewModel.setSelectedImage(localUri)
 
             navController.popBackStack()
         }

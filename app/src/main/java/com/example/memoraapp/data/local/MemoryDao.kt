@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MemoryDao {
 
-    @Query("SELECT * FROM memories ORDER BY dateIso DESC")
+    @Query("SELECT * FROM memories ORDER BY date DESC")
     fun getAll(): Flow<List<MemoryEntity>>
 
     @Query("SELECT * FROM memories WHERE id = :id")

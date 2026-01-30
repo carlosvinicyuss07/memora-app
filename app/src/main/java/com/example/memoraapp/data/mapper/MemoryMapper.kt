@@ -9,7 +9,7 @@ fun MemoryEntity.toDomain(): Memory =
         id = id,
         title = title,
         description = description,
-        date = LocalDate.parse(dateIso),
+        date = LocalDate.parse(date),
         imageUri = imageUri
     )
 
@@ -18,6 +18,6 @@ fun Memory.toEntity(): MemoryEntity =
         id = id,
         title = title,
         description = description,
-        dateIso = date.toString(),
+        date = date.toString(),
         imageUri = imageUri
     )

@@ -1,7 +1,9 @@
 package com.example.memoraapp.presentation.viewmodels
 
 import androidx.lifecycle.SavedStateHandle
+import com.example.memoraapp.R
 import com.example.memoraapp.data.repository.FakeMemoryRepository
+import com.example.memoraapp.data.repository.FakeMemoryRepositoryWithError
 import com.example.memoraapp.presentation.ui.screens.form.FormMemoryScreenEvent
 import com.example.memoraapp.presentation.ui.screens.form.FormMemorySideEffect
 import com.example.memoraapp.presentation.ui.util.UiText
@@ -9,6 +11,7 @@ import com.example.memoraapp.util.MainDispatcherRule
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNull
 import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -17,6 +20,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.time.LocalDate
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class FormMemoryViewModelTest {
 
     @get:Rule
@@ -60,7 +64,10 @@ class FormMemoryViewModelTest {
         // THEN
         val effect = viewModel.effects.first()
 
-        assertTrue(effect is FormMemorySideEffect.ShowError)
+        val errorEffect = effect as? FormMemorySideEffect.ShowError ?: error("Esperado ShowError, mas foi ${effect::class.simpleName}")
+
+        val message = errorEffect.message as UiText.StringResource
+        assertEquals(R.string.erro_titulo_obrigatorio, message.resId)
     }
 
     @Test
@@ -75,7 +82,10 @@ class FormMemoryViewModelTest {
         // THEN
         val effect = viewModel.effects.first()
 
-        assertTrue(effect is FormMemorySideEffect.ShowError)
+        val errorEffect = effect as? FormMemorySideEffect.ShowError ?: error("Esperado ShowError, mas foi ${effect::class.simpleName}")
+
+        val message = errorEffect.message as UiText.StringResource
+        assertEquals(R.string.erro_selecione_uma_data, message.resId)
     }
 
     @Test
@@ -90,7 +100,10 @@ class FormMemoryViewModelTest {
         // THEN
         val effect = viewModel.effects.first()
 
-        assertTrue(effect is FormMemorySideEffect.ShowError)
+        val errorEffect = effect as? FormMemorySideEffect.ShowError ?: error("Esperado ShowError, mas foi ${effect::class.simpleName}")
+
+        val message = errorEffect.message as UiText.StringResource
+        assertEquals(R.string.erro_imagem_obrigatoria, message.resId)
     }
 
     @Test
@@ -115,12 +128,15 @@ class FormMemoryViewModelTest {
 
     @Test
     fun `quando data da memoria muda deve atualizar uiState`() = runTest {
+        // GIVEN
+        val date = LocalDate.of(2026, 1, 1)
+
         // WHEN
-        viewModel.onEvent(FormMemoryScreenEvent.OnDateChange(LocalDate.now()))
+        viewModel.onEvent(FormMemoryScreenEvent.OnDateChange(date))
 
         // THEN
         val state = viewModel.uiState.value
-        assertEquals(LocalDate.now(), state.date)
+        assertEquals(date, state.date)
     }
 
     @Test
@@ -178,8 +194,65 @@ class FormMemoryViewModelTest {
     }
 
     @Test
+    fun `quando salvar nova memoria e repositorio falhar deve emitir erro ao salvar`() = runTest {
+        // GIVEN
+        val errorRepository = FakeMemoryRepositoryWithError()
+
+        viewModel = FormMemoryViewModel(
+            repository = errorRepository,
+            imagePickerViewModel = imagePickerViewModel,
+            savedStateHandle = savedStateHandle
+        )
+
+        viewModel.onEvent(FormMemoryScreenEvent.OnTitleChange("Teste"))
+        viewModel.onEvent(FormMemoryScreenEvent.OnDateChange(LocalDate.now()))
+        viewModel.onEvent(FormMemoryScreenEvent.OnImageSelected("uri_teste"))
+
+        // WHEN
+        viewModel.onEvent(FormMemoryScreenEvent.OnSave)
+        advanceUntilIdle()
+
+        // THEN
+        val effect = viewModel.effects.first() as FormMemorySideEffect.ShowError
+        val message = effect.message as UiText.StringResource
+
+        assertEquals(R.string.erro_ao_salvar, message.resId)
+    }
+
+    @Test
+    fun `ao salvar nova memoria com sucesso deve limpar imagem selecionada`() = runTest {
+        imagePickerViewModel.setSelectedImage("uri_teste")
+
+        viewModel.onEvent(FormMemoryScreenEvent.OnTitleChange("Teste"))
+        viewModel.onEvent(FormMemoryScreenEvent.OnDateChange(LocalDate.now()))
+        viewModel.onEvent(FormMemoryScreenEvent.OnImageSelected("uri_teste"))
+
+        viewModel.onEvent(FormMemoryScreenEvent.OnSave)
+        advanceUntilIdle()
+
+        assertNull(imagePickerViewModel.selectedImageUri.value)
+    }
+
+    @Test
+    fun `ao atualizar memoria nao deve limpar imagem`() = runTest {
+        imagePickerViewModel.setSelectedImage("uri_teste")
+
+        viewModel.onEvent(FormMemoryScreenEvent.OnInit(1)) // id ! null para cadastrar nova memória
+        advanceUntilIdle()
+
+        viewModel.onEvent(FormMemoryScreenEvent.OnTitleChange("Editado"))
+        viewModel.onEvent(FormMemoryScreenEvent.OnDateChange(LocalDate.now()))
+        viewModel.onEvent(FormMemoryScreenEvent.OnImageSelected("uri_teste"))
+
+        viewModel.onEvent(FormMemoryScreenEvent.OnSave)
+        advanceUntilIdle()
+
+        assertEquals("uri_teste", imagePickerViewModel.selectedImageUri.value)
+    }
+
+    @Test
     fun `ao voltar deve fechar tela`() = runTest {
-        imagePickerViewModel.setSelectedImage("teste")
+        imagePickerViewModel.setSelectedImage("uri_teste")
 
         viewModel.onEvent(FormMemoryScreenEvent.OnBackClick)
 
@@ -189,7 +262,7 @@ class FormMemoryViewModelTest {
 
     @Test
     fun `ao voltar deve limpar imagem selecionada`() = runTest {
-        imagePickerViewModel.setSelectedImage("teste")
+        imagePickerViewModel.setSelectedImage("uri_teste")
 
         viewModel.onEvent(FormMemoryScreenEvent.OnBackClick)
 

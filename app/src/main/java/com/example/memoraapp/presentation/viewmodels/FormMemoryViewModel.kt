@@ -122,7 +122,7 @@ class FormMemoryViewModel(
 
         if (state.date == null) {
             viewModelScope.launch {
-                _effects.send(FormMemorySideEffect.ShowError(UiText.StringResource(R.string.selecione_uma_data)))
+                _effects.send(FormMemorySideEffect.ShowError(UiText.StringResource(R.string.erro_selecione_uma_data)))
             }
             return
         }

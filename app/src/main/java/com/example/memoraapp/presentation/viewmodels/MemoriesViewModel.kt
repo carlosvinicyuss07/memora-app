@@ -21,24 +21,20 @@ class MemoriesViewModel(
     private val _uiState = MutableStateFlow(MemoriesScreenState())
     val uiState = _uiState.asStateFlow()
 
-    private val _events = Channel<MemoriesScreenSideEffect>(Channel.BUFFERED)
-    val events = _events.receiveAsFlow()
-
-    init {
-        observeMemories()
-    }
+    private val _effects = Channel<MemoriesScreenSideEffect>(Channel.BUFFERED)
+    val effects = _effects.receiveAsFlow()
 
     fun onEvent(event: MemoriesScreenEvent) {
         when (event) {
             MemoriesScreenEvent.OnInit -> handleOnInit()
-            MemoriesScreenEvent.OnRefresh -> handleOnRefresh()
             MemoriesScreenEvent.OnAddMemoryClick -> handleOnClickAdd()
             MemoriesScreenEvent.OnBackClick -> handleOnBackClick()
             is MemoriesScreenEvent.OnMemoryClick -> handleOnClickMemory(event.id)
         }
     }
 
-    private fun observeMemories() {
+    private fun handleOnInit() {
+        _uiState.update { it.copy(isLoading = true, erroMessage = null) }
         viewModelScope.launch {
             repository.getAllMemories()
                 .collect { list ->
@@ -52,27 +48,21 @@ class MemoriesViewModel(
         }
     }
 
-    private fun handleOnInit() {
-        _uiState.update { it.copy(isLoading = true, erroMessage = null) }
-    }
-
-    private fun handleOnRefresh() = handleOnInit()
-
     private fun handleOnClickAdd() {
         viewModelScope.launch {
-            _events.send(MemoriesScreenSideEffect.NavigateToCreate)
+            _effects.send(MemoriesScreenSideEffect.NavigateToCreate)
         }
     }
 
     private fun handleOnBackClick() {
         viewModelScope.launch {
-            _events.send(MemoriesScreenSideEffect.NavigateToPreviousScreen)
+            _effects.send(MemoriesScreenSideEffect.NavigateToPreviousScreen)
         }
     }
 
     private fun handleOnClickMemory(id: Int) {
         viewModelScope.launch {
-            _events.send(MemoriesScreenSideEffect.NavigateToDetail(id))
+            _effects.send(MemoriesScreenSideEffect.NavigateToDetail(id))
         }
     }
 

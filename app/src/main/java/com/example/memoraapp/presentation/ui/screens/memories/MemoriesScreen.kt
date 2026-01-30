@@ -51,7 +51,7 @@ fun MemoriesScreen(
     LaunchedEffect(Unit) {
         viewModel.onEvent(MemoriesScreenEvent.OnInit)
 
-        viewModel.events.collect { effect ->
+        viewModel.effects.collect { effect ->
             when (effect) {
                 is MemoriesScreenSideEffect.NavigateToDetail ->
                     navController.navigate(AppRoute.MemoryDetails(memoryId = effect.id))

@@ -75,7 +75,7 @@ class FakeMemoryRepository(
 
     private fun failIf(expected: RepositoryFailure) {
         if (failure == expected) {
-            throw FakeRepoistoryException(expected)
+            throw FakeRepositoryException(expected)
         }
     }
 

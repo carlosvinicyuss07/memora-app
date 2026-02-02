@@ -1,5 +1,5 @@
 package com.example.memoraapp.data.repository
 
-class FakeRepoistoryException(
+class FakeRepositoryException(
     failure: RepositoryFailure
 ) : RuntimeException("Fake failure: $failure")

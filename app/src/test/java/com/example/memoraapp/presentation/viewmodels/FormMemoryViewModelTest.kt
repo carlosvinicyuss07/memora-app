@@ -2,19 +2,23 @@ package com.example.memoraapp.presentation.viewmodels
 
 import androidx.lifecycle.SavedStateHandle
 import com.example.memoraapp.R
-import com.example.memoraapp.data.repository.FakeMemoryRepository
+import com.example.memoraapp.data.repository.FakeRepositoryException
 import com.example.memoraapp.data.repository.RepositoryFailure
+import com.example.memoraapp.domain.Memory
+import com.example.memoraapp.domain.MemoryRepository
 import com.example.memoraapp.presentation.ui.screens.form.FormMemoryScreenEvent
 import com.example.memoraapp.presentation.ui.screens.form.FormMemorySideEffect
 import com.example.memoraapp.presentation.ui.util.UiText
 import com.example.memoraapp.util.MainDispatcherRule
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNull
-import junit.framework.TestCase.assertTrue
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.just
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,14 +30,14 @@ class FormMemoryViewModelTest {
     @get:Rule
     val dispatcherRule = MainDispatcherRule()
 
-    private lateinit var repository: FakeMemoryRepository
+    private lateinit var repository: MemoryRepository
     private lateinit var imagePickerViewModel: ImagePickerViewModel
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var viewModel: FormMemoryViewModel
 
     @Before
     fun setup() {
-        repository = FakeMemoryRepository()
+        repository = mockk()
         imagePickerViewModel = ImagePickerViewModel()
         savedStateHandle = SavedStateHandle()
 
@@ -41,6 +45,26 @@ class FormMemoryViewModelTest {
             repository = repository,
             imagePickerViewModel = imagePickerViewModel,
             savedStateHandle = savedStateHandle
+        )
+    }
+
+    private fun fillValidForm(isEditMode: Boolean = false) {
+        if (isEditMode) {
+            viewModel.onEvent(FormMemoryScreenEvent.OnTitleChange("Editado"))
+        } else {
+            viewModel.onEvent(FormMemoryScreenEvent.OnTitleChange("Teste"))
+        }
+        viewModel.onEvent(FormMemoryScreenEvent.OnDateChange(LocalDate.now()))
+        viewModel.onEvent(FormMemoryScreenEvent.OnImageSelected("uri_teste"))
+    }
+
+    private fun generateOldMemory(): Memory {
+        return Memory(
+            id = 1,
+            title = "Antigo",
+            description = "Desc",
+            date = LocalDate.now(),
+            imageUri = "uri_teste"
         )
     }
 
@@ -160,9 +184,9 @@ class FormMemoryViewModelTest {
     @Test
     fun `quando salvar nova memoria com dados validos deve exibir mensagem de sucesso`() = runTest {
         // GIVEN
-        viewModel.onEvent(FormMemoryScreenEvent.OnTitleChange("Teste"))
-        viewModel.onEvent(FormMemoryScreenEvent.OnDateChange(LocalDate.now()))
-        viewModel.onEvent(FormMemoryScreenEvent.OnImageSelected("uri_teste"))
+        coEvery { repository.insert(any()) } just Runs
+
+        fillValidForm()
 
         // WHEN
         viewModel.onEvent(FormMemoryScreenEvent.OnSave)
@@ -171,16 +195,18 @@ class FormMemoryViewModelTest {
         advanceUntilIdle()
 
         // THEN
-        val effect = viewModel.effects.first()
-        assertTrue(effect is FormMemorySideEffect.ShowSuccessMessage)
+        val effect = viewModel.effects.first() as FormMemorySideEffect.ShowSuccessMessage
+        val message = effect.message as UiText.StringResource
+
+        assertEquals(R.string.salvo_com_sucesso, message.resId)
     }
 
     @Test
     fun `quando salvar nova memoria com dados validos deve fechar tela`() = runTest {
         // GIVEN
-        viewModel.onEvent(FormMemoryScreenEvent.OnTitleChange("Teste"))
-        viewModel.onEvent(FormMemoryScreenEvent.OnDateChange(LocalDate.now()))
-        viewModel.onEvent(FormMemoryScreenEvent.OnImageSelected("uri_teste"))
+        coEvery { repository.insert(any()) } just Runs
+
+        fillValidForm()
 
         // WHEN
         viewModel.onEvent(FormMemoryScreenEvent.OnSave)
@@ -196,17 +222,11 @@ class FormMemoryViewModelTest {
     @Test
     fun `quando salvar nova memoria e repositorio falhar deve emitir erro ao salvar`() = runTest {
         // GIVEN
-        val errorRepository = FakeMemoryRepository(failure = RepositoryFailure.Insert)
-
-        viewModel = FormMemoryViewModel(
-            repository = errorRepository,
-            imagePickerViewModel = imagePickerViewModel,
-            savedStateHandle = savedStateHandle
+        coEvery { repository.insert(any()) } throws FakeRepositoryException(
+            RepositoryFailure.Insert
         )
 
-        viewModel.onEvent(FormMemoryScreenEvent.OnTitleChange("Teste"))
-        viewModel.onEvent(FormMemoryScreenEvent.OnDateChange(LocalDate.now()))
-        viewModel.onEvent(FormMemoryScreenEvent.OnImageSelected("uri_teste"))
+        fillValidForm()
 
         // WHEN
         viewModel.onEvent(FormMemoryScreenEvent.OnSave)
@@ -221,11 +241,10 @@ class FormMemoryViewModelTest {
 
     @Test
     fun `ao salvar nova memoria com sucesso deve limpar imagem selecionada`() = runTest {
+        coEvery { repository.insert(any()) } just Runs
         imagePickerViewModel.setSelectedImage("uri_teste")
 
-        viewModel.onEvent(FormMemoryScreenEvent.OnTitleChange("Teste"))
-        viewModel.onEvent(FormMemoryScreenEvent.OnDateChange(LocalDate.now()))
-        viewModel.onEvent(FormMemoryScreenEvent.OnImageSelected("uri_teste"))
+        fillValidForm()
 
         viewModel.onEvent(FormMemoryScreenEvent.OnSave)
         advanceUntilIdle()
@@ -234,15 +253,90 @@ class FormMemoryViewModelTest {
     }
 
     @Test
-    fun `ao atualizar memoria nao deve limpar imagem`() = runTest {
-        imagePickerViewModel.setSelectedImage("uri_teste")
+    fun `quando atualizar memoria com dados validos deve exibir mensagem de sucesso`() = runTest {
+        // GIVEN
+        val memory = generateOldMemory()
+
+        coEvery { repository.getMemoryById(1) } returns memory
+        coEvery { repository.update(any()) } just Runs
 
         viewModel.onEvent(FormMemoryScreenEvent.OnInit(1)) // id ! null para cadastrar nova memória
         advanceUntilIdle()
 
-        viewModel.onEvent(FormMemoryScreenEvent.OnTitleChange("Editado"))
-        viewModel.onEvent(FormMemoryScreenEvent.OnDateChange(LocalDate.now()))
-        viewModel.onEvent(FormMemoryScreenEvent.OnImageSelected("uri_teste"))
+        fillValidForm(isEditMode = true)
+
+        // WHEN
+        viewModel.onEvent(FormMemoryScreenEvent.OnSave)
+
+        // Avança execução das coroutines
+        advanceUntilIdle()
+
+        // THEN
+        val effect = viewModel.effects.first() as FormMemorySideEffect.ShowSuccessMessage
+        val message = effect.message as UiText.StringResource
+
+        assertEquals(R.string.atualizado_com_sucesso, message.resId)
+    }
+
+    @Test
+    fun `quando atualizar memoria com dados validos deve fechar tela`() = runTest {
+        // GIVEN
+        val memory = generateOldMemory()
+
+        coEvery { repository.getMemoryById(1) } returns memory
+        coEvery { repository.update(any()) } just Runs
+
+        viewModel.onEvent(FormMemoryScreenEvent.OnInit(1))
+        advanceUntilIdle()
+
+        fillValidForm(isEditMode = true)
+
+        // WHEN
+        viewModel.onEvent(FormMemoryScreenEvent.OnSave)
+
+        // Avança execução das coroutines
+        advanceUntilIdle()
+
+        // THEN
+        val effect = viewModel.effects.first { it is FormMemorySideEffect.CloseScreen }
+        assertTrue(effect is FormMemorySideEffect.CloseScreen)
+    }
+
+    @Test
+    fun `quando atualizar memoria e repositorio falhar deve emitir erro ao atualizar`() = runTest {
+        // GIVEN
+        val memory = generateOldMemory()
+
+        coEvery { repository.getMemoryById(1) } returns memory
+        coEvery { repository.update(any()) } throws FakeRepositoryException(
+            RepositoryFailure.Update
+        )
+
+        viewModel.onEvent(FormMemoryScreenEvent.OnInit(1))
+        advanceUntilIdle()
+
+        fillValidForm(isEditMode = true)
+
+        // WHEN
+        viewModel.onEvent(FormMemoryScreenEvent.OnSave)
+        advanceUntilIdle()
+
+        // THEN
+        val effect = viewModel.effects.first() as FormMemorySideEffect.ShowError
+        val message = effect.message as UiText.StringResource
+
+        assertEquals(R.string.erro_ao_atualizar, message.resId)
+    }
+
+    @Test
+    fun `ao atualizar memoria nao deve limpar imagem`() = runTest {
+        coEvery { repository.update(any()) } just Runs
+        imagePickerViewModel.setSelectedImage("uri_teste")
+
+        viewModel.onEvent(FormMemoryScreenEvent.OnInit(1))
+        advanceUntilIdle()
+
+        fillValidForm(isEditMode = true)
 
         viewModel.onEvent(FormMemoryScreenEvent.OnSave)
         advanceUntilIdle()

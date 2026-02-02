@@ -3,7 +3,7 @@ package com.example.memoraapp.presentation.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import com.example.memoraapp.R
 import com.example.memoraapp.data.repository.FakeMemoryRepository
-import com.example.memoraapp.data.repository.FakeMemoryRepositoryWithError
+import com.example.memoraapp.data.repository.RepositoryFailure
 import com.example.memoraapp.presentation.ui.screens.form.FormMemoryScreenEvent
 import com.example.memoraapp.presentation.ui.screens.form.FormMemorySideEffect
 import com.example.memoraapp.presentation.ui.util.UiText
@@ -196,7 +196,7 @@ class FormMemoryViewModelTest {
     @Test
     fun `quando salvar nova memoria e repositorio falhar deve emitir erro ao salvar`() = runTest {
         // GIVEN
-        val errorRepository = FakeMemoryRepositoryWithError()
+        val errorRepository = FakeMemoryRepository(failure = RepositoryFailure.Insert)
 
         viewModel = FormMemoryViewModel(
             repository = errorRepository,

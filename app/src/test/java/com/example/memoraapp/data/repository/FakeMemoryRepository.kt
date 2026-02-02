@@ -5,74 +5,81 @@ import com.example.memoraapp.domain.MemoryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import java.time.LocalDate
 
-class FakeMemoryRepository : MemoryRepository {
-    private val mutex = Mutex()
+class FakeMemoryRepository(
+    initialMemories: List<StoredMemory> = defaultMemories(),
+    private val failure: RepositoryFailure? = null
+) : MemoryRepository {
+    private val memoryList = initialMemories.toMutableList()
 
-    private val memoryList = mutableListOf(
-        StoredMemory(1, "Pôr do Sol na Praia", "teste", LocalDate.now().toString(), null),
-        StoredMemory(2, "Luzes da Cidade", "teste", LocalDate.now().toString(), null)
-    )
+    companion object {
+        private fun defaultMemories() = listOf(
+            StoredMemory(1, "Pôr do Sol na Praia", "teste", LocalDate.now().toString(), null),
+            StoredMemory(2, "Luzes da Cidade", "teste", LocalDate.now().toString(), null)
+        )
+    }
+
     private val _memories = MutableStateFlow(
         memoryList.map { it.toDomain() }
     )
+
     override fun getAllMemories(): Flow<List<Memory>> = _memories.asStateFlow()
 
     override suspend fun insert(memory: Memory) {
-        mutex.withLock {
-            memoryList.add(
-                StoredMemory(
-                    id = generateId(),
-                    title = memory.title,
-                    description = memory.description,
-                    dateIso = memory.date.toString(), // ISO yyyy-MM-dd
-                    imageUri = memory.imageUri
-                )
+        failIf(RepositoryFailure.Insert)
+        memoryList.add(
+            StoredMemory(
+                id = generateId(),
+                title = memory.title,
+                description = memory.description,
+                dateIso = memory.date.toString(), // ISO yyyy-MM-dd
+                imageUri = memory.imageUri
+            )
+        )
+        notifyChanges()
+    }
+
+    override suspend fun update(memory: Memory) {
+        failIf(RepositoryFailure.Update)
+        val index = memoryList.indexOfFirst { it.id == memory.id }
+        if (index != -1) {
+            memoryList[index] = memoryList[index].copy(
+                title = memory.title,
+                description = memory.description,
+                dateIso = memory.date.toString(),
+                imageUri = memory.imageUri
             )
             notifyChanges()
         }
     }
 
-    override suspend fun update(memory: Memory) {
-        mutex.withLock {
-            val index = memoryList.indexOfFirst { it.id == memory.id }
-            if (index != -1) {
-                memoryList[index] = memoryList[index].copy(
-                    title = memory.title,
-                    description = memory.description,
-                    dateIso = memory.date.toString(),
-                    imageUri = memory.imageUri
-                )
-                notifyChanges()
-            }
-        }
-    }
-
     override suspend fun delete(memoryId: Int) {
-        mutex.withLock {
-            memoryList.removeAll { it.id == memoryId }
-            notifyChanges()
-        }
+        failIf(RepositoryFailure.Delete)
+        memoryList.removeAll { it.id == memoryId }
+        notifyChanges()
     }
 
     override suspend fun getMemoryById(id: Int): Memory? {
-        return mutex.withLock {
-            memoryList.firstOrNull { it.id == id }?.toDomain()
-        }
+        failIf(RepositoryFailure.GetById)
+        return memoryList.firstOrNull { it.id == id }?.toDomain()
     }
 
     private fun notifyChanges() {
-        _memories.value = memoryList.map { it.toDomain() }
+        _memories.value = memoryList.map(StoredMemory::toDomain)
     }
 
     private fun generateId(): Int {
         return (memoryList.maxOfOrNull { it.id } ?: 0) + 1
     }
 
-    private data class StoredMemory(
+    private fun failIf(expected: RepositoryFailure) {
+        if (failure == expected) {
+            throw FakeRepoistoryException(expected)
+        }
+    }
+
+    data class StoredMemory(
         val id: Int,
         val title: String,
         val description: String,

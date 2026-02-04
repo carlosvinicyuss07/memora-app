@@ -2,11 +2,13 @@ package com.example.memoraapp.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.memoraapp.R
 import com.example.memoraapp.domain.MemoryRepository
 import com.example.memoraapp.presentation.ui.extensions.toUi
 import com.example.memoraapp.presentation.ui.screens.memories.MemoriesScreenEvent
 import com.example.memoraapp.presentation.ui.screens.memories.MemoriesScreenSideEffect
 import com.example.memoraapp.presentation.ui.screens.memories.MemoriesScreenState
+import com.example.memoraapp.presentation.ui.util.UiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,8 +38,8 @@ class MemoriesViewModel(
     private fun handleOnInit() {
         _uiState.update { it.copy(isLoading = true, erroMessage = null) }
         viewModelScope.launch {
-            repository.getAllMemories()
-                .collect { list ->
+            runCatching {
+                repository.getAllMemories().collect { list ->
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -45,6 +47,14 @@ class MemoriesViewModel(
                         )
                     }
                 }
+            }.onFailure {
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        erroMessage = UiText.StringResource(R.string.erro_ao_carregar_memorias)
+                    )
+                }
+            }
         }
     }
 

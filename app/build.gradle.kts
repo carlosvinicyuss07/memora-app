@@ -81,6 +81,7 @@ dependencies {
     // Auxiliares nos testes unitários
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.androidx.test.core)
+    testImplementation(libs.mockk)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

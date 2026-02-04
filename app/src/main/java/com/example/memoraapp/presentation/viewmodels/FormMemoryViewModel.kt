@@ -1,0 +1,184 @@
+package com.example.memoraapp.presentation.viewmodels
+
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.memoraapp.R
+import com.example.memoraapp.domain.Memory
+import com.example.memoraapp.domain.MemoryRepository
+import com.example.memoraapp.presentation.ui.screens.form.FormMemoryScreenEvent
+import com.example.memoraapp.presentation.ui.screens.form.FormMemorySideEffect
+import com.example.memoraapp.presentation.ui.screens.form.FormMemoryUiState
+import com.example.memoraapp.presentation.ui.util.UiText
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+class FormMemoryViewModel(
+    private val repository: MemoryRepository,
+    private val imagePickerViewModel: ImagePickerViewModel,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+
+    private val _uiState = MutableStateFlow(FormMemoryUiState())
+    val uiState = _uiState.asStateFlow()
+
+    private val _effects = Channel<FormMemorySideEffect>(Channel.BUFFERED)
+    val effects = _effects.receiveAsFlow()
+
+    fun onEvent(event: FormMemoryScreenEvent) {
+        when (event) {
+            is FormMemoryScreenEvent.OnInit -> handleOnInit(event.memoryId)
+
+            is FormMemoryScreenEvent.OnTitleChange ->
+                _uiState.update { it.copy(title = event.value) }
+
+            is FormMemoryScreenEvent.OnDescriptionChange ->
+                _uiState.update { it.copy(description = event.value) }
+
+            is FormMemoryScreenEvent.OnDateChange ->
+                _uiState.update { it.copy(date = event.value) }
+
+            is FormMemoryScreenEvent.OnImageSelected ->
+                _uiState.value = _uiState.value.copy(imageUri = event.uri)
+
+            is FormMemoryScreenEvent.OnSelectPhotoClick ->
+                viewModelScope.launch {
+                    _effects.send(FormMemorySideEffect.NavigateToPhotoSource)
+                }
+
+            FormMemoryScreenEvent.OnBackClick -> handleOnBackClick()
+
+            FormMemoryScreenEvent.OnSave -> {
+                handleSave()
+            }
+        }
+    }
+
+    private fun handleOnInit(id: Int?) {
+        if (id == null) {
+            _uiState.update {
+                it.copy(
+                    screenName = UiText.StringResource(R.string.nova_memoria),
+                    buttonText = UiText.StringResource(R.string.salvar)
+                )
+            }
+            return
+        }
+
+        if (savedStateHandle.get<Boolean>("initialized") == true) return
+        savedStateHandle["initialized"] = true
+
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                isEditMode = true,
+                screenName = UiText.StringResource(R.string.scr_name_editar_memoria),
+                buttonText = UiText.StringResource(R.string.atualizar)
+            )
+        }
+
+        viewModelScope.launch {
+            runCatching { repository.getMemoryById(id) }
+                .onSuccess { memory ->
+                    if (memory != null) {
+                        _uiState.update {
+                            it.copy(
+                                id = memory.id,
+                                isLoading = false,
+                                title = memory.title,
+                                description = memory.description,
+                                date = memory.date,
+                                imageUri = memory.imageUri
+                            )
+                        }
+                    }
+                }
+                .onFailure {
+                    _effects.send(FormMemorySideEffect.ShowError(UiText.StringResource(R.string.erro_ao_carregar_memoria)))
+                }
+        }
+    }
+
+    private fun handleOnBackClick() {
+        imagePickerViewModel.clear()
+        viewModelScope.launch {
+            _effects.send(FormMemorySideEffect.CloseScreen)
+        }
+    }
+
+    private fun handleSave() {
+        val state = uiState.value
+
+        if (state.title.isBlank()) {
+            viewModelScope.launch {
+                _effects.send(FormMemorySideEffect.ShowError(UiText.StringResource(R.string.erro_titulo_obrigatorio)))
+            }
+            return
+        }
+
+        if (state.date == null) {
+            viewModelScope.launch {
+                _effects.send(FormMemorySideEffect.ShowError(UiText.StringResource(R.string.erro_selecione_uma_data)))
+            }
+            return
+        }
+
+        if (state.imageUri == null) {
+            viewModelScope.launch {
+                _effects.send(FormMemorySideEffect.ShowError(UiText.StringResource(R.string.erro_imagem_obrigatoria)))
+            }
+            return
+        }
+
+        viewModelScope.launch {
+            runCatching {
+                if (state.isEditMode) {
+                    repository.update(
+                        Memory(
+                            id = state.id ?: -1,
+                            title = state.title,
+                            description = state.description,
+                            date = state.date,
+                            imageUri = state.imageUri
+                        )
+                    )
+                } else {
+                    repository.insert(
+                        Memory(
+                            title = state.title,
+                            description = state.description,
+                            date = state.date,
+                            imageUri = state.imageUri
+                        )
+                    )
+                }
+            }
+                .onSuccess {
+                    if (!state.isEditMode) {
+                        imagePickerViewModel.clear()
+                    }
+                    _effects.send(
+                        FormMemorySideEffect.ShowSuccessMessage(
+                            if (state.isEditMode) UiText.StringResource(R.string.atualizado_com_sucesso)
+                            else
+                                UiText.StringResource(R.string.salvo_com_sucesso)
+                        )
+                    )
+                    _effects.send(FormMemorySideEffect.CloseScreen)
+                }
+                .onFailure {
+                    _effects.send(
+                        FormMemorySideEffect.ShowError(
+                            if (state.isEditMode) UiText.StringResource(R.string.erro_ao_atualizar)
+                            else UiText.StringResource(R.string.erro_ao_salvar)
+                        )
+                    )
+                }
+        }
+    }
+
+}

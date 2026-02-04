@@ -1,11 +1,11 @@
 package com.example.memoraapp.di
 
-import com.example.memoraapp.domain.viewmodels.CameraViewModel
-import com.example.memoraapp.domain.viewmodels.FormMemoryViewModel
-import com.example.memoraapp.domain.viewmodels.ImagePickerViewModel
-import com.example.memoraapp.domain.viewmodels.MemoriesViewModel
-import com.example.memoraapp.domain.viewmodels.MemoryDetailsViewModel
-import com.example.memoraapp.domain.viewmodels.PhotoSelectionViewModel
+import com.example.memoraapp.presentation.viewmodels.CameraViewModel
+import com.example.memoraapp.presentation.viewmodels.FormMemoryViewModel
+import com.example.memoraapp.presentation.viewmodels.ImagePickerViewModel
+import com.example.memoraapp.presentation.viewmodels.MemoriesViewModel
+import com.example.memoraapp.presentation.viewmodels.MemoryDetailsViewModel
+import com.example.memoraapp.presentation.viewmodels.PhotoSelectionViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 

@@ -3,6 +3,7 @@ package com.example.memoraapp.presentation.viewmodels
 import com.example.memoraapp.R
 import com.example.memoraapp.domain.Memory
 import com.example.memoraapp.domain.MemoryRepository
+import com.example.memoraapp.presentation.ui.screens.form.FormMemorySideEffect
 import com.example.memoraapp.presentation.ui.screens.memories.MemoriesScreenEvent
 import com.example.memoraapp.presentation.ui.screens.memories.MemoriesScreenSideEffect
 import com.example.memoraapp.presentation.ui.util.UiText
@@ -83,7 +84,9 @@ class MemoriesViewModelTest {
 
         // THEN
         val state = viewModel.uiState.value
-        val message = state.erroMessage as UiText.StringResource
+        val effect = viewModel.effects.first()
+        val errorEffect = effect as? MemoriesScreenSideEffect.ShowError ?: error("Esperado ShowError, mas foi ${effect::class.simpleName}")
+        val message = errorEffect.message as UiText.StringResource
 
         assertFalse(state.isLoading)
         assertEquals(R.string.erro_ao_carregar_memorias, message.resId)

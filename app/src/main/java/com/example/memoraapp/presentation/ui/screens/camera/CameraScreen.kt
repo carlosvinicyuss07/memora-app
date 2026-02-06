@@ -42,7 +42,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.example.memoraapp.R
 import com.example.memoraapp.presentation.viewmodels.CameraViewModel
@@ -92,7 +91,7 @@ fun CameraScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.sideEffects.collect { effect ->
+        viewModel.effects.collect { effect ->
             when (effect) {
                 is CameraSideEffect.ReturnPhoto -> {
 

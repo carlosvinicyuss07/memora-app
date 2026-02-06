@@ -9,17 +9,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,6 +36,8 @@ import com.example.memoraapp.presentation.viewmodels.ImagePickerViewModel
 import com.example.memoraapp.presentation.viewmodels.PhotoSelectionViewModel
 import com.example.memoraapp.presentation.ui.AppRoute
 import com.example.memoraapp.presentation.ui.components.buttons.SourceImageOptionsComponent
+import com.example.memoraapp.presentation.ui.components.topbar.TopbarComponent
+import com.example.memoraapp.presentation.ui.screens.form.FormMemoryScreenEvent
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
 import com.example.memoraapp.presentation.ui.util.copyUriToCache
 import org.koin.androidx.compose.koinViewModel
@@ -86,37 +91,58 @@ fun PhotoSelectionScreen(
 fun PhotoSelectionScreenContent(
     onEvent: (PhotoSelectionScreenEvent) -> Unit
 ) {
-    Column(
+
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
+    Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = stringResource(R.string.escolha_a_fonte_da_imagem),
-            style = MaterialTheme.typography.bodyMedium.copy(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            ),
-        )
+        topBar = {
+            TopbarComponent(
+                screenName = "",
+                onBackClick = { onEvent(PhotoSelectionScreenEvent.OnBack) }
+            )
+        }
+    ) { paddingValues ->
 
-        Spacer(modifier = Modifier.size(54.dp))
+        val paddingHorizontalValue = if (isPortrait) 0 else 60
 
-        SourceImageOptionsComponent(
-            text = stringResource(R.string.tirar_foto),
-            icon = Icons.Default.PhotoCamera,
-            onClick = { onEvent(PhotoSelectionScreenEvent.OnClickCamera) }
-        )
+        Column(
+            modifier = Modifier
+                .padding(top = paddingValues.calculateTopPadding())
+                .padding(horizontal = paddingHorizontalValue.dp)
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            verticalArrangement = if (isPortrait) Arrangement.Center else Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(R.string.escolha_a_fonte_da_imagem),
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                ),
+            )
 
-        Spacer(modifier = Modifier.size(16.dp))
+            Spacer(modifier = Modifier.size(54.dp))
 
-        SourceImageOptionsComponent(
-            text = stringResource(R.string.escolher_da_galeria),
-            icon = Icons.Default.Image,
-            onClick = { onEvent(PhotoSelectionScreenEvent.OnClickGallery) }
-        )
+            SourceImageOptionsComponent(
+                text = stringResource(R.string.tirar_foto),
+                icon = Icons.Default.PhotoCamera,
+                onClick = { onEvent(PhotoSelectionScreenEvent.OnClickCamera) }
+            )
+
+            Spacer(modifier = Modifier.size(16.dp))
+
+            SourceImageOptionsComponent(
+                text = stringResource(R.string.escolher_da_galeria),
+                icon = Icons.Default.Image,
+                onClick = { onEvent(PhotoSelectionScreenEvent.OnClickGallery) }
+            )
+        }
     }
 }
 

@@ -22,8 +22,8 @@ class CameraViewModel : ViewModel() {
     private val _state = MutableStateFlow(CameraState())
     val state = _state.asStateFlow()
 
-    private val _sideEffects = Channel<CameraSideEffect>()
-    val sideEffects = _sideEffects.receiveAsFlow()
+    private val _effects = Channel<CameraSideEffect>()
+    val effects = _effects.receiveAsFlow()
 
     fun onEvent(event: CameraEvent) {
         when (event) {
@@ -36,7 +36,7 @@ class CameraViewModel : ViewModel() {
 
             is CameraEvent.OnPhotoCaptured -> {
                 viewModelScope.launch {
-                    _sideEffects.send(
+                    _effects.send(
                         CameraSideEffect.ReturnPhoto(
                             uri = event.uri
                         )

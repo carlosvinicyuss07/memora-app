@@ -97,7 +97,9 @@ fun MemoryDetailsScreenContent(
             .padding(horizontal = 26.dp)
             .padding(top = 16.dp, bottom = 50.dp)
     } else {
-        Modifier.padding(horizontal = 275.dp, vertical = 16.dp)
+        Modifier
+            .padding(horizontal = 60.dp)
+            .padding(top = 16.dp, bottom = 50.dp)
     }
 
     val imageBitmap = rememberImageBitmap(
@@ -123,10 +125,11 @@ fun MemoryDetailsScreenContent(
             )
 
             Row(
-                modifier = modifierBottomBar,
-                horizontalArrangement = Arrangement.Center
+                modifier = modifierBottomBar.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 ExtendedFAB(
+                    modifier = Modifier.weight(1f),
                     icon = Icons.Filled.BorderColor,
                     text = stringResource(R.string.editar),
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -134,9 +137,8 @@ fun MemoryDetailsScreenContent(
                     onClick = { onEvent(MemoryDetailsScreenEvent.OnEditClick(memoryId = state.id)) }
                 )
 
-                Spacer(Modifier.size(16.dp))
-
                 ExtendedFAB(
+                    modifier = Modifier.weight(1f),
                     icon = Icons.Filled.Delete,
                     text = stringResource(R.string.excluir),
                     containerColor = MaterialTheme.colorScheme.error,

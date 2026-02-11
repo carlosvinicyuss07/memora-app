@@ -1,0 +1,117 @@
+package com.example.memoraapp.presentation.ui.components.cards
+
+import android.content.res.Configuration
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
+import com.example.memoraapp.presentation.ui.util.uriToImageBitmap
+import androidx.core.net.toUri
+import com.example.memoraapp.R
+import com.example.memoraapp.presentation.ui.screens.memories.MemoryUi
+import kotlin.Unit
+
+@Composable
+fun MemoryCardComponent(
+    modifier: Modifier = Modifier,
+    memory: MemoryUi,
+    onClick: () -> Unit = {}
+) {
+    ElevatedCard(
+        modifier = modifier.size(width = 163.dp, height = 180.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Column(
+            modifier = Modifier.clickable { onClick() }
+        ) {
+            if (memory.imageUri != null) {
+                uriToImageBitmap(context = LocalContext.current, uri = memory.imageUri.toUri())?.let {
+                    Image(
+                        bitmap = it,
+                        contentDescription = "Photo Memory Card",
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .height(90.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            } else {
+                Image(
+                    // TODO: Será realizado em outro momento
+                    painter = painterResource(R.drawable.photo_example_memorycard),
+                    contentDescription = "Photo Memory Card",
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(90.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            Column(
+                modifier = modifier
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .size(width = 163.dp, height = 90.dp),
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                Text(
+                    text = memory.title,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
+                )
+
+                Spacer(modifier.size(1.dp))
+
+                Text(
+                    text = memory.date,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.sp)
+                )
+            }
+        }
+    }
+}
+
+@Preview(name = "Light Mode")
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "Dark Mode"
+)
+@Composable
+private fun MemoryCardComponentView() {
+    MemoraAppTheme {
+        Surface(
+            color = MaterialTheme.colorScheme.background
+        ) {
+            MemoryCardComponent(
+                memory = MemoryUi(
+                    id = 1,
+                    title = "Montanhas de Outono",
+                    description = "Teste",
+                    date = "01-01-0000"
+                )
+            )
+        }
+    }
+}

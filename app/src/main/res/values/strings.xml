@@ -22,8 +22,9 @@
     <string name="descricao">Descrição</string>
     <string name="data_da_memoria">Data da Memória</string>
     <string name="erro_ao_carregar_memoria">Erro ao carregar memória</string>
+    <string name="erro_ao_carregar_memorias">Erro ao carregar memórias</string>
     <string name="erro_titulo_obrigatorio">Título é obrigatório</string>
-    <string name="selecione_uma_data">Selecione uma data</string>
+    <string name="erro_selecione_uma_data">Selecione uma data</string>
     <string name="erro_imagem_obrigatoria">É obrigatório ter uma imagem para salvar uma memória!</string>
     <string name="atualizado_com_sucesso">Atualizado com sucesso</string>
     <string name="salvo_com_sucesso">Salvo com sucesso</string>

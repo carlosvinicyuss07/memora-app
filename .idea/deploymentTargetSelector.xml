@@ -24,9 +24,6 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="aoClicarNoCardDeMemoriaOEventoComIdCorretoDeveSerAcionado()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="quandoNaoHouverMemoriasDeveMostrarListaVazia()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
@@ -42,6 +39,9 @@
         <DialogSelection />
       </SelectionState>
       <SelectionState runConfigName="aoRolarScrollAteOFinalDeveExibirTodasAsMemorias()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="quandoNaoHouverMemoriasDeveMostrarMensagemInformando()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

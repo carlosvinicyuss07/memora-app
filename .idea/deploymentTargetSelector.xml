@@ -13,9 +13,9 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="RoomMemoryRepositoryTest">
+      <SelectionState runConfigName="MemoriesScreenTest">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-02-09T13:52:06.189628600Z">
+        <DropdownSelection timestamp="2026-02-11T14:25:45.438813900Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\carlos.nascimento\.android\avd\Pixel_7.avd" />
@@ -24,10 +24,24 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="getMemoryById_quandoNaoExistir_deveRetornarNull()">
+      <SelectionState runConfigName="aoClicarNoCardDeMemoriaOEventoComIdCorretoDeveSerAcionado()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="getAllMemories_comMultiplosRegistros_deveRetornarTodos()">
+      <SelectionState runConfigName="quandoNaoHouverMemoriasDeveMostrarListaVazia()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="aoClicarNoBotaoDeVoltarDeveAcionarEventoDeRetorno()">
+        <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2026-02-13T11:03:23.254899400Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\carlos.nascimento\.android\avd\Pixel_7.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
+      </SelectionState>
+      <SelectionState runConfigName="aoRolarScrollAteOFinalDeveExibirTodasAsMemorias()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

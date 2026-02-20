@@ -100,7 +100,7 @@ private fun LabelFormComponentView() {
                 )
 
                 RedirectButtonWithIconComponent(
-                    text = "Continue com Google",
+                    text = stringResource(R.string.continue_com_google),
                     icon = ImageVector.vectorResource(R.drawable.ic_google),
                     containerColor = MaterialTheme.colorScheme.background,
                     contentColor = MaterialTheme.colorScheme.onBackground,

@@ -12,18 +12,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.memoraapp.R
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
 
 @Composable
 fun TextBetweenDividersComponent(
+    modifier: Modifier = Modifier,
     text: String
 ) {
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -64,7 +67,7 @@ private fun DividerWithTextComponentPreview() {
     MemoraAppTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             TextBetweenDividersComponent(
-                text = "OU CONTINUE COM"
+                text = stringResource(R.string.ou_continue_com)
             )
         }
     }
@@ -81,7 +84,7 @@ private fun DividerWithTextComponentPreview2() {
     MemoraAppTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             TextBetweenDividersComponent(
-                text = "OU CADASTRE-SE COM"
+                text = stringResource(R.string.ou_cadastre_se_com)
             )
         }
     }

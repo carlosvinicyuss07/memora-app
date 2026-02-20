@@ -7,12 +7,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.memoraapp.R
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
 
 @Composable
@@ -71,8 +73,8 @@ private fun AuthRedirectTextView() {
             color = MaterialTheme.colorScheme.background
         ) {
             AuthRedirectText(
-                prefixText = "Já tem uma conta?",
-                actionText = "Login",
+                prefixText = stringResource(R.string.ja_tem_uma_conta),
+                actionText = stringResource(R.string.login),
                 onClick = {}
             )
         }

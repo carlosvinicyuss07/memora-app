@@ -13,7 +13,7 @@
     <string name="tirar_foto">Tirar Foto</string>
     <string name="escolher_da_galeria">Escolher da Galeria</string>
     <string name="selecionar_foto">Selecionar Foto</string>
-    <string name="welcome_title">Memora</string>
+    <string name="memora">Memora</string>
     <string name="welcome_subtitulo">Registre seus momentos mais preciosos.</string>
     <string name="welcome_text">Gerencie suas memórias pessoais com facilidade.</string>
     <string name="atualizar">Atualizar</string>
@@ -34,4 +34,16 @@
     <string name="erro_ao_tentar_excluir">Erro ao tentar excluir</string>
     <string name="bem_vindo">Bem-vindo</string>
     <string name="msg_nao_ha_memorias_salvas">Não há memórias salvas</string>
+    <string name="continue_com_google">Continue com Google</string>
+    <string name="ja_tem_uma_conta">Já tem uma conta?</string>
+    <string name="login">Login</string>
+    <string name="nome_completo">Nome completo</string>
+    <string name="endereco_de_email">Endereço de email</string>
+    <string name="senha">Senha</string>
+    <string name="confirme_sua_senha">Confirme sua senha</string>
+    <string name="bem_vindo_de_volta">Bem-vindo(a) de volta</string>
+    <string name="ou_continue_com">OU CONTINUE COM</string>
+    <string name="ou_cadastre_se_com">OU CADASTRE-SE COM</string>
+    <string name="nao_tem_uma_conta">Não tem uma conta?</string>
+    <string name="inscrever_se">Inscrever-se</string>
 </resources>

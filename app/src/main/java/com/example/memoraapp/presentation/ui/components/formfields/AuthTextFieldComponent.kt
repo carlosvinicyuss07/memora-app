@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.memoraapp.R
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
 
 @Composable
@@ -127,7 +129,7 @@ private fun AuthTextFieldFullnameView() {
             color = MaterialTheme.colorScheme.background
         ) {
             AuthTextFieldComponent(
-                label = "Nome completo",
+                label = stringResource(R.string.nome_completo),
                 value = "",
                 onValueChange = {},
                 placeholder = "Carlos Vinícyus",
@@ -150,7 +152,7 @@ private fun AuthTextFieldEmailView() {
             color = MaterialTheme.colorScheme.background
         ) {
             AuthTextFieldComponent(
-                label = "Endereço de email",
+                label = stringResource(R.string.endereco_de_email),
                 value = "",
                 onValueChange = {},
                 placeholder = "name@example.com",
@@ -174,7 +176,7 @@ private fun AuthTextFieldPasswordView() {
             color = MaterialTheme.colorScheme.background
         ) {
             AuthTextFieldComponent(
-                label = "Senha",
+                label = stringResource(R.string.senha),
                 value = "12345678",
                 onValueChange = {},
                 placeholder = "Senha",
@@ -198,7 +200,7 @@ private fun AuthTextFieldConfirmPasswordView() {
             color = MaterialTheme.colorScheme.background
         ) {
             AuthTextFieldComponent(
-                label = "Confirme sua senha",
+                label = stringResource(R.string.confirme_sua_senha),
                 value = "12345678",
                 onValueChange = {},
                 placeholder = "Confirme sua senha",

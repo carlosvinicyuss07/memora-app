@@ -12,7 +12,12 @@
           "package_name": "com.example.memoraapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "913354553641-a4ehv2h0cu1g6a4uaqkrb1ao5nep63ii.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBXsD0hNka3ozV_5Cq6nIeUnjkU4x64KBQ"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "913354553641-a4ehv2h0cu1g6a4uaqkrb1ao5nep63ii.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

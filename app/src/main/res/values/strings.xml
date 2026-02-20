@@ -33,4 +33,5 @@
     <string name="excluido_com_sucesso">Excluído com sucesso!</string>
     <string name="erro_ao_tentar_excluir">Erro ao tentar excluir</string>
     <string name="bem_vindo">Bem-vindo</string>
+    <string name="msg_nao_ha_memorias_salvas">Não há memórias salvas</string>
 </resources>

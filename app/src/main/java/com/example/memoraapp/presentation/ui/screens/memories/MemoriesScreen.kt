@@ -18,13 +18,16 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -118,19 +121,34 @@ fun MemoriesScreenContent(
                     .fillMaxWidth()
             )
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(state.memories) { memory ->
-                    MemoryCardComponent(
-                        memory = memory,
-                        onClick = {
-                            onEvent(MemoriesScreenEvent.OnMemoryClick(memory.id))
-                        }
-                    )
+            if (state.memories.isNotEmpty()) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .testTag("memories_grid")
+                        .padding(horizontal = 24.dp, vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(state.memories) { memory ->
+                        MemoryCardComponent(
+                            modifier = Modifier.testTag("memory_card"),
+                            memory = memory,
+                            onClick = {
+                                onEvent(MemoriesScreenEvent.OnMemoryClick(memory.id))
+                            }
+                        )
+                    }
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 24.dp, vertical = 16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(stringResource(R.string.msg_nao_ha_memorias_salvas))
                 }
             }
         }
@@ -160,6 +178,25 @@ private fun MemoriesScreenView() {
                         )
                     )
                 )
+            ) {}
+        }
+    }
+}
+
+@Preview(name = "No Memory Light Mode")
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "No Memory Dark Mode"
+)
+@Composable
+private fun NoSavedMemoriesScreenView() {
+    MemoraAppTheme {
+        Surface(
+            color = MaterialTheme.colorScheme.background
+        ) {
+            MemoriesScreenContent(
+                state = MemoriesScreenState()
             ) {}
         }
     }

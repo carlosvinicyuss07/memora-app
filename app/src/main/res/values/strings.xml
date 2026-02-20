@@ -50,4 +50,10 @@
     <string name="crie_sua_conta">Crie sua conta</string>
     <string name="comece_a_guardar_suas_memorias">Comece a guardar suas memórias.</string>
     <string name="default_web_client_id">913354553641-a4ehv2h0cu1g6a4uaqkrb1ao5nep63ii.apps.googleusercontent.com</string>
+    <string name="erro_email_obrigatorio">Email é obrigatório</string>
+    <string name="erro_email_invalido">Email inválido!</string>
+    <string name="erro_senha_obrigatoria">Senha é obrigatória</string>
+    <string name="erro_senha_min_8">A senha deve ter no mínimo 8 dígitos</string>
+    <string name="erro_login">Erro ao tentar fazer login</string>
+    <string name="login_bem_sucedido">Login bem-sucedido!</string>
 </resources>

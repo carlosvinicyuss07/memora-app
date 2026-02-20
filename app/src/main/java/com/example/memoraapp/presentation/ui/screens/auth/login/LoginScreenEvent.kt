@@ -6,6 +6,7 @@ interface LoginScreenEvent {
     data class OnEmailChange(val value: String) : LoginScreenEvent
     data class OnPasswordChange(val value: String) : LoginScreenEvent
     data object OnLoginClick : LoginScreenEvent
-    data object OnContinueWithGoogleClick : LoginScreenEvent
+    object OnContinueWithGoogleClick : LoginScreenEvent
+    data class OnGoogleLoginSuccess(val idToken: String) : LoginScreenEvent
     data object OnSignUpClick : LoginScreenEvent
 }

@@ -1,7 +1,7 @@
 package com.example.memoraapp
 
 import android.app.Application
-import com.example.memoraapp.di.authModule
+import com.example.memoraapp.di.firebaseModule
 import com.example.memoraapp.di.databaseModule
 import com.example.memoraapp.di.repositoryModule
 import com.example.memoraapp.di.viewModelModule
@@ -18,7 +18,7 @@ class MemoraApp : Application() {
                 databaseModule,
                 repositoryModule,
                 viewModelModule,
-                authModule
+                firebaseModule
             )
         }
     }

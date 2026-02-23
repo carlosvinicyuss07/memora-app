@@ -7,6 +7,7 @@ import com.example.memoraapp.presentation.viewmodels.LoginViewModel
 import com.example.memoraapp.presentation.viewmodels.MemoriesViewModel
 import com.example.memoraapp.presentation.viewmodels.MemoryDetailsViewModel
 import com.example.memoraapp.presentation.viewmodels.PhotoSelectionViewModel
+import com.example.memoraapp.presentation.viewmodels.SignUpViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -46,6 +47,12 @@ val viewModelModule = module {
 
     viewModel {
         LoginViewModel(
+            repository = get()
+        )
+    }
+
+    viewModel {
+        SignUpViewModel(
             repository = get()
         )
     }

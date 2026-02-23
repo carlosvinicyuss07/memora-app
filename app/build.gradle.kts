@@ -55,6 +55,8 @@ dependencies {
     //Auth
     implementation(libs.firebase.auth)
     implementation(libs.play.services.auth)
+    //Firestore
+    implementation("com.google.firebase:firebase-firestore")
 
     // Core do Koin
     implementation(libs.koin.android)

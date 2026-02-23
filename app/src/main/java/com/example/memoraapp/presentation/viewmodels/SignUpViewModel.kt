@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.memoraapp.R
 import com.example.memoraapp.data.auth.AuthRepository
-import com.example.memoraapp.presentation.ui.screens.auth.login.LoginScreenEvent
-import com.example.memoraapp.presentation.ui.screens.auth.login.LoginSideEffect
-import com.example.memoraapp.presentation.ui.screens.auth.login.LoginUiState
+import com.example.memoraapp.presentation.ui.screens.auth.signup.SignUpScreenEvent
+import com.example.memoraapp.presentation.ui.screens.auth.signup.SignUpSideEffect
+import com.example.memoraapp.presentation.ui.screens.auth.signup.SignUpUiState
 import com.example.memoraapp.presentation.ui.util.UiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,43 +16,52 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class LoginViewModel(
+class SignUpViewModel(
     private val repository: AuthRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(LoginUiState())
+    private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _effects = Channel<LoginSideEffect>(Channel.BUFFERED)
+    private val _effects = Channel<SignUpSideEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
 
-    fun onEvent(event: LoginScreenEvent) {
+    fun onEvent(event: SignUpScreenEvent) {
         when (event) {
-            is LoginScreenEvent.OnEmailChange ->
+            is SignUpScreenEvent.OnFullNameChange ->
+                _uiState.update { it.copy(fullName = event.value) }
+
+            is SignUpScreenEvent.OnEmailChange ->
                 _uiState.update { it.copy(email = event.value) }
 
-            is LoginScreenEvent.OnPasswordChange ->
+            is SignUpScreenEvent.OnPasswordChange ->
                 _uiState.update { it.copy(password = event.value) }
 
-            is LoginScreenEvent.OnLoginClick -> login()
+            is SignUpScreenEvent.OnConfirmPasswordChange ->
+                _uiState.update { it.copy(confirmPassword = event.value) }
 
-            is LoginScreenEvent.OnSignUpClick ->
+            is SignUpScreenEvent.OnLoginClick ->
                 viewModelScope.launch {
-                    _effects.send(LoginSideEffect.NavigateToSignUp)
+                    _effects.send(SignUpSideEffect.NavigateToLogin)
                 }
 
-            LoginScreenEvent.OnContinueWithGoogleClick -> {
+            SignUpScreenEvent.OnContinueWithGoogleClick -> {
                 viewModelScope.launch {
-                    _effects.send(LoginSideEffect.LaunchGoogleSignIn)
+                    _effects.send(SignUpSideEffect.LaunchGoogleSignIn)
                 }
             }
 
-            is LoginScreenEvent.OnGoogleLoginSuccess -> loginWithGoogle(event.idToken)
+            is SignUpScreenEvent.OnCreateAccountClick -> register()
+
+            is SignUpScreenEvent.OnGoogleLoginSuccess -> loginWithGoogle(event.idToken)
 
         }
     }
 
-    private fun validate(state: LoginUiState): UiText? {
+    private fun validate(state: SignUpUiState): UiText? {
+
+        if (state.fullName.isBlank())
+            return UiText.StringResource(R.string.erro_nome_obrigatorio)
 
         if (state.email.isBlank())
             return UiText.StringResource(R.string.erro_email_obrigatorio)
@@ -60,23 +69,26 @@ class LoginViewModel(
         if (!Patterns.EMAIL_ADDRESS.matcher(state.email).matches())
             return UiText.StringResource(R.string.erro_email_invalido)
 
-        if (state.password.isBlank())
+        if (state.password.isBlank() || state.confirmPassword.isBlank())
             return UiText.StringResource(R.string.erro_senha_obrigatoria)
 
         if (state.password.length < 8)
             return UiText.StringResource(R.string.erro_senha_min_8)
 
+        if (state.password != state.confirmPassword)
+            return UiText.StringResource(R.string.erro_senhas_diferentes)
+
         return null
     }
 
-    private fun login() {
+    private fun register() {
         val state = uiState.value
 
         val validationError = validate(state)
 
         if (validationError != null) {
             viewModelScope.launch {
-                _effects.send(LoginSideEffect.ShowError(validationError))
+                _effects.send(SignUpSideEffect.ShowError(validationError))
             }
             return
         }
@@ -85,19 +97,19 @@ class LoginViewModel(
             _uiState.update { it.copy(isLoading = true) }
 
             runCatching {
-                repository.login(state.email, state.password)
+                repository.register(state.fullName, state.email, state.password)
             }
                 .onSuccess {
                     _uiState.update { it.copy(isLoading = false) }
                     _effects.send(
-                        LoginSideEffect.ShowSuccessMessage(UiText.StringResource(R.string.login_bem_sucedido))
+                        SignUpSideEffect.ShowSuccessMessage(UiText.StringResource(R.string.usuario_registrado_com_sucesso))
                     )
-                    _effects.send(LoginSideEffect.NavigateToHome)
+                    _effects.send(SignUpSideEffect.NavigateToLogin)
                 }
                 .onFailure {
                     _uiState.update { it.copy(isLoading = false) }
                     _effects.send(
-                        LoginSideEffect.ShowError(UiText.StringResource(R.string.erro_login))
+                        SignUpSideEffect.ShowError(UiText.StringResource(R.string.erro_ao_tentar_registrar_usuario))
                     )
                 }
         }
@@ -113,14 +125,14 @@ class LoginViewModel(
                 .onSuccess {
                     _uiState.update { it.copy(isLoading = false) }
                     _effects.send(
-                        LoginSideEffect.ShowSuccessMessage(UiText.StringResource(R.string.login_bem_sucedido))
+                        SignUpSideEffect.ShowSuccessMessage(UiText.StringResource(R.string.login_bem_sucedido))
                     )
-                    _effects.send(LoginSideEffect.NavigateToHome)
+                    _effects.send(SignUpSideEffect.NavigateToHome)
                 }
                 .onFailure {
                     _uiState.update { it.copy(isLoading = false) }
                     _effects.send(
-                        LoginSideEffect.ShowError(UiText.StringResource(R.string.erro_login))
+                        SignUpSideEffect.ShowError(UiText.StringResource(R.string.erro_login))
                     )
                 }
         }

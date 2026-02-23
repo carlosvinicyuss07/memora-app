@@ -56,4 +56,8 @@
     <string name="erro_senha_min_8">A senha deve ter no mínimo 8 dígitos</string>
     <string name="erro_login">Erro ao tentar fazer login</string>
     <string name="login_bem_sucedido">Login bem-sucedido!</string>
+    <string name="erro_nome_obrigatorio">Nome é obrigatório</string>
+    <string name="erro_senhas_diferentes">As senhas digitadas são diferentes</string>
+    <string name="usuario_registrado_com_sucesso">Usuário registrado com sucesso!</string>
+    <string name="erro_ao_tentar_registrar_usuario">Erro ao tentar registrar usuário</string>
 </resources>

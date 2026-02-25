@@ -4,7 +4,7 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.memoraapp.R
-import com.example.memoraapp.data.auth.AuthRepository
+import com.example.memoraapp.domain.AuthRepository
 import com.example.memoraapp.presentation.ui.screens.auth.login.LoginScreenEvent
 import com.example.memoraapp.presentation.ui.screens.auth.login.LoginSideEffect
 import com.example.memoraapp.presentation.ui.screens.auth.login.LoginUiState
@@ -47,6 +47,12 @@ class LoginViewModel(
                 }
             }
 
+            is LoginScreenEvent.OnLoginError -> {
+                viewModelScope.launch {
+                    _effects.send(LoginSideEffect.ShowError(UiText.StringResource(R.string.erro_ao_tentar_logar_com_google)))
+                }
+            }
+
             is LoginScreenEvent.OnGoogleLoginSuccess -> loginWithGoogle(event.idToken)
 
         }
@@ -84,22 +90,20 @@ class LoginViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            runCatching {
-                repository.login(state.email, state.password)
+            val result = repository.login(state.email, state.password)
+
+            _uiState.update { it.copy(isLoading = false) }
+
+            if (result.isSuccess) {
+                _effects.send(
+                    LoginSideEffect.ShowSuccessMessage(UiText.StringResource(R.string.login_bem_sucedido))
+                )
+                _effects.send(LoginSideEffect.NavigateToHome)
+            } else {
+                _effects.send(
+                    LoginSideEffect.ShowError(UiText.StringResource(R.string.erro_login))
+                )
             }
-                .onSuccess {
-                    _uiState.update { it.copy(isLoading = false) }
-                    _effects.send(
-                        LoginSideEffect.ShowSuccessMessage(UiText.StringResource(R.string.login_bem_sucedido))
-                    )
-                    _effects.send(LoginSideEffect.NavigateToHome)
-                }
-                .onFailure {
-                    _uiState.update { it.copy(isLoading = false) }
-                    _effects.send(
-                        LoginSideEffect.ShowError(UiText.StringResource(R.string.erro_login))
-                    )
-                }
         }
     }
 
@@ -107,22 +111,20 @@ class LoginViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            runCatching {
-                repository.loginWithGoogle(idToken)
+            val result = repository.loginWithGoogle(idToken)
+
+            _uiState.update { it.copy(isLoading = false) }
+
+            if (result.isSuccess) {
+                _effects.send(
+                    LoginSideEffect.ShowSuccessMessage(UiText.StringResource(R.string.login_bem_sucedido))
+                )
+                _effects.send(LoginSideEffect.NavigateToHome)
+            } else {
+                _effects.send(
+                    LoginSideEffect.ShowError(UiText.StringResource(R.string.erro_login))
+                )
             }
-                .onSuccess {
-                    _uiState.update { it.copy(isLoading = false) }
-                    _effects.send(
-                        LoginSideEffect.ShowSuccessMessage(UiText.StringResource(R.string.login_bem_sucedido))
-                    )
-                    _effects.send(LoginSideEffect.NavigateToHome)
-                }
-                .onFailure {
-                    _uiState.update { it.copy(isLoading = false) }
-                    _effects.send(
-                        LoginSideEffect.ShowError(UiText.StringResource(R.string.erro_login))
-                    )
-                }
         }
     }
 }

@@ -11,5 +11,6 @@ interface SignUpScreenEvent {
     data object OnCreateAccountClick : SignUpScreenEvent
     data object OnContinueWithGoogleClick : SignUpScreenEvent
     data class OnGoogleLoginSuccess(val idToken: String) : SignUpScreenEvent
+    data object OnLoginWithGoogleError : SignUpScreenEvent
     data object OnLoginClick : SignUpScreenEvent
 }

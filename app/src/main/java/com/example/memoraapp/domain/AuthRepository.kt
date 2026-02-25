@@ -1,4 +1,4 @@
-package com.example.memoraapp.data.auth
+package com.example.memoraapp.domain
 
 interface AuthRepository {
 

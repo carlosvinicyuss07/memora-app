@@ -55,8 +55,11 @@ dependencies {
     //Auth
     implementation(libs.firebase.auth)
     implementation(libs.play.services.auth)
+    implementation(libs.googleid)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
     //Firestore
-    implementation("com.google.firebase:firebase-firestore")
+    implementation(libs.firebase.firestore)
 
     // Core do Koin
     implementation(libs.koin.android)

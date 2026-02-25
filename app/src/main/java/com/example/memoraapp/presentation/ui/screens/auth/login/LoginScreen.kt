@@ -2,6 +2,7 @@ package com.example.memoraapp.presentation.ui.screens.auth.login
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,10 +17,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -28,13 +34,67 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.memoraapp.R
+import com.example.memoraapp.data.auth.google.GoogleAuthHandler
+import com.example.memoraapp.presentation.ui.AppRoute
 import com.example.memoraapp.presentation.ui.components.buttons.AuthRedirectText
 import com.example.memoraapp.presentation.ui.components.buttons.FilledButtonComponent
 import com.example.memoraapp.presentation.ui.components.buttons.RedirectButtonWithIconComponent
 import com.example.memoraapp.presentation.ui.components.dividers.TextBetweenDividersComponent
 import com.example.memoraapp.presentation.ui.components.formfields.AuthTextFieldComponent
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
+import com.example.memoraapp.presentation.viewmodels.LoginViewModel
+import org.koin.androidx.compose.koinViewModel
+
+@Composable
+fun LoginScreen(
+    navController: NavController,
+    viewModel: LoginViewModel = koinViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val googleAuthHandler = remember(context) {
+        GoogleAuthHandler(context)
+    }
+
+    LaunchedEffect(Unit) {
+
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                is LoginSideEffect.NavigateToHome ->
+                    navController.navigate(AppRoute.MainGraph) {
+                        popUpTo(AppRoute.AuthGraph) {
+                            inclusive = true
+                        }
+                    }
+
+                is LoginSideEffect.NavigateToSignUp ->
+                    navController.navigate(AppRoute.SignUp)
+
+                is LoginSideEffect.LaunchGoogleSignIn -> {
+                    val token = googleAuthHandler.getGoogleIdToken()
+                    if (token != null) {
+                        viewModel.onEvent(LoginScreenEvent.OnGoogleLoginSuccess(token))
+                    } else {
+                        viewModel.onEvent(LoginScreenEvent.OnLoginError)
+                    }
+                }
+
+                is LoginSideEffect.ShowSuccessMessage ->
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
+
+                is LoginSideEffect.ShowError ->
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    LoginScreenContent(
+        state = uiState,
+        onEvent = viewModel::onEvent
+    )
+}
 
 @Composable
 fun LoginScreenContent(

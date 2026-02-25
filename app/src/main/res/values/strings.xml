@@ -60,4 +60,5 @@
     <string name="erro_senhas_diferentes">As senhas digitadas são diferentes</string>
     <string name="usuario_registrado_com_sucesso">Usuário registrado com sucesso!</string>
     <string name="erro_ao_tentar_registrar_usuario">Erro ao tentar registrar usuário</string>
+    <string name="erro_ao_tentar_logar_com_google">Erro ao tentar logar com Google</string>
 </resources>

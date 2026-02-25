@@ -4,7 +4,7 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.memoraapp.R
-import com.example.memoraapp.data.auth.AuthRepository
+import com.example.memoraapp.domain.AuthRepository
 import com.example.memoraapp.presentation.ui.screens.auth.signup.SignUpScreenEvent
 import com.example.memoraapp.presentation.ui.screens.auth.signup.SignUpSideEffect
 import com.example.memoraapp.presentation.ui.screens.auth.signup.SignUpUiState
@@ -48,6 +48,12 @@ class SignUpViewModel(
             SignUpScreenEvent.OnContinueWithGoogleClick -> {
                 viewModelScope.launch {
                     _effects.send(SignUpSideEffect.LaunchGoogleSignIn)
+                }
+            }
+
+            is SignUpScreenEvent.OnLoginWithGoogleError -> {
+                viewModelScope.launch {
+                    _effects.send(SignUpSideEffect.ShowError(UiText.StringResource(R.string.erro_ao_tentar_logar_com_google)))
                 }
             }
 
@@ -96,22 +102,20 @@ class SignUpViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            runCatching {
-                repository.register(state.fullName, state.email, state.password)
+            val result = repository.register(state.fullName, state.email, state.password)
+
+            _uiState.update { it.copy(isLoading = false) }
+
+            if (result.isSuccess) {
+                _effects.send(
+                    SignUpSideEffect.ShowSuccessMessage(UiText.StringResource(R.string.usuario_registrado_com_sucesso))
+                )
+                _effects.send(SignUpSideEffect.NavigateToLogin)
+            } else {
+                _effects.send(
+                    SignUpSideEffect.ShowError(UiText.StringResource(R.string.erro_ao_tentar_registrar_usuario))
+                )
             }
-                .onSuccess {
-                    _uiState.update { it.copy(isLoading = false) }
-                    _effects.send(
-                        SignUpSideEffect.ShowSuccessMessage(UiText.StringResource(R.string.usuario_registrado_com_sucesso))
-                    )
-                    _effects.send(SignUpSideEffect.NavigateToLogin)
-                }
-                .onFailure {
-                    _uiState.update { it.copy(isLoading = false) }
-                    _effects.send(
-                        SignUpSideEffect.ShowError(UiText.StringResource(R.string.erro_ao_tentar_registrar_usuario))
-                    )
-                }
         }
     }
 
@@ -119,22 +123,20 @@ class SignUpViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            runCatching {
-                repository.loginWithGoogle(idToken)
+            val result = repository.loginWithGoogle(idToken)
+
+            _uiState.update { it.copy(isLoading = false) }
+
+            if (result.isSuccess) {
+                _effects.send(
+                    SignUpSideEffect.ShowSuccessMessage(UiText.StringResource(R.string.login_bem_sucedido))
+                )
+                _effects.send(SignUpSideEffect.NavigateToHome)
+            } else {
+                _effects.send(
+                    SignUpSideEffect.ShowError(UiText.StringResource(R.string.erro_login))
+                )
             }
-                .onSuccess {
-                    _uiState.update { it.copy(isLoading = false) }
-                    _effects.send(
-                        SignUpSideEffect.ShowSuccessMessage(UiText.StringResource(R.string.login_bem_sucedido))
-                    )
-                    _effects.send(SignUpSideEffect.NavigateToHome)
-                }
-                .onFailure {
-                    _uiState.update { it.copy(isLoading = false) }
-                    _effects.send(
-                        SignUpSideEffect.ShowError(UiText.StringResource(R.string.erro_login))
-                    )
-                }
         }
     }
 }

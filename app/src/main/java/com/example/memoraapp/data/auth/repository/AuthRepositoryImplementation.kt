@@ -1,6 +1,7 @@
-package com.example.memoraapp.data.repository
+package com.example.memoraapp.data.auth.repository
 
-import com.example.memoraapp.data.auth.AuthRepository
+import android.util.Log
+import com.example.memoraapp.domain.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FieldValue
@@ -16,8 +17,14 @@ class AuthRepositoryImplementation(
     override suspend fun login(email: String, password: String): Result<Unit> {
         return try {
             auth.signInWithEmailAndPassword(email, password).await()
+
+            Log.d("LOGIN_DEBUG", "SUCCESS")
+
             Result.success(Unit)
         } catch (e: Exception) {
+
+            Log.d("LOGIN_DEBUG", "ERROR: ${e.message}")
+
             Result.failure(e)
         }
     }
@@ -33,7 +40,7 @@ class AuthRepositoryImplementation(
                 ?: return Result.failure(Exception("User ID null"))
 
             val userData = mapOf(
-                "name" to name,
+                "fullName" to name,
                 "email" to email,
                 "photoUrl" to null,
                 "createdAt" to FieldValue.serverTimestamp()
@@ -64,20 +71,23 @@ class AuthRepositoryImplementation(
             val user = result.user
                 ?: return Result.failure(Exception("User null"))
 
-            val isNewUser = result.additionalUserInfo?.isNewUser == true
+            val userDocRef = firestore
+                .collection("users")
+                .document(user.uid)
 
-            if (isNewUser) {
+            val snapshot = userDocRef.get().await()
+
+            if (!snapshot.exists()) {
 
                 val userData = mapOf(
-                    "name" to (user.displayName ?: ""),
+                    "uid" to user.uid,
+                    "fullName" to (user.displayName ?: ""),
                     "email" to user.email,
                     "photoUrl" to user.photoUrl?.toString(),
                     "createdAt" to FieldValue.serverTimestamp()
                 )
 
-                firestore
-                    .collection("users")
-                    .document(user.uid)
+                userDocRef
                     .set(userData, SetOptions.merge())
                     .await()
             }

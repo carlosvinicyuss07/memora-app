@@ -1,11 +1,17 @@
 package com.example.memoraapp.presentation.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.example.memoraapp.presentation.ui.screens.auth.login.LoginScreen
+import com.example.memoraapp.presentation.ui.screens.auth.signup.SignUpScreen
 import com.example.memoraapp.presentation.viewmodels.ImagePickerViewModel
 import com.example.memoraapp.presentation.ui.screens.camera.CameraScreen
 import com.example.memoraapp.presentation.ui.screens.details.MemoryDetailsScreen
@@ -14,6 +20,7 @@ import com.example.memoraapp.presentation.ui.screens.memories.MemoriesScreen
 import com.example.memoraapp.presentation.ui.screens.photoselection.PhotoSelectionScreen
 import com.example.memoraapp.presentation.ui.screens.welcome.WelcomeScreen
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
@@ -23,66 +30,112 @@ fun MemoraApp() {
 
     val imagePickerViewModel: ImagePickerViewModel = koinViewModel()
 
+    val currentUser = FirebaseAuth.getInstance().currentUser
+
+    val startDestination = if (currentUser != null) {
+        AppRoute.MainGraph
+    } else {
+        AppRoute.AuthGraph
+    }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_DESTROY) {
+                FirebaseAuth.getInstance().signOut()
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     MemoraAppTheme {
-        NavHost(navController = navController, startDestination = AppRoute.Welcome) {
-            composable<AppRoute.Welcome> {
-                WelcomeScreen(
-                    onStartClick = { navController.navigate(AppRoute.Memories) }
-                )
-            }
+        NavHost(
+            navController = navController,
+            startDestination = startDestination
+        ) {
 
-            composable<AppRoute.Memories> {
-                MemoriesScreen(
-                    navController = navController,
-                    imagePickerViewModel = imagePickerViewModel
-                )
-            }
-
-            navigation<AppRoute.MemoryFormGraph>(
-                startDestination = AppRoute.MemoryForm
+            // Auth Graph
+            navigation<AppRoute.AuthGraph>(
+                startDestination = AppRoute.Login
             ) {
+                composable<AppRoute.Login> {
+                    LoginScreen(navController = navController)
+                }
 
-                composable<AppRoute.MemoryForm> {
+                composable<AppRoute.SignUp> {
+                    SignUpScreen(navController = navController)
+                }
+            }
 
-                    FormMemoryScreen(
+            // Main Graph
+            navigation<AppRoute.MainGraph>(
+                startDestination = AppRoute.Welcome
+            ) {
+                composable<AppRoute.Welcome> {
+                    WelcomeScreen(
+                        onStartClick = { navController.navigate(AppRoute.Memories) }
+                    )
+                }
+
+                composable<AppRoute.Memories> {
+                    MemoriesScreen(
                         navController = navController,
-                        memoryId = null,
                         imagePickerViewModel = imagePickerViewModel
                     )
                 }
 
-                composable<AppRoute.MemoryFormEdit> { backStackEntry ->
-                    val args = backStackEntry.toRoute<AppRoute.MemoryFormEdit>()
-                    FormMemoryScreen(
+                navigation<AppRoute.MemoryFormGraph>(
+                    startDestination = AppRoute.MemoryForm
+                ) {
+
+                    composable<AppRoute.MemoryForm> {
+
+                        FormMemoryScreen(
+                            navController = navController,
+                            memoryId = null,
+                            imagePickerViewModel = imagePickerViewModel
+                        )
+                    }
+
+                    composable<AppRoute.MemoryFormEdit> { backStackEntry ->
+                        val args = backStackEntry.toRoute<AppRoute.MemoryFormEdit>()
+                        FormMemoryScreen(
+                            navController = navController,
+                            memoryId = args.memoryId,
+                            imagePickerViewModel = imagePickerViewModel
+                        )
+                    }
+                }
+
+                composable<AppRoute.PhotoSource> {
+                    PhotoSelectionScreen(
                         navController = navController,
-                        memoryId = args.memoryId,
                         imagePickerViewModel = imagePickerViewModel
                     )
                 }
-            }
 
-            composable<AppRoute.PhotoSource> {
-                PhotoSelectionScreen(
-                    navController = navController,
-                    imagePickerViewModel = imagePickerViewModel
-                )
-            }
+                composable<AppRoute.MemoryDetails> { backStackEntry ->
+                    val args = backStackEntry.toRoute<AppRoute.MemoryDetails>()
 
-            composable<AppRoute.MemoryDetails> { backStackEntry ->
-                val args = backStackEntry.toRoute<AppRoute.MemoryDetails>()
+                    if (args.memoryId == null) return@composable
 
-                if (args.memoryId == null) return@composable
+                    MemoryDetailsScreen(
+                        navController = navController, memoryId = args.memoryId
+                    )
+                }
 
-                MemoryDetailsScreen(
-                    navController = navController, memoryId = args.memoryId
-                )
-            }
-
-            composable<AppRoute.Camera> {
-                CameraScreen(
-                    navController = navController,
-                    imagePickerViewModel = imagePickerViewModel
-                )
+                composable<AppRoute.Camera> {
+                    CameraScreen(
+                        navController = navController,
+                        imagePickerViewModel = imagePickerViewModel
+                    )
+                }
             }
         }
     }
@@ -90,6 +143,18 @@ fun MemoraApp() {
 
 @Serializable
 sealed class AppRoute {
+    @Serializable
+    data object AuthGraph
+
+    @Serializable
+    data object Login
+
+    @Serializable
+    data object SignUp
+
+    @Serializable
+    data object MainGraph
+
     @Serializable
     data object Welcome
 

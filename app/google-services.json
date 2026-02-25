@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "913354553641-7f3tr1musi715rgecuo1o01ma92kmir2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.memoraapp",
+            "certificate_hash": "e3d49ea59c411f9ffee077cfb96e385875fddafc"
+          }
+        },
+        {
           "client_id": "913354553641-a4ehv2h0cu1g6a4uaqkrb1ao5nep63ii.apps.googleusercontent.com",
           "client_type": 3
         }

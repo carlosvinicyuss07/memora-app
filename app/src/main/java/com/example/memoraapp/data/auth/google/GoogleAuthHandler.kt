@@ -42,8 +42,6 @@ class GoogleAuthHandler(
                     .idToken
             } else null
         } catch (e: Exception) {
-            Log.e("GOOGLE_DEBUG", "Erro: ${e.message}")
-            e.printStackTrace()
             null
         }
     }

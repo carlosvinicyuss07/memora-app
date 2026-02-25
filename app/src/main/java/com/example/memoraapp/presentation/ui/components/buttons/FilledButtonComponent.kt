@@ -48,7 +48,8 @@ private fun FilledButtonComponentView() {
                 text = stringResource(R.string.selecionar_foto),
                 containerColor = MaterialTheme.colorScheme.surfaceVariant,
                 contentColor = MaterialTheme.colorScheme.onBackground,
-                onClick = {})
+                onClick = {}
+            )
         }
     }
 }

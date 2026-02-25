@@ -3,9 +3,11 @@ package com.example.memoraapp.di
 import com.example.memoraapp.presentation.viewmodels.CameraViewModel
 import com.example.memoraapp.presentation.viewmodels.FormMemoryViewModel
 import com.example.memoraapp.presentation.viewmodels.ImagePickerViewModel
+import com.example.memoraapp.presentation.viewmodels.LoginViewModel
 import com.example.memoraapp.presentation.viewmodels.MemoriesViewModel
 import com.example.memoraapp.presentation.viewmodels.MemoryDetailsViewModel
 import com.example.memoraapp.presentation.viewmodels.PhotoSelectionViewModel
+import com.example.memoraapp.presentation.viewmodels.SignUpViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -41,6 +43,18 @@ val viewModelModule = module {
 
     viewModel {
         ImagePickerViewModel()
+    }
+
+    viewModel {
+        LoginViewModel(
+            repository = get()
+        )
+    }
+
+    viewModel {
+        SignUpViewModel(
+            repository = get()
+        )
     }
 
 }

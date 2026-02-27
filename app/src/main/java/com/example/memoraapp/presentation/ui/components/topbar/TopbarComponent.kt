@@ -29,10 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.memoraapp.R
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
 
 @Composable
@@ -124,7 +126,7 @@ fun TopbarComponent(
                 ) {
 
                     DropdownMenuItem(
-                        text = { Text("Encerrar sessão") },
+                        text = { Text(stringResource(R.string.encerrar_sessao)) },
                         onClick = {
                             expanded = false
                             onLogoutClick()

@@ -17,20 +17,55 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.memoraapp.R
+import com.example.memoraapp.presentation.ui.AppRoute
 import com.example.memoraapp.presentation.ui.components.buttons.ActionButtonForMyMemories
 import com.example.memoraapp.presentation.ui.components.cards.WelcomeMemoraMessageComponent
 import com.example.memoraapp.presentation.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
+import com.example.memoraapp.presentation.viewmodels.WelcomeScreenViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun WelcomeScreen(onStartClick: () -> Unit) {
+fun WelcomeScreen(
+    navController: NavController,
+    viewModel: WelcomeScreenViewModel = koinViewModel()
+) {
+
+    LaunchedEffect(Unit) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                is WelcomeScreenSideEffect.NavigateToMemoriesScreen ->
+                    navController.navigate(AppRoute.Memories)
+
+                is WelcomeScreenSideEffect.CloseScreen ->
+                    navController.navigate(AppRoute.AuthGraph) {
+                        popUpTo(AppRoute.MainGraph) {
+                            inclusive = true
+                        }
+                    }
+
+            }
+        }
+    }
+
+    WelcomeScreenContent(
+        onEvent = viewModel::onEvent
+    )
+}
+
+@Composable
+fun WelcomeScreenContent(
+    onEvent: (WelcomeScreenEvent) -> Unit
+) {
 
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
@@ -42,7 +77,9 @@ fun WelcomeScreen(onStartClick: () -> Unit) {
         topBar = {
             TopbarComponent(
                 icon = Icons.Filled.Home,
-                screenName = stringResource(R.string.bem_vindo)
+                screenName = stringResource(R.string.bem_vindo),
+                iconMoreOptions = true,
+                onLogoutClick = { onEvent(WelcomeScreenEvent.OnLogoutClick) }
             )
         },
         containerColor = MaterialTheme.colorScheme.background
@@ -63,7 +100,7 @@ fun WelcomeScreen(onStartClick: () -> Unit) {
                 )
                 WelcomeMemoraMessageComponent()
                 ActionButtonForMyMemories(
-                    onClick = onStartClick,
+                    onClick = { onEvent(WelcomeScreenEvent.OnNavigateToMemoriesClick) },
                     modifier = Modifier
                         .align(Alignment.End)
                         .offset(x = (-25).dp, y = 20.dp)
@@ -88,7 +125,7 @@ fun WelcomeScreen(onStartClick: () -> Unit) {
                     Spacer(modifier = Modifier.size(160.dp))
 
                     ActionButtonForMyMemories(
-                        onClick = onStartClick,
+                        onClick = { onEvent(WelcomeScreenEvent.OnNavigateToMemoriesClick) },
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                     )
@@ -110,7 +147,7 @@ private fun WelcomeScreenView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            WelcomeScreen(onStartClick = {})
+            WelcomeScreenContent {}
         }
     }
 }

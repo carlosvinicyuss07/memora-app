@@ -52,9 +52,9 @@ class FirestoreMemoryRepository(
     override suspend fun insert(memory: Memory) {
         val docRef = userMemoriesCollection().document()
 
-        val dto = memory.toDto()
+        val memoryWithId = memory.copy(id = docRef.id)
 
-        docRef.set(dto)
+        docRef.set(memoryWithId.toDto())
     }
 
     override suspend fun update(memory: Memory) {

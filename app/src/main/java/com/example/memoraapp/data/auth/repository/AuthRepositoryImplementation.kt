@@ -1,6 +1,5 @@
 package com.example.memoraapp.data.auth.repository
 
-import android.util.Log
 import com.example.memoraapp.domain.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -18,13 +17,8 @@ class AuthRepositoryImplementation(
         return try {
             auth.signInWithEmailAndPassword(email, password).await()
 
-            Log.d("LOGIN_DEBUG", "SUCCESS")
-
             Result.success(Unit)
         } catch (e: Exception) {
-
-            Log.d("LOGIN_DEBUG", "ERROR: ${e.message}")
-
             Result.failure(e)
         }
     }

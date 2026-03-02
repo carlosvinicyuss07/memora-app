@@ -127,12 +127,14 @@ class FormMemoryViewModel(
             return
         }
 
+        /* Obrigatoriedade de imagem temporariamente desativada por falta de Cloud Storage(Firebase)
         if (state.imageUri == null) {
             viewModelScope.launch {
                 _effects.send(FormMemorySideEffect.ShowError(UiText.StringResource(R.string.erro_imagem_obrigatoria)))
             }
             return
         }
+        */
 
         viewModelScope.launch {
             runCatching {

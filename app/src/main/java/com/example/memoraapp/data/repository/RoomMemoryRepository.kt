@@ -25,11 +25,11 @@ class RoomMemoryRepository(
         dao.update(memory.toEntity())
     }
 
-    override suspend fun delete(memoryId: Int) {
-        dao.deleteById(memoryId)
+    override suspend fun delete(memoryId: String) {
+        dao.deleteById(memoryId.toInt())
     }
 
-    override suspend fun getMemoryById(id: Int): Memory? =
-        dao.getById(id)?.toDomain()
+    override suspend fun getMemoryById(id: String): Memory? =
+        dao.getById(id.toInt())?.toDomain()
 
 }

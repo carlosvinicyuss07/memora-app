@@ -49,7 +49,7 @@ import org.koin.androidx.compose.koinViewModel
 fun MemoryDetailsScreen(
     navController: NavController,
     viewModel: MemoryDetailsViewModel = koinViewModel(),
-    memoryId: Int?
+    memoryId: String?
 ) {
 
     val uiState by viewModel.uiState.collectAsState()

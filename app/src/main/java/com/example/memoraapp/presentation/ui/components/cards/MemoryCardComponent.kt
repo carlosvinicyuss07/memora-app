@@ -106,7 +106,7 @@ private fun MemoryCardComponentView() {
         ) {
             MemoryCardComponent(
                 memory = MemoryUi(
-                    id = 1,
+                    id = "1abc",
                     title = "Montanhas de Outono",
                     description = "Teste",
                     date = "01-01-0000"

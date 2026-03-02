@@ -58,7 +58,7 @@ class FormMemoryViewModel(
         }
     }
 
-    private fun handleOnInit(id: Int?) {
+    private fun handleOnInit(id: String?) {
         if (id == null) {
             _uiState.update {
                 it.copy(
@@ -139,7 +139,7 @@ class FormMemoryViewModel(
                 if (state.isEditMode) {
                     repository.update(
                         Memory(
-                            id = state.id ?: -1,
+                            id = state.id!!,
                             title = state.title,
                             description = state.description,
                             date = state.date,

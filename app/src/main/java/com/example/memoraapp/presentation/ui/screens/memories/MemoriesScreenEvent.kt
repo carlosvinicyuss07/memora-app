@@ -2,7 +2,7 @@ package com.example.memoraapp.presentation.ui.screens.memories
 
 sealed interface MemoriesScreenEvent {
     data object OnInit : MemoriesScreenEvent
-    data class OnMemoryClick(val id: Int) : MemoriesScreenEvent
+    data class OnMemoryClick(val id: String) : MemoriesScreenEvent
     data object OnAddMemoryClick : MemoriesScreenEvent
     data object OnBackClick : MemoriesScreenEvent
 }

@@ -38,7 +38,7 @@ class MemoryDetailsViewModel(
         }
     }
 
-    fun handleOnInit(id: Int?) {
+    fun handleOnInit(id: String?) {
         if (id == null) return
 
         _uiState.update { it.copy(isLoading = true) }
@@ -66,7 +66,7 @@ class MemoryDetailsViewModel(
         }
     }
 
-    fun handleOnEdit(id: Int?) {
+    fun handleOnEdit(id: String?) {
         if (id == null) return
 
         viewModelScope.launch {
@@ -74,7 +74,7 @@ class MemoryDetailsViewModel(
         }
     }
 
-    fun handleOnDelete(id: Int?) {
+    fun handleOnDelete(id: String?) {
         if (id == null) return
 
         viewModelScope.launch {

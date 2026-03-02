@@ -62,7 +62,7 @@ fun FormMemoryScreen(
     navController: NavController,
     imagePickerViewModel: ImagePickerViewModel,
     viewModel: FormMemoryViewModel = koinViewModel(),
-    memoryId: Int?
+    memoryId: String?
 ) {
 
     val uiState by viewModel.uiState.collectAsState()

@@ -4,7 +4,7 @@ import com.example.memoraapp.presentation.ui.util.UiText
 import java.time.LocalDate
 
 data class FormMemoryUiState(
-    val id: Int? = null,
+    val id: String? = null,
     val title: String = "",
     val description: String = "",
     val date: LocalDate? = null,

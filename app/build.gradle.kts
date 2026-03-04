@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     //Firestore
     implementation(libs.firebase.firestore)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // Core do Koin
     implementation(libs.koin.android)

@@ -61,6 +61,8 @@ dependencies {
     //Firestore
     implementation(libs.firebase.firestore)
     implementation(libs.kotlinx.coroutines.play.services)
+    // Cloud Storage
+    implementation(libs.firebase.storage)
 
     // Core do Koin
     implementation(libs.koin.android)

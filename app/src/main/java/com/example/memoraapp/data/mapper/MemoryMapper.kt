@@ -33,5 +33,5 @@ fun Memory.toDto() = MemoryDto(
     title = title,
     description = description,
     date = date.toString(),
-    imageUrl = imageUri
+    imageUrl = imageUri.toString()
 )

@@ -1,6 +1,5 @@
 package com.example.memoraapp.data.repository
 
-import android.net.Uri
 import com.example.memoraapp.data.mapper.toDomain
 import com.example.memoraapp.data.mapper.toDto
 import com.example.memoraapp.data.remote.MemoryDto
@@ -34,10 +33,12 @@ class FirestoreMemoryRepository(
     }
 
     private suspend fun uploadImage(
-        userId: String,
         memoryId: String,
         localUri: String
     ): String {
+
+        val userId = auth.currentUser?.uid
+            ?: throw IllegalStateException("Usuário não autenticado")
 
         val ref = storage.reference
             .child("users/$userId/memories/$memoryId.jpg")
@@ -45,6 +46,10 @@ class FirestoreMemoryRepository(
         ref.putFile(localUri.toUri()).await()
 
         return ref.downloadUrl.await().toString()
+    }
+
+    private fun String.isLocalFile(): Boolean {
+        return startsWith("content://") || startsWith("file://")
     }
 
     override fun getAllMemories(): Flow<List<Memory>> = callbackFlow {
@@ -69,18 +74,17 @@ class FirestoreMemoryRepository(
 
     override suspend fun insert(memory: Memory) {
 
-        val userId = auth.currentUser!!.uid
         val docRef = userMemoriesCollection().document()
 
-        var imageUrl: String? = null
-
-        if (memory.imageUri != null) {
-            imageUrl = uploadImage(
-                userId = userId,
-                memoryId = docRef.id,
-                localUri = memory.imageUri
-            )
-        }
+        val imageUrl =
+            if (memory.imageUri?.isLocalFile() == true) {
+                uploadImage(
+                    memoryId = docRef.id,
+                    localUri = memory.imageUri
+                )
+            } else {
+                memory.imageUri
+            }
 
         val memoryWithId = memory.copy(id = docRef.id, imageUri = imageUrl)
 
@@ -89,24 +93,21 @@ class FirestoreMemoryRepository(
 
     override suspend fun update(memory: Memory) {
 
-        val userId = auth.currentUser!!.uid
+        val imageUrl =
+            if (memory.imageUri?.isLocalFile() == true) {
+                uploadImage(
+                    memoryId = memory.id,
+                    localUri = memory.imageUri
+                )
+            } else {
+                memory.imageUri
+            }
 
-        var imageUrl = memory.imageUri
-
-        if (memory.imageUri?.startsWith("content://") == true) {
-
-            imageUrl = uploadImage(
-                userId = userId,
-                memoryId = memory.id,
-                localUri = memory.imageUri
-            )
-        }
-
-        val updated = memory.copy(imageUri = imageUrl)
+        val updatedMemory = memory.copy(imageUri = imageUrl)
 
         userMemoriesCollection()
             .document(memory.id)
-            .set(updated.toDto())
+            .set(updatedMemory.toDto())
             .await()
     }
 

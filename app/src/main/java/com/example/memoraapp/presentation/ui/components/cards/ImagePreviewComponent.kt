@@ -21,7 +21,7 @@ import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
 
 @Composable
 fun ImagePreviewComponent(
-    imageBitmap: ImageBitmap?,
+    imageUrl: String?,
     onSelectImage: () -> Unit
 ) {
     Column(
@@ -46,7 +46,7 @@ fun ImagePreviewComponent(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Component de imagem com borda pontilhada
-        DashedBorderImage(imageBitmap = imageBitmap)
+        DashedBorderImage(imageUrl = imageUrl)
 
         Spacer(modifier = Modifier.height(15.dp))
 
@@ -70,7 +70,7 @@ private fun ImagePreviewComponentPreview() {
     MemoraAppTheme {
         Surface {
             ImagePreviewComponent(
-                imageBitmap = null
+                imageUrl = null
             ) {}
         }
     }

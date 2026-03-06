@@ -31,5 +31,4 @@ class RoomMemoryRepository(
 
     override suspend fun getMemoryById(id: String): Memory? =
         dao.getById(id.toInt())?.toDomain()
-
 }

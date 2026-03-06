@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cached
@@ -43,6 +42,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.example.memoraapp.R
 import com.example.memoraapp.presentation.viewmodels.CameraViewModel
@@ -96,7 +96,7 @@ fun CameraScreen(
             when (effect) {
                 is CameraSideEffect.ReturnPhoto -> {
 
-                    imagePickerViewModel.setSelectedImage(effect.uri)
+                    imagePickerViewModel.setSelectedImage(effect.uri.toUri())
 
                     // Remove Camera
                     navController.popBackStack()

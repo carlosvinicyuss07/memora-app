@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
 import com.example.memoraapp.presentation.ui.util.uriToImageBitmap
 import androidx.core.net.toUri
+import coil.compose.AsyncImage
 import com.example.memoraapp.R
 import com.example.memoraapp.presentation.ui.screens.memories.MemoryUi
 import kotlin.Unit
@@ -45,16 +46,14 @@ fun MemoryCardComponent(
             modifier = Modifier.clickable { onClick() }
         ) {
             if (memory.imageUri != null) {
-                uriToImageBitmap(context = LocalContext.current, uri = memory.imageUri.toUri())?.let {
-                    Image(
-                        bitmap = it,
-                        contentDescription = "Photo Memory Card",
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .height(90.dp),
-                        contentScale = ContentScale.Crop
-                    )
-                }
+                AsyncImage(
+                    model = memory.imageUri,
+                    contentDescription = "Photo Memory Card",
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(90.dp),
+                    contentScale = ContentScale.Crop
+                )
             } else {
                 Image(
                     // TODO: Será realizado em outro momento
@@ -106,7 +105,7 @@ private fun MemoryCardComponentView() {
         ) {
             MemoryCardComponent(
                 memory = MemoryUi(
-                    id = 1,
+                    id = "1abc",
                     title = "Montanhas de Outono",
                     description = "Teste",
                     date = "01-01-0000"

@@ -42,14 +42,13 @@ import com.example.memoraapp.presentation.ui.components.buttons.ExtendedFAB
 import com.example.memoraapp.presentation.ui.components.imagelayouts.MemoryDetailsImageComponent
 import com.example.memoraapp.presentation.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
-import com.example.memoraapp.presentation.ui.util.rememberImageBitmap
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MemoryDetailsScreen(
     navController: NavController,
     viewModel: MemoryDetailsViewModel = koinViewModel(),
-    memoryId: Int?
+    memoryId: String?
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
@@ -101,10 +100,6 @@ fun MemoryDetailsScreenContent(
             .padding(horizontal = 60.dp)
             .padding(top = 16.dp, bottom = 50.dp)
     }
-
-    val imageBitmap = rememberImageBitmap(
-        state.imageUri
-    )
 
     Scaffold(
         modifier = Modifier
@@ -172,7 +167,7 @@ fun MemoryDetailsScreenContent(
                 item {
                     MemoryDetailsImageComponent(
                         modifier = Modifier.padding(horizontal = 24.dp),
-                        imageBitmap = imageBitmap
+                        imageUrl = state.imageUri
                     )
                 }
 

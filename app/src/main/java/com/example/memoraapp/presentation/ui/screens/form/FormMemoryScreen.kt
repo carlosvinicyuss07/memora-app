@@ -49,7 +49,6 @@ import com.example.memoraapp.presentation.ui.components.formfields.LabelFormComp
 import com.example.memoraapp.presentation.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
 import com.example.memoraapp.presentation.ui.util.UiText
-import com.example.memoraapp.presentation.ui.util.rememberImageBitmap
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import java.time.Instant
@@ -62,7 +61,7 @@ fun FormMemoryScreen(
     navController: NavController,
     imagePickerViewModel: ImagePickerViewModel,
     viewModel: FormMemoryViewModel = koinViewModel(),
-    memoryId: Int?
+    memoryId: String?
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
@@ -143,10 +142,6 @@ fun FormMemoryScreenContent(
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    val imageBitmap = rememberImageBitmap(
-        state.imageUri
-    )
-
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -215,7 +210,7 @@ fun FormMemoryScreenContent(
 
                 item {
                     ImagePreviewComponent(
-                        imageBitmap = imageBitmap
+                        imageUrl = state.imageUri
                     ) { onEvent(FormMemoryScreenEvent.OnSelectPhotoClick) }
                 }
 

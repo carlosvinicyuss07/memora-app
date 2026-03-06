@@ -143,7 +143,7 @@ sealed class AppRoute {
     data object Memories
 
     @Serializable
-    data class MemoryDetails(val memoryId: Int?)
+    data class MemoryDetails(val memoryId: String?)
 
     @Serializable
     data object MemoryFormGraph
@@ -152,7 +152,7 @@ sealed class AppRoute {
     data object MemoryForm
 
     @Serializable
-    data class MemoryFormEdit(val memoryId: Int?)
+    data class MemoryFormEdit(val memoryId: String?)
 
     @Serializable
     data object PhotoSource

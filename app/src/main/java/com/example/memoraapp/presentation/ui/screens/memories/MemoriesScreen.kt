@@ -171,7 +171,7 @@ private fun MemoriesScreenView() {
                 state = MemoriesScreenState().copy(
                     memories = listOf(
                         MemoryUi(
-                            1,
+                            "1abc",
                             "Pôr do Sol na Praia",
                             "teste",
                             "01-01-1999"

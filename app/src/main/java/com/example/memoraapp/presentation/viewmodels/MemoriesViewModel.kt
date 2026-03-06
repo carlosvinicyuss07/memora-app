@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.memoraapp.R
 import com.example.memoraapp.domain.MemoryRepository
 import com.example.memoraapp.presentation.ui.extensions.toUi
-import com.example.memoraapp.presentation.ui.screens.form.FormMemorySideEffect
 import com.example.memoraapp.presentation.ui.screens.memories.MemoriesScreenEvent
 import com.example.memoraapp.presentation.ui.screens.memories.MemoriesScreenSideEffect
 import com.example.memoraapp.presentation.ui.screens.memories.MemoriesScreenState
@@ -72,7 +71,7 @@ class MemoriesViewModel(
         }
     }
 
-    private fun handleOnClickMemory(id: Int) {
+    private fun handleOnClickMemory(id: String) {
         viewModelScope.launch {
             _effects.send(MemoriesScreenSideEffect.NavigateToDetail(id))
         }

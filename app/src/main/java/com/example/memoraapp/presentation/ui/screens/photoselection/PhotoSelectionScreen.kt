@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.example.memoraapp.R
 import com.example.memoraapp.presentation.viewmodels.ImagePickerViewModel
@@ -56,7 +57,7 @@ fun PhotoSelectionScreen(
 
             val localUri = copyUriToCache(context, uri)
 
-            imagePickerViewModel.setSelectedImage(localUri)
+            imagePickerViewModel.setSelectedImage(localUri.toUri())
 
             navController.popBackStack()
         }

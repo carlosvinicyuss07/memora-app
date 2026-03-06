@@ -22,13 +22,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.memoraapp.R
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
 
 @Composable
 fun DashedBorderImage(
     modifier: Modifier = Modifier,
-    imageBitmap: ImageBitmap?,
+    imageUrl: String?,
     cornerRadius: Dp = 10.dp,
     strokeWidth: Dp = 2.dp,
     dashLength: Float = 12f,
@@ -70,9 +71,9 @@ fun DashedBorderImage(
             )
         }
 
-        if (imageBitmap != null) {
-            Image(
-                bitmap = imageBitmap,
+        if (imageUrl != null) {
+            AsyncImage(
+                model = imageUrl,
                 contentDescription = "Preview Image",
                 modifier = Modifier
                     .fillMaxSize()
@@ -97,7 +98,7 @@ private fun DashedBorderImageView() {
     MemoraAppTheme {
         Surface {
             DashedBorderImage(
-                imageBitmap = null
+                imageUrl = null
             )
         }
     }

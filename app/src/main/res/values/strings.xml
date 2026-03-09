@@ -62,4 +62,7 @@
     <string name="erro_ao_tentar_registrar_usuario">Erro ao tentar registrar usuário</string>
     <string name="erro_ao_tentar_logar_com_google">Erro ao tentar logar com Google</string>
     <string name="encerrar_sessao">Encerrar sessão</string>
+    <string name="msg_excluir_dados_da_conta">Ao excluir sua conta, todas as suas memórias e dados salvos na nuvem serão apagados para sempre. Não será possível recuperar essas informações após a confirmação.</string>
+    <string name="privacidade_e_seguranca">Privacidade e Segurança</string>
+    <string name="excluir_meus_dados">Excluir meus dados</string>
 </resources>

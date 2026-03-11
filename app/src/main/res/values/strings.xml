@@ -65,4 +65,9 @@
     <string name="msg_excluir_dados_da_conta">Ao excluir sua conta, todas as suas memórias e dados salvos na nuvem serão apagados para sempre. Não será possível recuperar essas informações após a confirmação.</string>
     <string name="privacidade_e_seguranca">Privacidade e Segurança</string>
     <string name="excluir_meus_dados">Excluir meus dados</string>
+    <string name="perfil">Perfil</string>
+    <string name="salvar_alteracoes">Salvar alterações</string>
+    <string name="nome_de_usuario">Nome de usuário</string>
+    <string name="total_de_memorias">Total de Memórias</string>
+    <string name="memorias_que_voce_criou_no_memora">Memórias que você criou no Memora</string>
 </resources>

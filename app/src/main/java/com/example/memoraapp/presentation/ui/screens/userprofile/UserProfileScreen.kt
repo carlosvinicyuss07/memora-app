@@ -2,8 +2,10 @@ package com.example.memoraapp.presentation.ui.screens.userprofile
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import androidx.compose.foundation.BorderStroke
+import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,28 +28,76 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.memoraapp.R
+import com.example.memoraapp.presentation.ui.AppRoute
 import com.example.memoraapp.presentation.ui.components.buttons.FilledButtonComponent
 import com.example.memoraapp.presentation.ui.components.buttons.LeftAlignedButtonComponent
 import com.example.memoraapp.presentation.ui.components.formfields.UserProfileFormFieldComponent
 import com.example.memoraapp.presentation.ui.components.imagelayouts.UserProfilePictureComponent
 import com.example.memoraapp.presentation.ui.components.texts.LeftAlignedTitleWithDescriptionComponent
 import com.example.memoraapp.presentation.ui.components.topbar.TopbarComponent
-import com.example.memoraapp.presentation.ui.screens.form.FormMemoryScreenContent
-import com.example.memoraapp.presentation.ui.screens.form.FormMemoryScreenEvent
-import com.example.memoraapp.presentation.ui.screens.form.FormMemoryUiState
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
-import com.example.memoraapp.presentation.ui.util.UiText
+import com.example.memoraapp.presentation.viewmodels.UserProfileViewModel
+import org.koin.androidx.compose.koinViewModel
+
+@Composable
+fun UserProfileScreen(
+    navController: NavController,
+    viewModel: UserProfileViewModel = koinViewModel(),
+    userId: String
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(UserProfileScreenEvent.OnInit(userId = userId))
+
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                is UserProfileSideEffect.NavigateToAuth ->
+                    navController.navigate(AppRoute.AuthGraph) {
+                        popUpTo(AppRoute.MainGraph) {
+                            inclusive = true
+                        }
+                    }
+
+                is UserProfileSideEffect.CloseScreen ->
+                    navController.navigateUp()
+
+                is UserProfileSideEffect.NavigateToPhotoSource ->
+                    navController.navigate(AppRoute.PhotoSource)
+
+                is UserProfileSideEffect.ShowSuccessMessage ->
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
+
+                is UserProfileSideEffect.ShowError ->
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    UserProfileScreenContent(
+        state = uiState,
+        onEvent = viewModel::onEvent
+    )
+}
 
 @Composable
 fun UserProfileScreenContent(
@@ -65,8 +115,8 @@ fun UserProfileScreenContent(
         topBar = {
             TopbarComponent(
                 screenName = stringResource(R.string.perfil),
-                iconMoreOptions = true,
-                onLogoutClick = { onEvent(UserProfileScreenEvent.OnLogoutClick) }
+                onLogoutClick = { onEvent(UserProfileScreenEvent.OnLogoutClick) },
+                iconMoreOptions = true
             )
         },
         containerColor = MaterialTheme.colorScheme.background
@@ -91,8 +141,35 @@ fun UserProfileScreenContent(
                     .padding(bottom = 32.dp)
             )
 
+            if (state.showPhotoPreview && state.photoUrl != null) {
+                Dialog(onDismissRequest = {
+                    onEvent(UserProfileScreenEvent.OnClosePhotoPreview)
+                }) {
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.background)
+                            .clickable {
+                                onEvent(UserProfileScreenEvent.OnClosePhotoPreview)
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+
+                        AsyncImage(
+                            model = state.photoUrl,
+                            contentDescription = "Foto de perfil",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+                }
+            }
+
             UserProfilePictureComponent(
-                imageUrl = state.imageUri,
+                imageUrl = state.photoUrl,
                 onPhotoClick = { onEvent(UserProfileScreenEvent.OnPhotoClick) },
                 onCameraClick = { onEvent(UserProfileScreenEvent.OnCameraClick) }
             )
@@ -197,7 +274,7 @@ fun UserProfileScreenContent(
                     LeftAlignedButtonComponent(
                         text = stringResource(R.string.excluir_meus_dados),
                         icon = Icons.Default.Delete,
-                        onClick = { onEvent(UserProfileScreenEvent.OnDeleteMyDataClick) },
+                        onClick = { onEvent(UserProfileScreenEvent.OnDeleteMyDataClick(state.id)) },
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
                             .padding(bottom = 48.dp)

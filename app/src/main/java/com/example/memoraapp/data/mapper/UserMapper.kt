@@ -17,6 +17,6 @@ fun User.toDto() = UserDto(
     fullName = fullName,
     email = email,
     photoUrl = photoUrl,
-    createdAt = createdAt?.let { Timestamp(it) },
+    createdAt = createdAt?.let { Timestamp(it) } ?: Timestamp.now(),
     totalMemories = totalMemories.toLong()
 )

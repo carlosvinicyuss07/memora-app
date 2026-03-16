@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -97,7 +96,7 @@ fun WelcomeScreenContent(
         topBar = {
             TopbarComponent(
                 icon = Icons.Filled.Home,
-                screenName = stringResource(R.string.bem_vindo) + ", ${state.userName}",
+                screenName = stringResource(R.string.bem_vindo) + ", ${state.userName ?: ""}",
                 onLogoutClick = { onEvent(WelcomeScreenEvent.OnLogoutClick) },
                 onUserProfileClick = { onEvent(WelcomeScreenEvent.OnNavigateToUserProfileClick(state.userId!!)) },
                 iconMoreOptions = true

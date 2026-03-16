@@ -64,11 +64,14 @@ class UserRepositoryImplementation(
                 user.photoUrl
             }
 
-        val updatedUser = user.copy(photoUrl = imageUrl)
-
         firestore.collection("users")
             .document(user.id)
-            .set(updatedUser.toDto())
+            .update(
+                mapOf(
+                    "fullName" to user.fullName,
+                    "photoUrl" to imageUrl
+                )
+            )
             .await()
     }
 
@@ -79,11 +82,37 @@ class UserRepositoryImplementation(
 
         val uid = user.uid
 
-        if (userId == uid) {
-            firestore.collection("users")
-                .document(uid)
-                .delete()
-                .await()
+        if (userId != uid) {
+            throw Exception("Usuário inválido")
+        }
+
+        val userRef = firestore.collection("users").document(uid)
+        val memoriesRef = userRef.collection("memories")
+
+        try {
+
+            val memoriesSnapshot = memoriesRef.get().await()
+
+            for (memory in memoriesSnapshot.documents) {
+
+                val imageUrl = memory.getString("imageUrl")
+
+                if (!imageUrl.isNullOrEmpty()) {
+                    try {
+                        storage.getReferenceFromUrl(imageUrl)
+                            .delete()
+                            .await()
+                    } catch (e: Exception) {}
+                }
+            }
+
+            val batch = firestore.batch()
+
+            memoriesSnapshot.documents.forEach { documentSnapshot ->
+                batch.delete(documentSnapshot.reference)
+            }
+
+            batch.commit().await()
 
             try {
                 storage.reference
@@ -92,7 +121,11 @@ class UserRepositoryImplementation(
                     .await()
             } catch (e: Exception) {}
 
+            userRef.delete().await()
+
             user.delete().await()
+        } catch (e: Exception) {
+            throw Exception("Erro ao excluir conta: ${e.message}")
         }
     }
 }

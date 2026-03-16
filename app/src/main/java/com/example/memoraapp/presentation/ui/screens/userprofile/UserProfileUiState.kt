@@ -11,5 +11,6 @@ data class UserProfileUiState(
     val totalMemories: Int = 0,
     val isLoading: Boolean = false,
     val showPhotoPreview: Boolean = false,
+    val showDeleteDialog: Boolean = false,
     val errorMessage: String? = null
 )

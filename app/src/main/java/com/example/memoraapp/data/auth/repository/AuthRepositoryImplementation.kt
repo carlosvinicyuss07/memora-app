@@ -37,7 +37,8 @@ class AuthRepositoryImplementation(
                 "fullName" to name,
                 "email" to email,
                 "photoUrl" to null,
-                "createdAt" to FieldValue.serverTimestamp()
+                "createdAt" to FieldValue.serverTimestamp(),
+                "totalMemories" to 0
             )
 
             firestore
@@ -78,7 +79,8 @@ class AuthRepositoryImplementation(
                     "fullName" to (user.displayName ?: ""),
                     "email" to user.email,
                     "photoUrl" to user.photoUrl?.toString(),
-                    "createdAt" to FieldValue.serverTimestamp()
+                    "createdAt" to FieldValue.serverTimestamp(),
+                    "totalMemories" to 0
                 )
 
                 userDocRef

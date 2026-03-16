@@ -26,13 +26,19 @@ class WelcomeScreenViewModel(
     fun onEvent(event: WelcomeScreenEvent) {
         when(event) {
             is WelcomeScreenEvent.OnInit -> {
-                _uiState.update { it.copy(user = event.user) }
+                _uiState.update { it.copy(userName = event.userName, userId = event.userId) }
             }
 
             is WelcomeScreenEvent.OnLogoutClick -> {
                 viewModelScope.launch {
                     repository.logout()
                     _effects.send(WelcomeScreenSideEffect.CloseScreen)
+                }
+            }
+
+            is WelcomeScreenEvent.OnNavigateToUserProfileClick -> {
+                viewModelScope.launch {
+                    _effects.send(WelcomeScreenSideEffect.NavigateToUserProfileScreen(event.id))
                 }
             }
 

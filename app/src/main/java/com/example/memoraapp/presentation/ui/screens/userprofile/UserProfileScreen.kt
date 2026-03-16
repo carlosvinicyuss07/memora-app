@@ -22,6 +22,7 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -49,6 +50,7 @@ import com.example.memoraapp.R
 import com.example.memoraapp.presentation.ui.AppRoute
 import com.example.memoraapp.presentation.ui.components.buttons.FilledButtonComponent
 import com.example.memoraapp.presentation.ui.components.buttons.LeftAlignedButtonComponent
+import com.example.memoraapp.presentation.ui.components.dialog.DeleteAccountDialog
 import com.example.memoraapp.presentation.ui.components.formfields.UserProfileFormFieldComponent
 import com.example.memoraapp.presentation.ui.components.imagelayouts.UserProfilePictureComponent
 import com.example.memoraapp.presentation.ui.components.texts.LeftAlignedTitleWithDescriptionComponent
@@ -115,6 +117,8 @@ fun UserProfileScreenContent(
         topBar = {
             TopbarComponent(
                 screenName = stringResource(R.string.perfil),
+                onBackClick = { onEvent(UserProfileScreenEvent.OnBackClick) },
+                onUserProfileClick = {},
                 onLogoutClick = { onEvent(UserProfileScreenEvent.OnLogoutClick) },
                 iconMoreOptions = true
             )
@@ -138,7 +142,6 @@ fun UserProfileScreenContent(
                 thickness = 1.dp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 32.dp)
             )
 
             if (state.showPhotoPreview && state.photoUrl != null) {
@@ -168,32 +171,58 @@ fun UserProfileScreenContent(
                 }
             }
 
-            UserProfilePictureComponent(
-                imageUrl = state.photoUrl,
-                onPhotoClick = { onEvent(UserProfileScreenEvent.OnPhotoClick) },
-                onCameraClick = { onEvent(UserProfileScreenEvent.OnCameraClick) }
-            )
+            if (state.showDeleteDialog) {
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = state.fullName,
-                style = MaterialTheme.typography.titleMedium.copy(fontSize = 24.sp, fontWeight = FontWeight.Bold),
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
-
-            Text(
-                text = state.email,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                DeleteAccountDialog(
+                    onConfirm = {
+                        onEvent(UserProfileScreenEvent.OnConfirmDeleteAccount(userId = state.id))
+                    },
+                    onDismiss = {
+                        onEvent(UserProfileScreenEvent.OnDismissDeleteDialog)
+                    }
                 )
-            )
+            }
+
+            if (state.isLoading) {
+                CircularProgressIndicator()
+            }
 
             LazyColumn(
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 32.dp)
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
+                item {
+                    UserProfilePictureComponent(
+                        imageUrl = state.photoUrl,
+                        onPhotoClick = { onEvent(UserProfileScreenEvent.OnPhotoClick) },
+                        onCameraClick = { onEvent(UserProfileScreenEvent.OnCameraClick) }
+                    )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
+                item {
+                    Text(
+                        text = state.fullName,
+                        style = MaterialTheme.typography.titleMedium.copy(fontSize = 24.sp, fontWeight = FontWeight.Bold),
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                }
+
+                item {
+                    Text(
+                        text = state.email,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        ),
+                        modifier = Modifier.padding(bottom = 32.dp)
+                    )
+                }
 
                 item {
                     Card(
@@ -274,7 +303,7 @@ fun UserProfileScreenContent(
                     LeftAlignedButtonComponent(
                         text = stringResource(R.string.excluir_meus_dados),
                         icon = Icons.Default.Delete,
-                        onClick = { onEvent(UserProfileScreenEvent.OnDeleteMyDataClick(state.id)) },
+                        onClick = { onEvent(UserProfileScreenEvent.OnDeleteMyDataClick) },
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
                             .padding(bottom = 48.dp)

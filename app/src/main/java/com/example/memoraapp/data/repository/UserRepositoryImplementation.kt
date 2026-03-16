@@ -36,9 +36,9 @@ class UserRepositoryImplementation(
         return ref.downloadUrl.await().toString()
     }
 
-    override suspend fun getUser(uid: String): User? {
+    override suspend fun getUser(userId: String): User? {
         val document = firestore.collection("users")
-            .document(uid)
+            .document(userId)
             .get()
             .await()
 
@@ -62,15 +62,27 @@ class UserRepositoryImplementation(
             .await()
     }
 
-    override suspend fun deleteUser(uid: String) {
-        firestore.collection("users")
-            .document(uid)
-            .delete()
-            .await()
+    override suspend fun deleteUser(userId: String) {
 
-        storage.reference
-            .child("users/$uid/profile.jpg")
-            .delete()
-            .await()
+        val user = auth.currentUser
+            ?: throw Exception("Usuário não autenticado")
+
+        val uid = user.uid
+
+        if (userId == uid) {
+            firestore.collection("users")
+                .document(uid)
+                .delete()
+                .await()
+
+            try {
+                storage.reference
+                    .child("users/$uid/profile.jpg")
+                    .delete()
+                    .await()
+            } catch (e: Exception) {}
+
+            user.delete().await()
+        }
     }
 }

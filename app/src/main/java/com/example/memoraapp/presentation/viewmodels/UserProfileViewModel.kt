@@ -59,7 +59,19 @@ class UserProfileViewModel(
                 }
             }
 
-            is UserProfileScreenEvent.OnDeleteMyDataClick -> handleOnDelete(event.userId)
+            is UserProfileScreenEvent.OnDeleteMyDataClick -> {
+                _uiState.update {
+                    it.copy(showDeleteDialog = true)
+                }
+            }
+
+            is UserProfileScreenEvent.OnDismissDeleteDialog -> {
+                _uiState.update {
+                    it.copy(showDeleteDialog = false)
+                }
+            }
+
+            is UserProfileScreenEvent.OnConfirmDeleteAccount -> handleOnDelete(event.userId)
 
             is UserProfileScreenEvent.OnBackClick -> handleOnBackClick()
         }
@@ -86,7 +98,8 @@ class UserProfileViewModel(
                                 fullName = user.fullName,
                                 email = user.email,
                                 photoUrl = user.photoUrl,
-                                totalMemories = user.totalMemories
+                                totalMemories = user.totalMemories,
+                                isLoading = false
                             )
                         }
                     }
@@ -136,18 +149,21 @@ class UserProfileViewModel(
     }
 
     private fun handleOnDelete(id: String) {
-        _uiState.update {
-            it.copy(
-                isLoading = true
-            )
-        }
-
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
             runCatching {
                 userRepository.deleteUser(id)
+                _uiState.update { it.copy(isLoading = false) }
             }
                 .onSuccess {
-                    _effects.send(UserProfileSideEffect.ShowSuccessMessage(UiText.StringResource(R.string.excluido_com_sucesso)))
+                    _effects.send(
+                        UserProfileSideEffect.ShowSuccessMessage(
+                            UiText.StringResource(
+                                R.string.excluido_com_sucesso
+                            )
+                        )
+                    )
                     _effects.send(UserProfileSideEffect.NavigateToAuth)
                 }
                 .onFailure {

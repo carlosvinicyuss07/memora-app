@@ -70,4 +70,8 @@
     <string name="nome_de_usuario">Nome de usuário</string>
     <string name="total_de_memorias">Total de Memórias</string>
     <string name="memorias_que_voce_criou_no_memora">Memórias que você criou no Memora</string>
+    <string name="erro_ao_carregar_dados_do_usuario">Erro ao carregar dados do usuário</string>
+    <string name="dados_do_usuario_atualizados_com_sucesso">Dados do usuário atualizados com sucesso!</string>
+    <string name="erro_ao_tentar_atualizar_os_dados">Erro ao tentar atualizar os dados</string>
+    <string name="ver_perfil">Ver Perfil</string>
 </resources>

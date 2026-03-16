@@ -42,8 +42,18 @@ class UserRepositoryImplementation(
             .get()
             .await()
 
-        val user = document.toObject(UserDto::class.java)
+        val user = document.toObject(UserDto::class.java)?.copy(totalMemories = getMemoriesCount(userId))
         return user?.toDomain(document.id)
+    }
+
+    override suspend fun getMemoriesCount(userId: String): Long {
+
+        val snapshot = firestore
+            .collection("users/$userId/memories")
+            .get()
+            .await()
+
+        return snapshot.size().toLong()
     }
 
     override suspend fun updateUser(user: User) {

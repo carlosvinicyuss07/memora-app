@@ -56,17 +56,29 @@ import com.example.memoraapp.presentation.ui.components.imagelayouts.UserProfile
 import com.example.memoraapp.presentation.ui.components.texts.LeftAlignedTitleWithDescriptionComponent
 import com.example.memoraapp.presentation.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
+import com.example.memoraapp.presentation.viewmodels.ImagePickerViewModel
 import com.example.memoraapp.presentation.viewmodels.UserProfileViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun UserProfileScreen(
     navController: NavController,
+    imagePickerViewModel: ImagePickerViewModel,
     viewModel: UserProfileViewModel = koinViewModel(),
     userId: String
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    val selectedImageUri by imagePickerViewModel.selectedImageUri.collectAsState()
+
+    LaunchedEffect(selectedImageUri) {
+        selectedImageUri?.let {
+            viewModel.onEvent(
+                UserProfileScreenEvent.OnPhotoSelected(it.toString())
+            )
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(UserProfileScreenEvent.OnInit(userId = userId))

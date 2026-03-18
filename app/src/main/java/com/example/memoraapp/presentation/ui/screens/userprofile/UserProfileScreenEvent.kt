@@ -13,4 +13,5 @@ interface UserProfileScreenEvent {
     data object OnPhotoClick : UserProfileScreenEvent
     data object OnClosePhotoPreview : UserProfileScreenEvent
     data object OnCameraClick : UserProfileScreenEvent
+    data class OnPhotoSelected(val uri: String?) : UserProfileScreenEvent
 }

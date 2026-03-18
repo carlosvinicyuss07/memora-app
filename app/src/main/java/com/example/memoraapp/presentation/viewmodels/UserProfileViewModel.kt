@@ -42,13 +42,16 @@ class UserProfileViewModel(
             }
 
             is UserProfileScreenEvent.OnClosePhotoPreview -> {
-                _uiState.update { it.copy() }
+                _uiState.update { it.copy(showDeleteDialog = false) }
             }
 
             is UserProfileScreenEvent.OnCameraClick ->
                 viewModelScope.launch {
                     _effects.send(UserProfileSideEffect.NavigateToPhotoSource)
                 }
+
+            is UserProfileScreenEvent.OnPhotoSelected ->
+                _uiState.update { it.copy(photoUrl = event.uri) }
 
             is UserProfileScreenEvent.OnSaveChanges -> handleOnSave()
 

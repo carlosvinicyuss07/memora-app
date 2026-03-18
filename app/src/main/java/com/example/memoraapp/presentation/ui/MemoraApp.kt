@@ -16,7 +16,6 @@ import com.example.memoraapp.presentation.ui.screens.memories.MemoriesScreen
 import com.example.memoraapp.presentation.ui.screens.photoselection.PhotoSelectionScreen
 import com.example.memoraapp.presentation.ui.screens.userprofile.UserProfileScreen
 import com.example.memoraapp.presentation.ui.screens.welcome.WelcomeScreen
-import com.example.memoraapp.presentation.ui.screens.welcome.WelcomeScreenContent
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.serialization.Serializable
@@ -79,6 +78,7 @@ fun MemoraApp() {
 
                     UserProfileScreen(
                         navController = navController,
+                        imagePickerViewModel = imagePickerViewModel,
                         userId = args.userId
                     )
                 }

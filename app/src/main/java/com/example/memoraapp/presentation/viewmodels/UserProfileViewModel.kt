@@ -42,7 +42,7 @@ class UserProfileViewModel(
             }
 
             is UserProfileScreenEvent.OnClosePhotoPreview -> {
-                _uiState.update { it.copy(showDeleteDialog = false) }
+                _uiState.update { it.copy(showPhotoPreview = false) }
             }
 
             is UserProfileScreenEvent.OnCameraClick ->

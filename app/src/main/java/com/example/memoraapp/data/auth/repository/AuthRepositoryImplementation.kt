@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
+import java.net.URL
 
 class AuthRepositoryImplementation(
     private val auth: FirebaseAuth,
@@ -20,17 +21,23 @@ class AuthRepositoryImplementation(
         return startsWith("content://") || startsWith("file://")
     }
 
-    private suspend fun uploadImage(
-        localUri: String
+    private suspend fun uploadImageFromUrl(
+        imageUrl: String
     ): String {
 
         val userId = auth.currentUser?.uid
             ?: throw IllegalStateException("Usuário não autenticado")
 
+        val url = URL(imageUrl)
+        val connection = url.openConnection()
+        connection.connect()
+
+        val inputStream = connection.inputStream
+
         val ref = storage.reference
             .child("users/$userId/profile.jpg")
 
-        ref.putFile(localUri.toUri()).await()
+        ref.putStream(inputStream).await()
 
         return ref.downloadUrl.await().toString()
     }
@@ -92,12 +99,12 @@ class AuthRepositoryImplementation(
                 .collection("users")
                 .document(user.uid)
 
-            val imageUrl =
-                if (user.photoUrl?.toString()?.isLocalFile() == true) {
-                    uploadImage(localUri = user.photoUrl.toString())
-                } else {
-                    user.photoUrl.toString()
-                }
+            val imageUrl = user.photoUrl?.toString()
+
+            val finalUrl =
+                if (imageUrl != null) {
+                    uploadImageFromUrl(imageUrl)
+                } else null
 
             val snapshot = userDocRef.get().await()
 
@@ -106,7 +113,7 @@ class AuthRepositoryImplementation(
                 val userData = mapOf(
                     "fullName" to (user.displayName ?: ""),
                     "email" to user.email,
-                    "photoUrl" to imageUrl,
+                    "photoUrl" to finalUrl,
                     "createdAt" to FieldValue.serverTimestamp(),
                     "totalMemories" to 0
                 )

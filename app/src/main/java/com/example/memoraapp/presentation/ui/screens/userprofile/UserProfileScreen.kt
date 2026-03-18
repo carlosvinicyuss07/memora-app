@@ -14,7 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.Email
@@ -34,6 +37,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -163,7 +167,7 @@ fun UserProfileScreenContent(
 
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .padding(16.dp)
                             .background(MaterialTheme.colorScheme.background)
                             .clickable {
                                 onEvent(UserProfileScreenEvent.OnClosePhotoPreview)
@@ -175,9 +179,9 @@ fun UserProfileScreenContent(
                             model = state.photoUrl,
                             contentDescription = "Foto de perfil",
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            contentScale = ContentScale.Fit
+                                .size(280.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
                         )
                     }
                 }

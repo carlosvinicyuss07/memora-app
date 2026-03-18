@@ -135,6 +135,10 @@ class FormMemoryViewModel(
             return
         }
 
+        _uiState.update {
+            it.copy(isLoading = true)
+        }
+
         viewModelScope.launch {
             runCatching {
 
@@ -150,6 +154,10 @@ class FormMemoryViewModel(
                     repository.update(memory)
                 } else {
                     repository.insert(memory)
+                }
+
+                _uiState.update {
+                    it.copy(isLoading = false)
                 }
             }
                 .onSuccess {

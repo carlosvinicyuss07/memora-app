@@ -50,7 +50,7 @@ import com.example.memoraapp.R
 import com.example.memoraapp.presentation.ui.AppRoute
 import com.example.memoraapp.presentation.ui.components.buttons.FilledButtonComponent
 import com.example.memoraapp.presentation.ui.components.buttons.LeftAlignedButtonComponent
-import com.example.memoraapp.presentation.ui.components.dialog.DeleteAccountDialog
+import com.example.memoraapp.presentation.ui.components.dialog.DeleteDialog
 import com.example.memoraapp.presentation.ui.components.formfields.UserProfileFormFieldComponent
 import com.example.memoraapp.presentation.ui.components.imagelayouts.UserProfilePictureComponent
 import com.example.memoraapp.presentation.ui.components.texts.LeftAlignedTitleWithDescriptionComponent
@@ -173,14 +173,15 @@ fun UserProfileScreenContent(
 
             if (state.showDeleteDialog) {
 
-                DeleteAccountDialog(
+                DeleteDialog(
+                    title = stringResource(R.string.excluir_conta),
+                    text = stringResource(R.string.tem_certeza_que_deseja_excluir_sua_conta) + stringResource(R.string.todos_os_seus_dados_serao_apagados_permanentemente),
                     onConfirm = {
                         onEvent(UserProfileScreenEvent.OnConfirmDeleteAccount(userId = state.id))
-                    },
-                    onDismiss = {
-                        onEvent(UserProfileScreenEvent.OnDismissDeleteDialog)
                     }
-                )
+                ) {
+                    onEvent(UserProfileScreenEvent.OnDismissDeleteDialog)
+                }
             }
 
             if (state.isLoading) {

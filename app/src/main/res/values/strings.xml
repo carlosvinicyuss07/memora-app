@@ -74,4 +74,10 @@
     <string name="dados_do_usuario_atualizados_com_sucesso">Dados do usuário atualizados com sucesso!</string>
     <string name="erro_ao_tentar_atualizar_os_dados">Erro ao tentar atualizar os dados</string>
     <string name="ver_perfil">Ver Perfil</string>
+    <string name="excluir_conta">Excluir conta</string>
+    <string name="tem_certeza_que_deseja_excluir_sua_conta">"Tem certeza que deseja excluir sua conta? "</string>
+    <string name="todos_os_seus_dados_serao_apagados_permanentemente">Todos os seus dados serão apagados permanentemente.</string>
+    <string name="excluir_memoria">Excluir memória</string>
+    <string name="tem_certeza_que_deseja_excluir_essa_memoria">"Tem certeza que deseja excluir essa memória? "</string>
+    <string name="depois_de_apagada_voce_nao_conseguir_recuperar_essa_memoria_novamente">Depois de apagada você não conseguirá recuperar essa memória novamente.</string>
 </resources>

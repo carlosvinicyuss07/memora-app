@@ -49,6 +49,9 @@ android {
 
 dependencies {
 
+    // uCrop
+    implementation(libs.ucrop)
+
     // Coil
     implementation(libs.coil.compose)
 

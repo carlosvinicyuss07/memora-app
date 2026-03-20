@@ -5,7 +5,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.ImageCapture
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -55,7 +58,9 @@ import com.example.memoraapp.presentation.ui.util.capturePhoto
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.yalantis.ucrop.UCrop
 import org.koin.androidx.compose.koinViewModel
+import java.io.File
 
 @SuppressLint("SourceLockedOrientationActivity", "ContextCastToActivity")
 @OptIn(ExperimentalPermissionsApi::class)
@@ -85,6 +90,48 @@ fun CameraScreen(
         }
     }
 
+    val cropLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+
+        if (result.resultCode == Activity.RESULT_OK) {
+            val resultUri = UCrop.getOutput(result.data!!)
+
+            resultUri?.let {
+
+                imagePickerViewModel.setSelectedImage(it)
+
+                // Remove Camera
+                navController.popBackStack()
+
+                // Remove PhotoSelection
+                navController.popBackStack()
+            }
+        } else if (result.resultCode == UCrop.RESULT_ERROR) {
+            val error = UCrop.getError(result.data!!)
+            error?.printStackTrace()
+        }
+    }
+
+    fun startCrop(uri: Uri) {
+
+        val destinationUri = Uri.fromFile(
+            File(context.cacheDir, "cropped_${System.currentTimeMillis()}.jpg")
+        )
+
+        val options = UCrop.Options().apply {
+            setCompressionQuality(80)
+            setFreeStyleCropEnabled(true)
+        }
+
+        val intent = UCrop.of(uri, destinationUri)
+            .withAspectRatio(16f, 9f)
+            .withOptions(options)
+            .getIntent(context)
+
+        cropLauncher.launch(intent)
+    }
+
     LaunchedEffect(Unit) {
         if (!cameraPermission.status.isGranted) {
             cameraPermission.launchPermissionRequest()
@@ -94,16 +141,8 @@ fun CameraScreen(
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effect ->
             when (effect) {
-                is CameraSideEffect.ReturnPhoto -> {
-
-                    imagePickerViewModel.setSelectedImage(effect.uri.toUri())
-
-                    // Remove Camera
-                    navController.popBackStack()
-
-                    // Remove PhotoSelection
-                    navController.popBackStack()
-                }
+                is CameraSideEffect.ReturnPhoto ->
+                    startCrop(effect.uri.toUri())
 
                 is CameraSideEffect.ShowError ->
                     Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()

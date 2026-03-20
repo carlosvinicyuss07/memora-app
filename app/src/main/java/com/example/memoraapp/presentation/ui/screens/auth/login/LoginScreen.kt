@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -105,87 +107,96 @@ fun LoginScreenContent(
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    Column(
+    Box(
         modifier = Modifier
-            .padding(top = if (isPortrait) 30.dp else 20.dp)
-            .padding(horizontal = 24.dp)
-            .navigationBarsPadding()
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
     ) {
-
-        Image(
-            painter = painterResource(R.drawable.auth_memora_image_sf),
-            contentDescription = "Login Image",
+        Column(
             modifier = Modifier
-                .height(144.dp)
-                .width(144.dp)
-        )
+                .padding(top = if (isPortrait) 30.dp else 20.dp)
+                .padding(horizontal = 24.dp)
+                .navigationBarsPadding()
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-        Text(
-            text = stringResource(R.string.memora),
-            style = MaterialTheme.typography.titleLarge.copy(fontSize = 30.sp, fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
+            Image(
+                painter = painterResource(R.drawable.auth_memora_image_sf),
+                contentDescription = "Login Image",
+                modifier = Modifier
+                    .height(144.dp)
+                    .width(144.dp)
+            )
 
-        Text(
-            text = stringResource(R.string.bem_vindo_de_volta),
-            style = MaterialTheme.typography.bodyMedium.copy(
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.outlineVariant
-            ),
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(bottom = 42.dp)
-        )
+            Text(
+                text = stringResource(R.string.memora),
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
 
-        AuthTextFieldComponent(
-            label = stringResource(R.string.endereco_de_email),
-            value = state.email,
-            onValueChange = { onEvent(LoginScreenEvent.OnEmailChange(it)) },
-            placeholder = "name@example.com",
-            leadingIcon = Icons.Default.Email,
-            keyboardType = KeyboardType.Email,
-            modifier = Modifier.padding(bottom = 20.dp)
-        )
+            Text(
+                text = stringResource(R.string.bem_vindo_de_volta),
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.outlineVariant
+                ),
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(bottom = 42.dp)
+            )
 
-        AuthTextFieldComponent(
-            label = stringResource(R.string.senha),
-            value = state.password,
-            onValueChange = { onEvent(LoginScreenEvent.OnPasswordChange(it)) },
-            placeholder = "Digite sua senha",
-            leadingIcon = Icons.Default.Lock,
-            isPassword = true,
-            modifier = Modifier.padding(bottom = 20.dp)
-        )
+            AuthTextFieldComponent(
+                label = stringResource(R.string.endereco_de_email),
+                value = state.email,
+                onValueChange = { onEvent(LoginScreenEvent.OnEmailChange(it)) },
+                placeholder = "name@example.com",
+                leadingIcon = Icons.Default.Email,
+                keyboardType = KeyboardType.Email,
+                modifier = Modifier.padding(bottom = 20.dp)
+            )
 
-        FilledButtonComponent(
-            text = stringResource(R.string.login),
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.background,
-            onClick = { onEvent(LoginScreenEvent.OnLoginClick) }
-        )
+            AuthTextFieldComponent(
+                label = stringResource(R.string.senha),
+                value = state.password,
+                onValueChange = { onEvent(LoginScreenEvent.OnPasswordChange(it)) },
+                placeholder = "Digite sua senha",
+                leadingIcon = Icons.Default.Lock,
+                isPassword = true,
+                modifier = Modifier.padding(bottom = 20.dp)
+            )
 
-        TextBetweenDividersComponent(
-            modifier = Modifier.padding(vertical = 32.dp),
-            text = stringResource(R.string.ou_continue_com)
-        )
+            FilledButtonComponent(
+                text = stringResource(R.string.login),
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.background,
+                onClick = { onEvent(LoginScreenEvent.OnLoginClick) }
+            )
 
-        RedirectButtonWithIconComponent(
-            text = stringResource(R.string.continue_com_google),
-            icon = ImageVector.vectorResource(R.drawable.ic_google),
-            containerColor = MaterialTheme.colorScheme.background,
-            contentColor = MaterialTheme.colorScheme.onBackground,
-            isIconTintUnspecified = true,
-            onClick = { onEvent(LoginScreenEvent.OnContinueWithGoogleClick) },
-            modifier = Modifier.padding(bottom = 125.dp)
-        )
+            TextBetweenDividersComponent(
+                modifier = Modifier.padding(vertical = 32.dp),
+                text = stringResource(R.string.ou_continue_com)
+            )
 
-        AuthRedirectText(
-            prefixText = stringResource(R.string.nao_tem_uma_conta),
-            actionText = stringResource(R.string.inscrever_se),
-            onClick = { onEvent(LoginScreenEvent.OnSignUpClick) }
-        )
+            RedirectButtonWithIconComponent(
+                text = stringResource(R.string.continue_com_google),
+                icon = ImageVector.vectorResource(R.drawable.ic_google),
+                containerColor = MaterialTheme.colorScheme.background,
+                contentColor = MaterialTheme.colorScheme.onBackground,
+                isIconTintUnspecified = true,
+                onClick = { onEvent(LoginScreenEvent.OnContinueWithGoogleClick) },
+                modifier = Modifier.padding(bottom = 125.dp)
+            )
+
+            AuthRedirectText(
+                prefixText = stringResource(R.string.nao_tem_uma_conta),
+                actionText = stringResource(R.string.inscrever_se),
+                onClick = { onEvent(LoginScreenEvent.OnSignUpClick) }
+            )
+        }
     }
 }
 

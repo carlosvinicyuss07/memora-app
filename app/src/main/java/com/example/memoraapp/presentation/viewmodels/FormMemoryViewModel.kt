@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 class FormMemoryViewModel(
     private val repository: MemoryRepository,
@@ -135,6 +134,10 @@ class FormMemoryViewModel(
             return
         }
 
+        _uiState.update {
+            it.copy(isLoading = true)
+        }
+
         viewModelScope.launch {
             runCatching {
 
@@ -150,6 +153,10 @@ class FormMemoryViewModel(
                     repository.update(memory)
                 } else {
                     repository.insert(memory)
+                }
+
+                _uiState.update {
+                    it.copy(isLoading = false)
                 }
             }
                 .onSuccess {

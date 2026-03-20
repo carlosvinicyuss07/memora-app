@@ -107,10 +107,6 @@ fun AuthTextFieldComponent(
                 VisualTransformation.None,
             keyboardOptions = KeyboardOptions(
                 keyboardType = keyboardType
-            ),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.outline,
-                unfocusedContainerColor = MaterialTheme.colorScheme.background
             )
         )
     }

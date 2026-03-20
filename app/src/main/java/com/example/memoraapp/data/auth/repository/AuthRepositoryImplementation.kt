@@ -1,46 +1,17 @@
 package com.example.memoraapp.data.auth.repository
 
-import androidx.core.net.toUri
 import com.example.memoraapp.domain.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
-import java.net.URL
 
 class AuthRepositoryImplementation(
     private val auth: FirebaseAuth,
-    private val firestore: FirebaseFirestore,
-    private val storage: FirebaseStorage
+    private val firestore: FirebaseFirestore
 ) : AuthRepository {
-
-    private fun String.isLocalFile(): Boolean {
-        return startsWith("content://") || startsWith("file://")
-    }
-
-    private suspend fun uploadImageFromUrl(
-        imageUrl: String
-    ): String {
-
-        val userId = auth.currentUser?.uid
-            ?: throw IllegalStateException("Usuário não autenticado")
-
-        val url = URL(imageUrl)
-        val connection = url.openConnection()
-        connection.connect()
-
-        val inputStream = connection.inputStream
-
-        val ref = storage.reference
-            .child("users/$userId/profile.jpg")
-
-        ref.putStream(inputStream).await()
-
-        return ref.downloadUrl.await().toString()
-    }
 
     override suspend fun login(email: String, password: String): Result<Unit> {
         return try {
@@ -99,13 +70,6 @@ class AuthRepositoryImplementation(
                 .collection("users")
                 .document(user.uid)
 
-            val imageUrl = user.photoUrl?.toString()
-
-            val finalUrl =
-                if (imageUrl != null) {
-                    uploadImageFromUrl(imageUrl)
-                } else null
-
             val snapshot = userDocRef.get().await()
 
             if (!snapshot.exists()) {
@@ -113,7 +77,7 @@ class AuthRepositoryImplementation(
                 val userData = mapOf(
                     "fullName" to (user.displayName ?: ""),
                     "email" to user.email,
-                    "photoUrl" to finalUrl,
+                    "photoUrl" to user.photoUrl?.toString(),
                     "createdAt" to FieldValue.serverTimestamp(),
                     "totalMemories" to 0
                 )

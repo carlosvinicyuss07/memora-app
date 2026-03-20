@@ -1,6 +1,8 @@
 package com.example.memoraapp.presentation.ui.screens.photoselection
 
+import android.app.Activity
 import android.content.res.Configuration
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -39,7 +41,9 @@ import com.example.memoraapp.presentation.ui.components.buttons.RedirectButtonWi
 import com.example.memoraapp.presentation.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
 import com.example.memoraapp.presentation.ui.util.copyUriToCache
+import com.yalantis.ucrop.UCrop
 import org.koin.androidx.compose.koinViewModel
+import java.io.File
 
 @Composable
 fun PhotoSelectionScreen(
@@ -50,16 +54,49 @@ fun PhotoSelectionScreen(
 
     val context = LocalContext.current
 
+    val cropLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+
+        if (result.resultCode == Activity.RESULT_OK) {
+            val resultUri = UCrop.getOutput(result.data!!)
+
+            resultUri?.let {
+                imagePickerViewModel.setSelectedImage(it)
+                navController.popBackStack()
+            }
+        } else if (result.resultCode == UCrop.RESULT_ERROR) {
+            val error = UCrop.getError(result.data!!)
+            error?.printStackTrace()
+        }
+    }
+
+    fun startCrop(uri: Uri) {
+
+        val destinationUri = Uri.fromFile(
+            File(context.cacheDir, "cropped_${System.currentTimeMillis()}.jpg")
+        )
+
+        val options = UCrop.Options().apply {
+            setCompressionQuality(80)
+            setFreeStyleCropEnabled(true)
+        }
+
+        val intent = UCrop.of(uri, destinationUri)
+            .withAspectRatio(16f, 9f)
+            .withOptions(options)
+            .getIntent(context)
+
+        cropLauncher.launch(intent)
+    }
+
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         if (uri != null) {
 
             val localUri = copyUriToCache(context, uri)
-
-            imagePickerViewModel.setSelectedImage(localUri.toUri())
-
-            navController.popBackStack()
+            startCrop(localUri.toUri())
         }
     }
 

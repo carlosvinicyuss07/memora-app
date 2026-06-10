@@ -1,10 +1,6 @@
 package com.example.memoraapp.presentation.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -19,6 +15,7 @@ import com.example.memoraapp.presentation.ui.screens.form.FormMemoryScreen
 import com.example.memoraapp.presentation.ui.screens.memories.MemoriesScreen
 import com.example.memoraapp.presentation.ui.screens.photoselection.PhotoSelectionScreen
 import com.example.memoraapp.presentation.ui.screens.welcome.WelcomeScreen
+import com.example.memoraapp.presentation.ui.screens.welcome.WelcomeScreenContent
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.serialization.Serializable
@@ -36,22 +33,6 @@ fun MemoraApp() {
         AppRoute.MainGraph
     } else {
         AppRoute.AuthGraph
-    }
-
-    val lifecycleOwner = LocalLifecycleOwner.current
-
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_DESTROY) {
-                FirebaseAuth.getInstance().signOut()
-            }
-        }
-
-        lifecycleOwner.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
     }
 
     MemoraAppTheme {
@@ -79,7 +60,7 @@ fun MemoraApp() {
             ) {
                 composable<AppRoute.Welcome> {
                     WelcomeScreen(
-                        onStartClick = { navController.navigate(AppRoute.Memories) }
+                        navController = navController
                     )
                 }
 

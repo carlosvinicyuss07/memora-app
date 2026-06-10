@@ -29,15 +29,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.example.memoraapp.R
 import com.example.memoraapp.presentation.viewmodels.ImagePickerViewModel
 import com.example.memoraapp.presentation.viewmodels.PhotoSelectionViewModel
 import com.example.memoraapp.presentation.ui.AppRoute
-import com.example.memoraapp.presentation.ui.components.buttons.SourceImageOptionsComponent
+import com.example.memoraapp.presentation.ui.components.buttons.RedirectButtonWithIconComponent
 import com.example.memoraapp.presentation.ui.components.topbar.TopbarComponent
-import com.example.memoraapp.presentation.ui.screens.form.FormMemoryScreenEvent
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
 import com.example.memoraapp.presentation.ui.util.copyUriToCache
 import org.koin.androidx.compose.koinViewModel
@@ -129,7 +127,7 @@ fun PhotoSelectionScreenContent(
 
             Spacer(modifier = Modifier.size(54.dp))
 
-            SourceImageOptionsComponent(
+            RedirectButtonWithIconComponent(
                 text = stringResource(R.string.tirar_foto),
                 icon = Icons.Default.PhotoCamera,
                 onClick = { onEvent(PhotoSelectionScreenEvent.OnClickCamera) }
@@ -137,7 +135,7 @@ fun PhotoSelectionScreenContent(
 
             Spacer(modifier = Modifier.size(16.dp))
 
-            SourceImageOptionsComponent(
+            RedirectButtonWithIconComponent(
                 text = stringResource(R.string.escolher_da_galeria),
                 icon = Icons.Default.Image,
                 onClick = { onEvent(PhotoSelectionScreenEvent.OnClickGallery) }

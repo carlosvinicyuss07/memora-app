@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -47,6 +48,18 @@ android {
 }
 
 dependencies {
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    //Auth
+    implementation(libs.firebase.auth)
+    implementation(libs.play.services.auth)
+    implementation(libs.googleid)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    //Firestore
+    implementation(libs.firebase.firestore)
 
     // Core do Koin
     implementation(libs.koin.android)

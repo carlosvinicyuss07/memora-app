@@ -43,7 +43,7 @@ fun WelcomeMemoraMessageComponent(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Top,
     ) {
         Text(
-            text = stringResource(R.string.welcome_title),
+            text = stringResource(R.string.memora),
             style = MaterialTheme.typography.titleLarge.copy(fontSize = 36.sp, fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.onBackground,
             modifier = modifier.padding(top = 16.dp)

@@ -55,6 +55,7 @@ import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import java.time.Instant
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedGetBackStackEntry")
@@ -113,9 +114,10 @@ fun FormMemoryScreenContent(
     onEvent: (FormMemoryScreenEvent) -> Unit
 ) {
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = state.date?.toEpochDay()?.let {
-            it * 24L * 60L * 1000L
-        }
+        initialSelectedDateMillis = state.date
+            ?.atStartOfDay(ZoneOffset.UTC)
+            ?.toInstant()
+            ?.toEpochMilli()
     )
 
     var showDatePicker by remember { mutableStateOf(false) }
@@ -127,7 +129,7 @@ fun FormMemoryScreenContent(
                 TextButton(onClick = {
                     val millis = datePickerState.selectedDateMillis ?: return@TextButton
                     val selectedDate = Instant.ofEpochMilli(millis)
-                        .atZone(ZoneId.systemDefault())
+                        .atZone(ZoneOffset.UTC)
                         .toLocalDate()
 
                     onEvent(FormMemoryScreenEvent.OnDateChange(selectedDate))

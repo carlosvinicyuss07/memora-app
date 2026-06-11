@@ -1,5 +1,6 @@
 package com.example.memoraapp.presentation.ui.screens.welcome
 
 data class WelcomeUiState(
-    val user: String? = ""
+    val userId: String? = null,
+    val userName: String? = null
 )

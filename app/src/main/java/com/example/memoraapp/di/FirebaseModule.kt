@@ -2,7 +2,8 @@ package com.example.memoraapp.di
 
 import com.example.memoraapp.domain.AuthRepository
 import com.example.memoraapp.data.auth.repository.AuthRepositoryImplementation
-import com.example.memoraapp.data.repository.UserRepository
+import com.example.memoraapp.data.repository.UserRepositoryImplementation
+import com.example.memoraapp.domain.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -14,9 +15,11 @@ val firebaseModule = module {
     single { FirebaseFirestore.getInstance() }
     single { FirebaseStorage.getInstance() }
 
-    single {
-        UserRepository(
-            firestore = get()
+    single<UserRepository> {
+        UserRepositoryImplementation(
+            firestore = get(),
+            auth = get(),
+            storage = get()
         )
     }
 
@@ -26,5 +29,4 @@ val firebaseModule = module {
             firestore = get()
         )
     }
-
 }

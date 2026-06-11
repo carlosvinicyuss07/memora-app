@@ -77,7 +77,7 @@ fun RedirectButtonWithIconComponent(
     name = "Dark Mode"
 )
 @Composable
-private fun LabelFormComponentView() {
+private fun RedirectButtonWithIconComponentView() {
     MemoraAppTheme {
         Surface(
             color = MaterialTheme.colorScheme.background

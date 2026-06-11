@@ -44,6 +44,7 @@ fun TopbarComponent(
     screenName: String,
     onBackClick: () -> Unit = {},
     onLogoutClick: () -> Unit = {},
+    onUserProfileClick: () -> Unit = {},
     iconMoreOptions: Boolean = false
 ) {
 
@@ -124,6 +125,13 @@ fun TopbarComponent(
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
                 ) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.ver_perfil)) },
+                        onClick = {
+                            expanded = false
+                            onUserProfileClick()
+                        }
+                    )
 
                     DropdownMenuItem(
                         text = { Text(stringResource(R.string.encerrar_sessao)) },
@@ -148,7 +156,11 @@ fun TopbarComponent(
 private fun TopbarComponentView() {
     MemoraAppTheme {
         Surface {
-            TopbarComponent(icon = Icons.Filled.Home, screenName = "Bem-vindo", iconMoreOptions = true)
+            TopbarComponent(
+                icon = Icons.Filled.Home,
+                screenName = "Bem-vindo",
+                iconMoreOptions = true
+            )
         }
     }
 }

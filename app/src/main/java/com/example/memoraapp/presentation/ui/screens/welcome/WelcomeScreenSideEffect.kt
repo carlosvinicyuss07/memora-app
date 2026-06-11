@@ -4,4 +4,5 @@ sealed interface WelcomeScreenSideEffect {
 
     object CloseScreen : WelcomeScreenSideEffect
     object NavigateToMemoriesScreen : WelcomeScreenSideEffect
+    data class NavigateToUserProfileScreen(val id: String) : WelcomeScreenSideEffect
 }

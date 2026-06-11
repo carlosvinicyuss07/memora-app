@@ -14,8 +14,8 @@ import com.example.memoraapp.presentation.ui.screens.details.MemoryDetailsScreen
 import com.example.memoraapp.presentation.ui.screens.form.FormMemoryScreen
 import com.example.memoraapp.presentation.ui.screens.memories.MemoriesScreen
 import com.example.memoraapp.presentation.ui.screens.photoselection.PhotoSelectionScreen
+import com.example.memoraapp.presentation.ui.screens.userprofile.UserProfileScreen
 import com.example.memoraapp.presentation.ui.screens.welcome.WelcomeScreen
-import com.example.memoraapp.presentation.ui.screens.welcome.WelcomeScreenContent
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.serialization.Serializable
@@ -68,6 +68,18 @@ fun MemoraApp() {
                     MemoriesScreen(
                         navController = navController,
                         imagePickerViewModel = imagePickerViewModel
+                    )
+                }
+
+                composable<AppRoute.UserProfile> { backStackEntry ->
+                    val args = backStackEntry.toRoute<AppRoute.UserProfile>()
+
+                    if (args.userId == null) return@composable
+
+                    UserProfileScreen(
+                        navController = navController,
+                        imagePickerViewModel = imagePickerViewModel,
+                        userId = args.userId
                     )
                 }
 
@@ -141,6 +153,9 @@ sealed class AppRoute {
 
     @Serializable
     data object Memories
+
+    @Serializable
+    data class UserProfile(val userId: String?)
 
     @Serializable
     data class MemoryDetails(val memoryId: String?)

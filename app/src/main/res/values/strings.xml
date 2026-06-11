@@ -62,4 +62,22 @@
     <string name="erro_ao_tentar_registrar_usuario">Erro ao tentar registrar usuário</string>
     <string name="erro_ao_tentar_logar_com_google">Erro ao tentar logar com Google</string>
     <string name="encerrar_sessao">Encerrar sessão</string>
+    <string name="msg_excluir_dados_da_conta">Ao excluir sua conta, todas as suas memórias e dados salvos na nuvem serão apagados para sempre. Não será possível recuperar essas informações após a confirmação.</string>
+    <string name="privacidade_e_seguranca">Privacidade e Segurança</string>
+    <string name="excluir_meus_dados">Excluir meus dados</string>
+    <string name="perfil">Perfil</string>
+    <string name="salvar_alteracoes">Salvar alterações</string>
+    <string name="nome_de_usuario">Nome de usuário</string>
+    <string name="total_de_memorias">Total de Memórias</string>
+    <string name="memorias_que_voce_criou_no_memora">Memórias que você criou no Memora</string>
+    <string name="erro_ao_carregar_dados_do_usuario">Erro ao carregar dados do usuário</string>
+    <string name="dados_do_usuario_atualizados_com_sucesso">Dados do usuário atualizados com sucesso!</string>
+    <string name="erro_ao_tentar_atualizar_os_dados">Erro ao tentar atualizar os dados</string>
+    <string name="ver_perfil">Ver Perfil</string>
+    <string name="excluir_conta">Excluir conta</string>
+    <string name="tem_certeza_que_deseja_excluir_sua_conta">"Tem certeza que deseja excluir sua conta? "</string>
+    <string name="todos_os_seus_dados_serao_apagados_permanentemente">Todos os seus dados serão apagados permanentemente.</string>
+    <string name="excluir_memoria">Excluir memória</string>
+    <string name="tem_certeza_que_deseja_excluir_essa_memoria">"Tem certeza que deseja excluir essa memória? "</string>
+    <string name="depois_de_apagada_voce_nao_conseguir_recuperar_essa_memoria_novamente">Depois de apagada você não conseguirá recuperar essa memória novamente.</string>
 </resources>

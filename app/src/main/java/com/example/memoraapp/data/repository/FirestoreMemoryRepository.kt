@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import androidx.core.net.toUri
+import com.google.firebase.firestore.FieldValue
 
 class FirestoreMemoryRepository(
     private val firestore: FirebaseFirestore,
@@ -89,6 +90,17 @@ class FirestoreMemoryRepository(
         val memoryWithId = memory.copy(id = docRef.id, imageUri = imageUrl)
 
         docRef.set(memoryWithId.toDto()).await()
+
+        val userId = auth.currentUser!!.uid
+
+        firestore.collection("users")
+            .document(userId)
+            .update(
+                "totalMemories",
+                FieldValue.increment(1)
+            )
+            .await()
+
     }
 
     override suspend fun update(memory: Memory) {
@@ -123,6 +135,15 @@ class FirestoreMemoryRepository(
         storage.reference
             .child("users/$userId/memories/$memoryId.jpg")
             .delete()
+            .await()
+
+        firestore.collection("users")
+            .document(userId)
+            .update(
+                "totalMemories",
+                FieldValue.increment(-1)
+            )
+            .await()
     }
 
     override suspend fun getMemoryById(id: String): Memory? {

@@ -32,7 +32,19 @@ class MemoryDetailsViewModel(
 
             is MemoryDetailsScreenEvent.OnEditClick -> handleOnEdit(event.memoryId)
 
-            is MemoryDetailsScreenEvent.OnDeleteClick -> handleOnDelete(event.memoryId)
+            is MemoryDetailsScreenEvent.OnDeleteMemoryClick -> {
+                _uiState.update {
+                    it.copy(showDeleteDialog = true)
+                }
+            }
+
+            is MemoryDetailsScreenEvent.OnDismissDeleteDialog -> {
+                _uiState.update {
+                    it.copy(showDeleteDialog = false)
+                }
+            }
+
+            is MemoryDetailsScreenEvent.OnConfirmDelete -> handleOnDelete(event.memoryId)
 
             MemoryDetailsScreenEvent.OnBackClick -> handleOnBackClick()
         }

@@ -32,13 +32,25 @@ class MemoryDetailsViewModel(
 
             is MemoryDetailsScreenEvent.OnEditClick -> handleOnEdit(event.memoryId)
 
-            is MemoryDetailsScreenEvent.OnDeleteClick -> handleOnDelete(event.memoryId)
+            is MemoryDetailsScreenEvent.OnDeleteMemoryClick -> {
+                _uiState.update {
+                    it.copy(showDeleteDialog = true)
+                }
+            }
+
+            is MemoryDetailsScreenEvent.OnDismissDeleteDialog -> {
+                _uiState.update {
+                    it.copy(showDeleteDialog = false)
+                }
+            }
+
+            is MemoryDetailsScreenEvent.OnConfirmDelete -> handleOnDelete(event.memoryId)
 
             MemoryDetailsScreenEvent.OnBackClick -> handleOnBackClick()
         }
     }
 
-    fun handleOnInit(id: Int?) {
+    fun handleOnInit(id: String?) {
         if (id == null) return
 
         _uiState.update { it.copy(isLoading = true) }
@@ -66,7 +78,7 @@ class MemoryDetailsViewModel(
         }
     }
 
-    fun handleOnEdit(id: Int?) {
+    fun handleOnEdit(id: String?) {
         if (id == null) return
 
         viewModelScope.launch {
@@ -74,7 +86,7 @@ class MemoryDetailsViewModel(
         }
     }
 
-    fun handleOnDelete(id: Int?) {
+    fun handleOnDelete(id: String?) {
         if (id == null) return
 
         viewModelScope.launch {

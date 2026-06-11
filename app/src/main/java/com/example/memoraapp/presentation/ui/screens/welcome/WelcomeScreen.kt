@@ -18,6 +18,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -31,20 +33,32 @@ import com.example.memoraapp.presentation.ui.components.buttons.ActionButtonForM
 import com.example.memoraapp.presentation.ui.components.cards.WelcomeMemoraMessageComponent
 import com.example.memoraapp.presentation.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
+import com.example.memoraapp.presentation.viewmodels.UserViewModel
 import com.example.memoraapp.presentation.viewmodels.WelcomeScreenViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun WelcomeScreen(
     navController: NavController,
-    viewModel: WelcomeScreenViewModel = koinViewModel()
+    viewModel: WelcomeScreenViewModel = koinViewModel(),
+    userViewModel: UserViewModel = koinViewModel()
 ) {
+
+    val uiState by viewModel.uiState.collectAsState()
+    val user by userViewModel.user.collectAsState()
+
+    LaunchedEffect(Unit) {
+        userViewModel.loadUser()
+    }
 
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effect ->
             when (effect) {
                 is WelcomeScreenSideEffect.NavigateToMemoriesScreen ->
                     navController.navigate(AppRoute.Memories)
+
+                is WelcomeScreenSideEffect.NavigateToUserProfileScreen ->
+                    navController.navigate(AppRoute.UserProfile(userId = effect.id))
 
                 is WelcomeScreenSideEffect.CloseScreen ->
                     navController.navigate(AppRoute.AuthGraph) {
@@ -58,12 +72,17 @@ fun WelcomeScreen(
     }
 
     WelcomeScreenContent(
+        state = uiState.copy(
+            userName = user?.fullName,
+            userId = user?.id
+        ),
         onEvent = viewModel::onEvent
     )
 }
 
 @Composable
 fun WelcomeScreenContent(
+    state: WelcomeUiState,
     onEvent: (WelcomeScreenEvent) -> Unit
 ) {
 
@@ -77,14 +96,14 @@ fun WelcomeScreenContent(
         topBar = {
             TopbarComponent(
                 icon = Icons.Filled.Home,
-                screenName = stringResource(R.string.bem_vindo),
-                iconMoreOptions = true,
-                onLogoutClick = { onEvent(WelcomeScreenEvent.OnLogoutClick) }
+                screenName = stringResource(R.string.bem_vindo) + ", ${state.userName ?: ""}",
+                onLogoutClick = { onEvent(WelcomeScreenEvent.OnLogoutClick) },
+                onUserProfileClick = { onEvent(WelcomeScreenEvent.OnNavigateToUserProfileClick(state.userId!!)) },
+                iconMoreOptions = true
             )
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
-
         if (isPortrait) {
             Column(
                 modifier = Modifier
@@ -147,7 +166,9 @@ private fun WelcomeScreenView() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            WelcomeScreenContent {}
+            WelcomeScreenContent(
+                state = WelcomeUiState(userName = "Carlos")
+            ) {}
         }
     }
 }

@@ -1,10 +1,11 @@
 package com.example.memoraapp.presentation.ui.screens.details
 
 data class MemoryDetailsUiState(
-    val id: Int? = null,
+    val id: String? = null,
     val title: String = "",
     val description: String = "",
     val date: String = "",
     val imageUri: String? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val showDeleteDialog: Boolean = false
 )

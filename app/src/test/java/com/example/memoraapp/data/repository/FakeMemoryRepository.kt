@@ -54,13 +54,13 @@ class FakeMemoryRepository(
         }
     }
 
-    override suspend fun delete(memoryId: Int) {
+    override suspend fun delete(memoryId: String) {
         failIf(RepositoryFailure.Delete)
         memoryList.removeAll { it.id == memoryId }
         notifyChanges()
     }
 
-    override suspend fun getMemoryById(id: Int): Memory? {
+    override suspend fun getMemoryById(id: String): Memory? {
         failIf(RepositoryFailure.GetById)
         return memoryList.firstOrNull { it.id == id }?.toDomain()
     }

@@ -15,7 +15,6 @@ class MemoraApp : Application() {
         startKoin {
             androidContext(this@MemoraApp)
             modules(
-                databaseModule,
                 repositoryModule,
                 viewModelModule,
                 firebaseModule

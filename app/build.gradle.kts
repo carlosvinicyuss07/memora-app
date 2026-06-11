@@ -49,6 +49,9 @@ android {
 
 dependencies {
 
+    // Coil
+    implementation(libs.coil.compose)
+
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
@@ -60,6 +63,9 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     //Firestore
     implementation(libs.firebase.firestore)
+    implementation(libs.kotlinx.coroutines.play.services)
+    // Cloud Storage
+    implementation(libs.firebase.storage)
 
     // Core do Koin
     implementation(libs.koin.android)

@@ -58,7 +58,7 @@ class FormMemoryViewModel(
         }
     }
 
-    private fun handleOnInit(id: Int?) {
+    private fun handleOnInit(id: String?) {
         if (id == null) {
             _uiState.update {
                 it.copy(
@@ -134,27 +134,29 @@ class FormMemoryViewModel(
             return
         }
 
+        _uiState.update {
+            it.copy(isLoading = true)
+        }
+
         viewModelScope.launch {
             runCatching {
+
+                val memory = Memory(
+                    id = state.id ?: "",
+                    title = state.title,
+                    description = state.description,
+                    date = state.date,
+                    imageUri = state.imageUri
+                )
+
                 if (state.isEditMode) {
-                    repository.update(
-                        Memory(
-                            id = state.id ?: -1,
-                            title = state.title,
-                            description = state.description,
-                            date = state.date,
-                            imageUri = state.imageUri
-                        )
-                    )
+                    repository.update(memory)
                 } else {
-                    repository.insert(
-                        Memory(
-                            title = state.title,
-                            description = state.description,
-                            date = state.date,
-                            imageUri = state.imageUri
-                        )
-                    )
+                    repository.insert(memory)
+                }
+
+                _uiState.update {
+                    it.copy(isLoading = false)
                 }
             }
                 .onSuccess {
@@ -180,5 +182,4 @@ class FormMemoryViewModel(
                 }
         }
     }
-
 }

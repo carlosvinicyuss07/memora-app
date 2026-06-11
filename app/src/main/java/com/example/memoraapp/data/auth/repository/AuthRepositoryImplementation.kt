@@ -1,6 +1,5 @@
 package com.example.memoraapp.data.auth.repository
 
-import android.util.Log
 import com.example.memoraapp.domain.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -18,13 +17,8 @@ class AuthRepositoryImplementation(
         return try {
             auth.signInWithEmailAndPassword(email, password).await()
 
-            Log.d("LOGIN_DEBUG", "SUCCESS")
-
             Result.success(Unit)
         } catch (e: Exception) {
-
-            Log.d("LOGIN_DEBUG", "ERROR: ${e.message}")
-
             Result.failure(e)
         }
     }
@@ -43,7 +37,8 @@ class AuthRepositoryImplementation(
                 "fullName" to name,
                 "email" to email,
                 "photoUrl" to null,
-                "createdAt" to FieldValue.serverTimestamp()
+                "createdAt" to FieldValue.serverTimestamp(),
+                "totalMemories" to 0
             )
 
             firestore
@@ -80,11 +75,11 @@ class AuthRepositoryImplementation(
             if (!snapshot.exists()) {
 
                 val userData = mapOf(
-                    "uid" to user.uid,
                     "fullName" to (user.displayName ?: ""),
                     "email" to user.email,
                     "photoUrl" to user.photoUrl?.toString(),
-                    "createdAt" to FieldValue.serverTimestamp()
+                    "createdAt" to FieldValue.serverTimestamp(),
+                    "totalMemories" to 0
                 )
 
                 userDocRef

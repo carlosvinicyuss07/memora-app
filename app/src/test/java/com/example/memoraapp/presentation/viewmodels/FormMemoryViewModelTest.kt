@@ -42,7 +42,7 @@ class FormMemoryViewModelTest {
         savedStateHandle = SavedStateHandle()
 
         viewModel = FormMemoryViewModel(
-            repository = repository,
+            repository = repository,,
             imagePickerViewModel = imagePickerViewModel,
             savedStateHandle = savedStateHandle
         )

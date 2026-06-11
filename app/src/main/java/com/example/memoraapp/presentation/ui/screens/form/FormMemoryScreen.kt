@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -49,7 +51,6 @@ import com.example.memoraapp.presentation.ui.components.formfields.LabelFormComp
 import com.example.memoraapp.presentation.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
 import com.example.memoraapp.presentation.ui.util.UiText
-import com.example.memoraapp.presentation.ui.util.rememberImageBitmap
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import java.time.Instant
@@ -62,7 +63,7 @@ fun FormMemoryScreen(
     navController: NavController,
     imagePickerViewModel: ImagePickerViewModel,
     viewModel: FormMemoryViewModel = koinViewModel(),
-    memoryId: Int?
+    memoryId: String?
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
@@ -143,10 +144,6 @@ fun FormMemoryScreenContent(
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    val imageBitmap = rememberImageBitmap(
-        state.imageUri
-    )
-
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -168,13 +165,18 @@ fun FormMemoryScreenContent(
                 )
                 .padding(horizontal = paddingHorizontalValue.dp)
                 .navigationBarsPadding()
-                .fillMaxSize()
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HorizontalDivider(
                 thickness = 1.dp,
                 modifier = Modifier
                     .fillMaxWidth()
             )
+
+            if (state.isLoading) {
+                CircularProgressIndicator()
+            }
 
             LazyColumn(
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp)
@@ -215,7 +217,7 @@ fun FormMemoryScreenContent(
 
                 item {
                     ImagePreviewComponent(
-                        imageBitmap = imageBitmap
+                        imageUrl = state.imageUri
                     ) { onEvent(FormMemoryScreenEvent.OnSelectPhotoClick) }
                 }
 

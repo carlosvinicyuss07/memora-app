@@ -39,17 +39,17 @@ import com.example.memoraapp.R
 import com.example.memoraapp.presentation.viewmodels.MemoryDetailsViewModel
 import com.example.memoraapp.presentation.ui.AppRoute
 import com.example.memoraapp.presentation.ui.components.buttons.ExtendedFAB
+import com.example.memoraapp.presentation.ui.components.dialog.DeleteDialog
 import com.example.memoraapp.presentation.ui.components.imagelayouts.MemoryDetailsImageComponent
 import com.example.memoraapp.presentation.ui.components.topbar.TopbarComponent
 import com.example.memoraapp.presentation.ui.theme.MemoraAppTheme
-import com.example.memoraapp.presentation.ui.util.rememberImageBitmap
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MemoryDetailsScreen(
     navController: NavController,
     viewModel: MemoryDetailsViewModel = koinViewModel(),
-    memoryId: Int?
+    memoryId: String?
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
@@ -102,10 +102,6 @@ fun MemoryDetailsScreenContent(
             .padding(top = 16.dp, bottom = 50.dp)
     }
 
-    val imageBitmap = rememberImageBitmap(
-        state.imageUri
-    )
-
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -143,7 +139,7 @@ fun MemoryDetailsScreenContent(
                     text = stringResource(R.string.excluir),
                     containerColor = MaterialTheme.colorScheme.error,
                     contentColor = MaterialTheme.colorScheme.onError,
-                    onClick = { onEvent(MemoryDetailsScreenEvent.OnDeleteClick(memoryId = state.id)) }
+                    onClick = { onEvent(MemoryDetailsScreenEvent.OnDeleteMemoryClick) }
                 )
             }
         }
@@ -165,6 +161,21 @@ fun MemoryDetailsScreenContent(
                     .fillMaxWidth()
             )
 
+            if (state.showDeleteDialog) {
+
+                DeleteDialog(
+                    title = stringResource(R.string.excluir_memoria),
+                    text = stringResource(R.string.tem_certeza_que_deseja_excluir_essa_memoria)
+                            + stringResource(R.string.depois_de_apagada_voce_nao_conseguir_recuperar_essa_memoria_novamente
+                    ),
+                    onConfirm = {
+                        onEvent(MemoryDetailsScreenEvent.OnConfirmDelete(memoryId = state.id))
+                    }
+                ) {
+                    onEvent(MemoryDetailsScreenEvent.OnDismissDeleteDialog)
+                }
+            }
+
             LazyColumn(
                 modifier = Modifier.padding(horizontal = 40.dp, vertical = 16.dp)
             ) {
@@ -172,7 +183,7 @@ fun MemoryDetailsScreenContent(
                 item {
                     MemoryDetailsImageComponent(
                         modifier = Modifier.padding(horizontal = 24.dp),
-                        imageBitmap = imageBitmap
+                        imageUrl = state.imageUri
                     )
                 }
 
